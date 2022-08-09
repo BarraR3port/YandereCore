@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.podcrash.comissions.yandere.core</groupId>
+        <artifactId>YandereCore</artifactId>
+        <version>1.0-ALPHA</version>
+    </parent>
+
+    <artifactId>YandereCore-Spigot</artifactId>
+
+    <name>YandereCore-Spigot</name>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
+    <build>
+        <plugins>
+            <!--compile in a specific directory-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>module-info.class</exclude>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                                <exclude>META-INF/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--<plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <id>obfuscate</id>
+                        <configuration>
+                            <tasks>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                &lt;!&ndash;suppress UnresolvedMavenProperty &ndash;&gt;
+                                <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask"
+                                         classpath="${runtime_classpath}"/>
+                                <yguard>
+                                    <inoutpair in="${project.build.directory}/${project.build.finalName}.jar"
+                                               out="${project.build.directory}/${project.build.finalName}-OBF.jar"/>
+                                    <rename mainclass="com.podcrash.comissions.yandere.core.spigot.Main"
+                                            logfile="${project.build.directory}/yguard.log.xml"
+                                            scramble="true">
+                                        <keep>
+                                            <class classes="protected" methods="protected" fields="protected">
+                                                <patternset>
+                                                    <include name="net.minecraft.server.MinecraftServer"/>
+                                                    <include name="net.minecraft.realms.**"/>
+                                                    <include name="net.minecraft.client.ClientBrandRetriever"/>
+                                                    <include name="net.minecraft.client.main.Main"/>
+                                                    <include name="org.apache.logging.log4j.**"/>
+                                                    <include name="net.lymarket.lyapi.**"/>
+                                                    <include name="net.lymarket.comissionss.youmind.bbb.common.db.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_12_R1.v1_12_R1"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_16_R3.v1_16_R3"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
+                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="com.yworks.**"/>
+                                                    <include name="org.spigotmc.**"/>
+                                                    <include name="com.google.**"/>
+                                                    <include name="com.mongodb.**"/>
+                                                    <include name="org.bukkit.**"/>
+                                                    <include name="okio.**"/>
+                                                    <include name="okhttp3.**"/>
+                                                    <include name="org.apache.**"/>
+                                                    <include name="org.bson.**"/>
+                                                    <include name="org.objectweb.asm.**"/>
+                                                    <include name="org.slf4j.**"/>
+                                                    <include name="kotlin.**"/>
+                                                    <include name="lombok.**"/>
+                                                    <include name="com.podcrash.comissions.yandere.core.spigot.Main"/>
+                                                    <include
+                                                            name="users.com.podcrash.comissions.yandere.core.spigot.SpigotUser"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
+                                                    <include
+                                                            name="papi.com.podcrash.comissions.yandere.core.spigot.Placeholders"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
+                                                    <include name="xyz.xenondevs.particle.**"/>
+                                                    <include name="com.cryptomorin.xseries.**"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="net.lymarket.lyapi.**"/>
+                                                    <include
+                                                            name="users.com.podcrash.comissions.yandere.core.spigot.SpigotUser"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
+                                                    <include
+                                                            name="papi.com.podcrash.comissions.yandere.core.spigot.Placeholders"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
+                                                    <include name="com.podcrash.comissions.yandere.core.spigot.socket.**"/>
+                                                    <include name="net.lymarket.comissionss.youmind.bbb.common.db.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_12_R1.v1_12_R1"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_16_R3.v1_16_R3"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
+                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="xyz.xenondevs.particle.**"/>
+                                                    <include name="com.cryptomorin.xseries.**"/>
+                                                    <include name="org.spigotmc.**"/>
+                                                    <include name="com.google.**"/>
+                                                    <include name="com.mongodb.**"/>
+                                                    <include name="org.bukkit.**"/>
+                                                    <include name="okio.**"/>
+                                                    <include name="okhttp3.**"/>
+                                                    <include name="org.apache.**"/>
+                                                    <include name="org.bson.**"/>
+                                                    <include name="org.objectweb.asm.**"/>
+                                                    <include name="org.slf4j.**"/>
+                                                    <include name="kotlin.**"/>
+                                                    <include name="lombok.**"/>
+                                                </patternset>
+                                            </class>
+
+                                            <class classes="public" methods="public" fields="public">
+                                                <patternset>
+                                                    <include name="net.lymarket.lyapi.**"/>
+                                                    <include
+                                                            name="users.com.podcrash.comissions.yandere.core.spigot.SpigotUser"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
+                                                    <include
+                                                            name="papi.com.podcrash.comissions.yandere.core.spigot.Placeholders"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
+                                                    <include name="net.lymarket.comissionss.youmind.bbb.common.db.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_12_R1.v1_12_R1"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_16_R3.v1_16_R3"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
+                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="xyz.xenondevs.particle.*"/>
+                                                    <include name="com.cryptomorin.xseries.*"/>
+                                                    <include name="org.spigotmc.**"/>
+                                                    <include name="com.google.**"/>
+                                                    <include name="com.mongodb.**"/>
+                                                    <include name="org.bukkit.**"/>
+                                                    <include name="okio.**"/>
+                                                    <include name="okhttp3.**"/>
+                                                    <include name="org.apache.**"/>
+                                                    <include name="org.bson.**"/>
+                                                    <include name="org.objectweb.asm.**"/>
+                                                    <include name="org.slf4j.**"/>
+                                                    <include name="kotlin.**"/>
+                                                    <include name="lombok.**"/>
+                                                </patternset>
+                                            </class>
+
+                                            &lt;!&ndash;<method class="net.lymarket.comissionss.youmind.bbb.common.data.**" name="**.**"/>&ndash;&gt;
+
+                                            <package>
+                                                <patternset>
+                                                    <include name="org.apache.logging.log4j."/>
+                                                    <include name="com.podcrash.comissions.yandere.core.spigot.Main"/>
+                                                    <include
+                                                            name="users.com.podcrash.comissions.yandere.core.spigot.SpigotUser"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
+                                                    <include
+                                                            name="papi.com.podcrash.comissions.yandere.core.spigot.Placeholders"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
+                                                    <include name="org.bukkit.*"/>
+                                                    <include name="net.lymarket.lyapi.**"/>
+                                                    <include name="net.lymarket.comissionss.youmind.bbb.common.db.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_12_R1.v1_12_R1"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_16_R3.v1_16_R3"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
+                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="xyz.xenondevs.particle.**"/>
+                                                    <include name="com.cryptomorin.xseries.**"/>
+                                                    <include name="org.spigotmc.**"/>
+                                                    <include name="com.google.gson.JsonParser.parseReader"/>
+                                                    <include name="com.google.**"/>
+                                                    <include name="com.mongodb.**"/>
+                                                    <include name="org.bukkit.**"/>
+                                                    <include name="okio.**"/>
+                                                    <include name="okhttp3.**"/>
+                                                    <include name="org.apache.**"/>
+                                                    <include name="org.bson.**"/>
+                                                    <include name="org.objectweb.asm.**"/>
+                                                    <include name="org.slf4j.**"/>
+                                                    <include name="kotlin.**"/>
+                                                    <include name="lombok.**"/>
+                                                </patternset>
+                                            </package>
+                                        </keep>
+                                        <property name="naming-scheme" value="small"/>
+                                        <property name="obfuscation-prefix"
+                                                  value="net.lymarket.comissionss.youmind.bbb.obfuscated"/>
+                                        <property name="language-conformity" value="legal"/>
+
+                                    </rename>
+                                </yguard>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <repositories>
+
+        <repository>
+            <id>rapture-snapshots</id>
+            <url>https://repo.rapture.pw/repository/maven-snapshots/</url>
+        </repository>
+
+        <repository>
+            <id>spigotmc-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+
+        <repository>
+            <id>PaperMC</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+
+        <repository>
+            <id>EngineHub</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+
+        <repository>
+            <id>Jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
+
+        <repository>
+            <id>nms</id>
+            <url>https://repo.codemc.io/repository/nms/</url>
+        </repository>
+
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+
+    </repositories>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lymarket.lyapi</groupId>
+            <artifactId>lyapi-spigot</artifactId>
+            <version>1.2.11</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.md5</groupId>
+                    <artifactId>bungeecord-chat</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.lymarket.lyapi</groupId>
+                    <artifactId>versionsupport_1_10_R1</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.lymarket.lyapi</groupId>
+                    <artifactId>versionsupport_1_18_R1</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.lymarket.lyapi</groupId>
+                    <artifactId>versionsupport_1_19_R1</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>common</artifactId>
+            <version>${parent.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.lymarket.lyapi</groupId>
+                    <artifactId>common</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.8.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.9</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>versionsupport_common</artifactId>
+            <version>${parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.luckperms</groupId>
+            <artifactId>api</artifactId>
+            <version>5.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.viaversion</groupId>
+            <artifactId>viaversion-api</artifactId>
+            <version>4.3.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.14.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
+            <version>8.7.1</version>
+            <!--exclude some clases -->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.cryptomorin.particles</groupId>
+                    <artifactId>particles</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.andrei1058.bedwars</groupId>
+            <artifactId>PodBedWars</artifactId>
+            <version>1.0-BETA</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/bedwars-plugin-1.0-BETA.jar</systemPath>
+        </dependency>
+
+        <!--
+                <dependency>
+                    <groupId>com.yworks</groupId>
+                    <artifactId>yguard</artifactId>
+                    <version>3.1.0</version>
+                    <scope>compile</scope>
+                </dependency>-->
+
+    </dependencies>
+</project>

@@ -1,0 +1,156 @@
+lobby-book-details:
+  title: "&eYandere&dCraft Info"
+  author: "&eYandere&dCraft"
+  pages:
+    1:
+      paragraphs:
+        - "Bienvenido a &eYandere&dCraft"
+        - "&rEn este servidor podrás construir, aprender y compartir con más builders sin importar tu nivel de construcción."
+    2:
+      paragraphs:
+        - "Puedes utilizar la brújula para abrir el menú de servidores o usar el comando /ym"
+        - "Puedes unirte a nuestra comunidad y recibir clases en directo uniéndote a nuestro discord: &bhttps://discord.gg/3YudVaFCqW"
+
+spawn:
+  set: "&aHas establecido el spawn del mundo en &e%location%&a."
+
+inventory:
+  inv-see:
+    open: "&aHas abierto el inventario de &e%player%&a."
+  ender-inv-see:
+    open: "&aHas abierto el inventario del &5ender &ade &e%player%&a."
+
+rank:
+  info: "&7Rango actual &a%rankName%&7."
+  promote: "&aHas sido promovido de &e%rankFrom% &a-> &e%rankTo%"
+  demote: "&aHas sido degradado de &e%rankFrom% &a-> &e%rankTo%"
+  info-other: "&7Rango actual de &e%player% &a%rankName%&7."
+  promote-other: "&aHas promovido a &e%player% &ade &e%rankFrom% &aa &e%rankTo%"
+  demote-other: "&aHas degradado a &e%player% &ade &e%rankFrom% &aa &e%rankTo%"
+  promoted-other: "&aEl jugador &e%player% &aha sido promovido a &e%rankTo%&a, felicítalo con un &eGG"
+  demoted-other: "&aEl jugador &e%player% &aha sido promovido a &e%rankTo%"
+  setmod: "&aLe has dado &fꪩ&a al jugador &e%player%&a."
+  removemod: "&aLe has quitado &fꪩ&aal jugador &e%player%&a."
+
+alerts:
+  friends:
+    current-friend-requests: "&7Tienes &e%count% &7peticiones de amistad"
+    current-friend-online: "&7Tienes &e%count% &7amigos conectados"
+    join: "&7Tu amigo &a%player% ha entrado al servidor"
+
+reply:
+  bad-command: "&cComando incorrecto. Utiliza /reply <player> mensaje.."
+  selected-msg:
+    msg: "&7Has seleccionado un mensaje para responder de &e%player%&7."
+    hover:
+      - "&7Escribe en el chat para responderle al jugador."
+      - "&7Escribe /reply cancelar para cancelar la selección."
+      - "&cClick para cancelar la respuesta."
+    cancel: "&7Has cancelado la respuesta."
+
+teleport:
+  target-tpa-disabled: "&cEl jugador &e%player% &ctiene el tpa deshabilitado."
+  type-changed: "&aHas cambiado el tp a &e%tp_type%&a."
+  tpa-sent: "&aHas enviado una petición de tpa a &e%player%&a."
+
+friends:
+  request-sent: "&aHas enviado una solicitud de amistad a &e%player%&a."
+  request-received: "&aHas recibido una solicitud de amistad de &e%player%&a."
+  request-accepted: "&aHas aceptado la solicitud de amistad de &e%player%&a."
+  request-accepted-owner: "&e%player%&a ha aceptado tu solicitud de amistad."
+  request-denied: "&aHas denegado la solicitud de amistad de &e%player%&a."
+  request-denied-owner: "&e%player%&a ha denegado tu solicitud de amistad."
+  accept-friend-requests: "&aRecibir solicitudes de amistad: %status%"
+  break-relationship: "&cTu amistad con &b%player% &cse ha roto."
+
+party:
+  send-request: "&aHas enviado una solicitud de &eParty&a a &e%player%&a."
+  send-join-request: "&aHas enviado una solicitud para unirte al &eParty&a de &e%player%&a."
+  request-received: "&aHas recibido una solicitud de &eParty&a de &e%player%&a."
+  request-received-click: "&7Click para aceptar la solicitud."
+  join-request-received: "&aHas recibido una solicitud para unirse a tu &eParty&a de &e%player%&a."
+  join-request-received-click: "&7Click para aceptar la solicitud."
+  request-accepted: "&aHas aceptado la solicitud de &eParty&a."
+  destroyed: "&cLa &eParty&c ha sido destruida."
+  joined-other: "&aEl jugador &e%player% &aha entrado a tu &eParty&a."
+  leave: "&aHas salido de la &eParty&a."
+  leave-other: "&aEl jugador &e%player% &aha salido de tu &eParty&a."
+
+chat:
+  clear:
+    console-cleared: "&cSe ha limpiado el chat desde la consola."
+    own: "&cLimpiaste tu chat."
+    all: "&c%player% ha limpiado el chat."
+
+join:
+  first:
+    - " "
+    - "&aBienvenido a &aDivine Free Build!"
+    - "&aDiviértete y construye con tus amigos"
+    - "&aen el mejor server de construcción."
+    - " "
+    - "&aConsigue rangos construyendo y mejorando tus habilidades!"
+    - " "
+    - "&aAbre el menu principal con /menu."
+op:
+  de-oped: "&aAhora ya no eres OP."
+  de-oped-other: "&aAhora &e%player%&a ya no es OP."
+  oped: "&aAhora eres OP."
+  oped-other: "&aAhora &e%player%&a es OP."
+
+coins:
+  amount:
+    own: "&aTienes &e%amount% &e⛃&a."
+  change:
+    add: "&aLe diste &e%amount% &e⛃&a a &e%player%&a."
+    remove: "&aLe quitaste &e%amount% &e⛃&a a &e%player%&a."
+    set: "&aHas establecido &e%amount% &e⛃&a a &e%player%&a."
+
+level:
+  other: "&aEl jugador &e%player% &aestá en el nivel &e%level%&a."
+  change:
+    add: "&aLe has dado &e%level% &aniveles a &e%player%&a."
+    remove: "&aLe has quitado &e%level% &aniveles a &e%player%&a."
+    set: "&aHas establecido el nivel &e%level% &aa &e%player%&a."
+xp:
+  other: "&aEl jugador &e%player% &atiene &e%xp% &aXP y está en el nivel &e%level%&a."
+  change:
+    add: "&aLe has dado &e%xp% &aXP a &e%player%&a."
+    remove: "&aLe has quitado &e%xp% &aXP a &e%player%&a."
+    set: "&aHas establecido el XP &e%xp% &aa &e%player%&a."
+
+speed:
+  change:
+    set-other: "&aLe has establecido la velocidad de &e%player%&a a &e%speed%&a&a."
+    set-own: "&aHas establecido tu velocidad a &e%speed%&a&a."
+
+error:
+  no-permission: "&cNo tienes permiso para usar este comando."
+  cant-execute-commands-from-console: "&cNo puedes ejecutar comandos desde la consola."
+  cant-execute-to-yourself: "&cNo puedes ejecutar un comando a ti mismo."
+  wrong-command: "&cComando incorrecto. Intenta usando: &e%command%&c."
+  server:
+    not-online: "&cEl servidor &e%server%&c no está online."
+  player:
+    not-found: "&cNo se encontró al jugador &e%player%&c."
+    in-lobby: "&cEl jugador &e%player%&c está en el lobby."
+    not-online: "&cEl jugador &e%player%&c no está conectado."
+    not-online-general: "&cEl jugador no está conectado."
+    no-previous-location-found: "&cNo se ha encontrado la ubicación anterior."
+    not-op: "&cEl jugador &e%player%&c no es &4OP."
+    already-op: "&cEl jugador &e%player%&c ya es &4OP."
+    coins:
+      remove:
+        not-enough: "&cNo le puedes quitar más dinero a &e%player%&c."
+      amount:
+        invalid: "&cEl monto de dinero es inválido."
+    level:
+      remove:
+        not-enough: "&cNo le puedes quitar más nivel a &e%player%&c."
+      amount:
+        invalid: "&cEl nivel es inválido."
+    xp:
+      remove:
+        not-enough: "&cNo le puedes quitar más XP a &e%player%&c."
+      amount:
+        invalid: "&cEl XP es inválido."

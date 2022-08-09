@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.podcrash.comissions.yandere.core</groupId>
+        <artifactId>YandereCore</artifactId>
+        <version>1.0-ALPHA</version>
+    </parent>
+    <packaging>jar</packaging>
+
+    <artifactId>YandereCore-Velocity</artifactId>
+    <name>YandereCore-Velocity</name>
+
+    <properties>
+        <java.version>16</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <defaultGoal>clean package</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--<plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <id>obfuscate</id>
+                        <configuration>
+                            <tasks>
+                                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                                &lt;!&ndash;suppress UnresolvedMavenProperty &ndash;&gt;
+                                <taskdef name="yguard" classname="com.yworks.yguard.YGuardTask"
+                                         classpath="${runtime_classpath}"/>
+                                <yguard>
+                                    <inoutpair in="${project.build.directory}/${project.build.finalName}.jar"
+                                               out="${project.build.directory}/${project.build.finalName}-OBF.jar"/>
+                                    <rename mainclass="com.podcrash.comissions.yandere.core.velocity.VMain"
+                                            logfile="${project.build.directory}/yguard.log.xml"
+                                            scramble="true">
+                                        <keep>
+                                            <class classes="protected" methods="protected" fields="protected">
+                                                <patternset>
+                                                    <include name="net.minecraft.server.MinecraftServer"/>
+                                                    <include name="net.minecraft.realms.**"/>
+                                                    <include name="net.minecraft.client.ClientBrandRetriever"/>
+                                                    <include name="net.minecraft.client.main.Main"/>
+                                                    <include name="org.apache.logging.log4j.**"/>
+                                                    <include name="net.lymarket.lyapi.**"/>
+                                                    <include name="net.lymarket.comissionss.youmind.bbb.common.db.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
+                                                    <include
+                                                            name="com.podcrash.comissions.yandere.core.velocity.VMain"/>
+                                                    <include
+                                                            name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
+                                                    <include
+                                                            name="user.net.lymarket.comissions.youmind.bbb.velocity.VelocityUser"/>
+                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="com.yworks.**"/>
+                                                    <include name="org.spongepowered.**"/>
+                                                    <include name="com.google.**"/>
+                                                    <include name="com.mongodb.**"/>
+                                                    <include name="org.bukkit.**"/>
+                                                    <include name="okio.**"/>
+                                                    <include name="okhttp3.**"/>
+                                                    <include name="org.apache.**"/>
+                                                    <include name="org.bson.**"/>
+                                                    <include name="org.objectweb.asm.**"/>
+                                                    <include name="org.slf4j.**"/>
+                                                    <include name="kotlin.**"/>
+                                                    <include name="lombok.**"/>
+                                                    <include name="xyz.xenondevs.particle.**"/>
+                                                    <include name="com.cryptomorin.xseries.**"/>
+                                                </patternset>
+                                            </class>
+                                            <class classes="private" methods="private" fields="private">
+                                                <patternset>
+                                                    <include name="net.lymarket.lyapi.**"/>
+                                                    <include name="net.lymarket.comissionss.youmind.bbb.common.db.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
+                                                    <include
+                                                            name="com.podcrash.comissions.yandere.core.velocity.VMain"/>
+                                                    <include
+                                                            name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
+                                                    <include
+                                                            name="user.net.lymarket.comissions.youmind.bbb.velocity.VelocityUser"/>
+                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="xyz.xenondevs.particle.**"/>
+                                                    <include name="com.cryptomorin.xseries.**"/>
+                                                    <include name="org.spongepowered.**"/>
+                                                    <include name="com.google.**"/>
+                                                    <include name="com.mongodb.**"/>
+                                                    <include name="org.bukkit.**"/>
+                                                    <include name="okio.**"/>
+                                                    <include name="okhttp3.**"/>
+                                                    <include name="org.apache.**"/>
+                                                    <include name="org.bson.**"/>
+                                                    <include name="org.objectweb.asm.**"/>
+                                                    <include name="org.slf4j.**"/>
+                                                    <include name="kotlin.**"/>
+                                                    <include name="lombok.**"/>
+                                                </patternset>
+                                            </class>
+
+                                            <class classes="public" methods="public" fields="public">
+                                                <patternset>
+                                                    <include name="net.lymarket.lyapi.**"/>
+                                                    <include name="net.lymarket.comissionss.youmind.bbb.common.db.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
+                                                    <include
+                                                            name="com.podcrash.comissions.yandere.core.velocity.VMain"/>
+                                                    <include
+                                                            name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
+                                                    <include
+                                                            name="user.net.lymarket.comissions.youmind.bbb.velocity.VelocityUser"/>
+                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="xyz.xenondevs.particle.*"/>
+                                                    <include name="com.cryptomorin.xseries.*"/>
+                                                    <include name="org.spongepowered.**"/>
+                                                    <include name="com.google.**"/>
+                                                    <include name="com.mongodb.**"/>
+                                                    <include name="org.bukkit.**"/>
+                                                    <include name="okio.**"/>
+                                                    <include name="okhttp3.**"/>
+                                                    <include name="org.apache.**"/>
+                                                    <include name="org.bson.**"/>
+                                                    <include name="org.objectweb.asm.**"/>
+                                                    <include name="org.slf4j.**"/>
+                                                    <include name="kotlin.**"/>
+                                                    <include name="lombok.**"/>
+                                                </patternset>
+                                            </class>
+
+                                            &lt;!&ndash;<method class="net.lymarket.comissionss.youmind.bbb.common.data.**" name="**.**"/>&ndash;&gt;
+
+                                            <package>
+                                                <patternset>
+                                                    <include name="org.apache.logging.log4j."/>
+                                                    <include
+                                                            name="com.podcrash.comissions.yandere.core.velocity.VMain"/>
+                                                    <include
+                                                            name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
+                                                    <include
+                                                            name="user.net.lymarket.comissions.youmind.bbb.velocity.VelocityUser"/>
+                                                    <include name="org.bukkit.*"/>
+                                                    <include name="net.lymarket.lyapi.**"/>
+                                                    <include name="net.lymarket.comissionss.youmind.bbb.common.db.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
+                                                    <include
+                                                            name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
+                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="xyz.xenondevs.particle.**"/>
+                                                    <include name="com.cryptomorin.xseries.**"/>
+                                                    <include name="org.spongepowered.**"/>
+                                                    <include name="com.google.gson.JsonParser.parseReader"/>
+                                                    <include name="com.google.**"/>
+                                                    <include name="com.mongodb.**"/>
+                                                    <include name="org.bukkit.**"/>
+                                                    <include name="okio.**"/>
+                                                    <include name="okhttp3.**"/>
+                                                    <include name="org.apache.**"/>
+                                                    <include name="org.bson.**"/>
+                                                    <include name="org.objectweb.asm.**"/>
+                                                    <include name="org.slf4j.**"/>
+                                                    <include name="kotlin.**"/>
+                                                    <include name="lombok.**"/>
+                                                </patternset>
+                                            </package>
+                                        </keep>
+                                        <property name="naming-scheme" value="small"/>
+                                        <property name="obfuscation-prefix"
+                                                  value="net.lymarket.comissionss.youmind.bbb.obfuscated"/>
+                                        <property name="language-conformity" value="legal"/>
+
+                                    </rename>
+                                </yguard>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.velocitypowered</groupId>
+            <artifactId>velocity-api</artifactId>
+            <version>3.1.2-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>configurate-yaml</artifactId>
+            <version>4.2.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>common</artifactId>
+            <version>${parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lymarket.lyapi</groupId>
+            <artifactId>lyapi-velocity</artifactId>
+            <version>1.2.5</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- <dependency>
+             <groupId>com.yworks</groupId>
+             <artifactId>yguard</artifactId>
+             <version>3.1.0</version>
+             <scope>compile</scope>
+         </dependency>-->
+
+        <dependency>
+            <groupId>net.luckperms</groupId>
+            <artifactId>api</artifactId>
+            <version>5.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+</project>

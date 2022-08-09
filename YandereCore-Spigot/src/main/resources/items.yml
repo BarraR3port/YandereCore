@@ -1,0 +1,14 @@
+items:
+  lobby-item:
+    name: "&aVersion Selector"
+    material: "COMPASS"
+    slot: 0
+    description:
+      - "&7Click to select a version"
+    nbt:
+  lobby-book:
+    name: "&aYandere info"
+    material: "WRITTEN_BOOK"
+    slot: 4
+    description:
+    nbt:

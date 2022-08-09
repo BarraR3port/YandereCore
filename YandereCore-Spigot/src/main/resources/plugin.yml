@@ -1,0 +1,7 @@
+name: YandereCore
+version: '${project.version}'
+main: com.podcrash.comissions.yandere.core.spigot.Main
+depend:
+  - LuckPerms
+load: POSTWORLD
+api-version: 1.13
