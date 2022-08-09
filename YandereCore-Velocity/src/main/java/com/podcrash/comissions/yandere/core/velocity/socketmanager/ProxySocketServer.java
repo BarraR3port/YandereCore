@@ -107,6 +107,12 @@ public class ProxySocketServer implements Runnable {
                     if (!json.has("socket-msg-uuid")) continue;
                     String type = json.get("type").getAsString();
                     
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
                     if (type.equals("UPDATE")){
                         if (!json.has("server_type")) continue;
                         final String server_name = json.get("server_name").getAsString();
@@ -117,6 +123,14 @@ public class ProxySocketServer implements Runnable {
                         VMain.getInstance().getServerManager().addServer(server);
                         continue;
                     }
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
+                    
                     
                     VMain.debug("Received message from " + (server == null ? "Unknown" : server.getProxyName()) + ": \n" + gson.toJson(json));
                     final UUID msgUUID = UUID.fromString(json.get("socket-msg-uuid").getAsString());

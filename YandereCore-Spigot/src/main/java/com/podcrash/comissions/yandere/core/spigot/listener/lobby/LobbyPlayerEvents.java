@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.podcrash.comissions.yandere.core.common.data.loc.Loc;
 import com.podcrash.comissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.comissions.yandere.core.common.data.user.props.Rank;
+import com.podcrash.comissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.comissions.yandere.core.spigot.Main;
 import com.podcrash.comissions.yandere.core.spigot.items.Items;
 import com.podcrash.comissions.yandere.core.spigot.listener.MainEvents;
@@ -32,8 +33,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static com.andrei1058.bedwars.BedWars.getChatSupport;
-
 public final class LobbyPlayerEvents extends MainEvents {
     
     public LobbyPlayerEvents(){
@@ -45,11 +44,6 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent e){
-        Player p = e.getPlayer();
-        for ( Player others : Bukkit.getOnlinePlayers() ){
-            others.showPlayer(p);
-            p.showPlayer(others);
-        }
         try {
             final World world = e.getTo().getWorld();
             final UUID playerUUID = e.getPlayer().getUniqueId();
@@ -57,7 +51,7 @@ public final class LobbyPlayerEvents extends MainEvents {
             final Location loc = e.getTo();
             user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
-        } catch (NullPointerException ignored) {
+        } catch (NullPointerException | UserNotFoundException ignored) {
         }
     }
     
@@ -109,7 +103,7 @@ public final class LobbyPlayerEvents extends MainEvents {
         if (p.hasPermission("yandere.chat.color")){
             message = Utils.format(message);
         }
-        System.out.println(LyApi.getGson().toJson(user));
+        //System.out.println(LyApi.getGson().toJson(user));
         event.setCancelled(true);
         
         final String finalMessage = message;
@@ -130,7 +124,7 @@ public final class LobbyPlayerEvents extends MainEvents {
                 TextComponent name = Utils.hoverOverMessage(white_msg + p.getName(),
                         Arrays.asList(
                                 "&7Infomación del jugador:",
-                                "&7⪼ Rango: " + getChatSupport().getPrefix(p),
+                                "&7⪼ Rango: " + (isDefault ? "&cSin Rango" : prefix),
                                 "&7⪼ Monedas: &d" + getCoinsFormatted(user.getCoins()),
                                 "&7⪼ Nivel: &d" + user.getLevel().getLevelName(),
                                 "" + user.getLevel().getProgressBar()/* ,
@@ -152,7 +146,7 @@ public final class LobbyPlayerEvents extends MainEvents {
                         Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage));
             });
         }
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), "[MSG] Mensaje:" + finalMessage, p.getName());
+        Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
         
         
     }

@@ -12,6 +12,7 @@ import com.andrei1058.bedwars.support.papi.SupportPAPI;
 import com.podcrash.comissions.yandere.core.common.data.loc.Loc;
 import com.podcrash.comissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.comissions.yandere.core.common.data.user.props.Rank;
+import com.podcrash.comissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.comissions.yandere.core.spigot.Main;
 import com.podcrash.comissions.yandere.core.spigot.listener.MainEvents;
 import com.podcrash.comissions.yandere.core.spigot.settings.Settings;
@@ -52,7 +53,7 @@ public final class BWPlayerEvents extends MainEvents {
             final Location loc = e.getTo();
             user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
-        } catch (NullPointerException ignored) {
+        } catch (NullPointerException | UserNotFoundException ignored) {
         }
     }
     
@@ -104,7 +105,7 @@ public final class BWPlayerEvents extends MainEvents {
             TextComponent name = Utils.hoverOverMessage(white_msg + p.getName(),
                     Arrays.asList(
                             "&7Infomación del jugador:",
-                            "&7⪼ Rango: " + getChatSupport().getPrefix(p),
+                            "&7⪼ Rango: " + (isDefault ? "&cSin Rango" : prefix),
                             "&7⪼ Monedas: &d" + getCoinsFormatted(user.getCoins()),
                             "&7⪼ Nivel: &d" + user.getLevel().getLevelName(),
                             "" + user.getLevel().getProgressBar()/* ,
@@ -144,7 +145,7 @@ public final class BWPlayerEvents extends MainEvents {
                             name,
                             Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage3)));
                 }
-                Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), "[MSG] Mensaje:" + finalMessage, p.getName());
+                Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
             } else {
                 if (a.getStatus() == GameState.waiting || a.getStatus() == GameState.starting){
                     event.getRecipients().clear();
@@ -157,7 +158,7 @@ public final class BWPlayerEvents extends MainEvents {
                                 name,
                                 Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage3)));
                     }
-                    Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), "[MSG] Mensaje:" + finalMessage, p.getName());
+                    Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
                     return;
                 }
                 if (finalMessage.startsWith("!") || finalMessage.startsWith("shout") || finalMessage.startsWith("SHOUT") || finalMessage.startsWith(getMsg(p, Messages.MEANING_SHOUT))){
@@ -192,7 +193,7 @@ public final class BWPlayerEvents extends MainEvents {
                                 name,
                                 Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage1)));
                     }
-                    Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), "[MSG] Mensaje:" + finalMessage, p.getName());
+                    Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
                 } else {
                     final String finalMessage2 = finalMessage;
                     event.getRecipients().clear();
@@ -216,7 +217,7 @@ public final class BWPlayerEvents extends MainEvents {
                                 name,
                                 Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage2)));
                     }
-                    Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), "[MSG] Mensaje:" + finalMessage, p.getName());
+                    Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
                     
                 }
             }
