@@ -41,6 +41,7 @@ public abstract class MainEvents implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent e){
         e.setJoinMessage("");
+        
         Main.getInstance().getSocket().sendUpdate();
         subPlayerJoinEvent(e);
     }

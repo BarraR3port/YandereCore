@@ -74,21 +74,21 @@ public final class Items {
         }
         LOBBY_BOOK.setItemMeta(bookMeta);
         
-        SKY_WARS_BASE = new ItemBuilder(XMaterial.BOW.parseMaterial())
+        SKY_WARS_BASE = new ItemBuilder(Material.BOW)
                 .setDisplayName("&b&lSkyWars")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
         
-        BED_WARS_BASE = new ItemBuilder(XMaterial.RED_BED.parseMaterial())
+        BED_WARS_BASE = new ItemBuilder(Material.BED)
                 .setDisplayName("&b&lBedWars")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
         
-        PRACTICE_BASE = new ItemBuilder(XMaterial.DIAMOND_SWORD.parseMaterial())
+        PRACTICE_BASE = new ItemBuilder(Material.DIAMOND_SWORD)
                 .setDisplayName("&b&lPractice PVP")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")

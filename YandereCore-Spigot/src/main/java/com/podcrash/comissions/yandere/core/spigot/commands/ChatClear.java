@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class ChatClear implements ILyCommand {
     
-    @Command(name = "chatclear", permission = "yandere.chat.clear", aliases = "cc")
+    @Command(name = "chatclear", permission = "yandere.chat.clear", aliases = {"clearchat", "cc"})
     public CommandResponse command(CommandContext context){
         if (!(context.getSender() instanceof Player)){
             for ( int i = 0; i < 100; i++ ){

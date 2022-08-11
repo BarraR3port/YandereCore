@@ -28,7 +28,7 @@ public class Settings {
     public static ArrayList<String> PERMS_WHEN_JOINING_WORLD = new ArrayList<>();
     public static ServerType SERVER_TYPE;
     public static String VERSION;
-    
+    public static boolean IS_SERVER_LINKED = false;
     
     public Settings(){
     
@@ -52,7 +52,12 @@ public class Settings {
         DEBUG = config.getBoolean("global.debug");
         PERMS_WHEN_CREATING_WORLD = new ArrayList<>(config.getStringList("perms.when-creating-world"));
         PERMS_WHEN_JOINING_WORLD = new ArrayList<>(config.getStringList("perms.when-joining-world"));
-        SERVER_TYPE = ServerType.valueOf(config.getString("global.server-type"));
+        try {
+            SERVER_TYPE = ServerType.valueOf(config.getString("global.server-type"));
+        } catch (NullPointerException | IllegalArgumentException e) {
+            SERVER_TYPE = ServerType.EMPTY;
+        }
+        IS_SERVER_LINKED = (SERVER_NAME != null || !SERVER_NAME.equals("")) && SERVER_TYPE != ServerType.EMPTY;
         switch(Main.getInstance().getNMSVersion()){
             case "v1_8_R3":{
                 VERSION = "1.8";
@@ -73,5 +78,9 @@ public class Settings {
         }
     }
     
+    
+    public static String getServerNameFormatted(){
+        return "" + SERVER_TYPE.getName() + "&d#" + (SERVER_NAME.charAt(SERVER_NAME.length() - 1));
+    }
     
 }

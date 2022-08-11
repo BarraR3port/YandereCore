@@ -21,7 +21,7 @@ public enum ServerType {
     
     public static ServerType match(String serverName){
         for ( ServerType type : values() ){
-            if (serverName.startsWith(type.prefix)){
+            if (serverName.startsWith(type.prefix) || serverName.equalsIgnoreCase(type.prefix)){
                 return type;
             }
         }

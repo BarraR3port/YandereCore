@@ -1,16 +1,16 @@
 package com.podcrash.comissions.yandere.core.support.common.version;
 
-import com.podcrash.comissions.yandere.core.common.BBBApi;
+import com.podcrash.comissions.yandere.core.common.YandereApi;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class VersionSupport<U> {
     
     protected final JavaPlugin plugin;
-    protected final BBBApi<U> bbbApi;
+    protected final YandereApi<U> bbbApi;
     
     public VersionSupport(JavaPlugin plugin){
         this.plugin = plugin;
-        this.bbbApi = (BBBApi) plugin;
+        this.bbbApi = (YandereApi) plugin;
         switch(bbbApi.getServerType()){
             case LOBBY:{
                 break;
@@ -31,7 +31,7 @@ public abstract class VersionSupport<U> {
         
     }
     
-    public BBBApi<U> getBbbApi(){
+    public YandereApi<U> getBbbApi(){
         return bbbApi;
     }
     

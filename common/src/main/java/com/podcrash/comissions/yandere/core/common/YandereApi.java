@@ -6,7 +6,7 @@ import com.podcrash.comissions.yandere.core.common.db.IPlayerRepository;
 import com.podcrash.comissions.yandere.core.common.socket.ISocket;
 import net.lymarket.lyapi.spigot.config.Config;
 
-public interface BBBApi<U> {
+public interface YandereApi<U> {
     
     void error(String message);
     
@@ -23,8 +23,6 @@ public interface BBBApi<U> {
     String getNMSVersion();
     
     String getProxyServerName();
-    
-    void debug(String message);
     
     ServerType getServerType();
     

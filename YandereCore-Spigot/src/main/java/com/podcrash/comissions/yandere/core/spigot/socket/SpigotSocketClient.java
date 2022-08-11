@@ -1,10 +1,13 @@
 package com.podcrash.comissions.yandere.core.spigot.socket;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.podcrash.comissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.comissions.yandere.core.common.socket.ISocket;
 import com.podcrash.comissions.yandere.core.common.socket.ISocketClient;
 import com.podcrash.comissions.yandere.core.spigot.Main;
-import com.podcrash.comissions.yandere.core.spigot.settings.ProxyStats;
 import com.podcrash.comissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.comissions.yandere.core.spigot.users.PlayersRepository;
 import com.podcrash.comissions.yandere.core.spigot.users.SpigotUser;
@@ -17,8 +20,9 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.podcrash.comissions.yandere.core.spigot.Main.GSON;
+
 public class SpigotSocketClient extends ISocket<SpigotUser> {
-    private final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private boolean reconnecting = false;
     private ProxySocket mainSocket;
     
@@ -127,11 +131,13 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
     }
     
     public SpigotSocketClient init() throws IOException{
-        if (mainSocket != null){
-            mainSocket.socket.close();
+        if (Settings.IS_SERVER_LINKED){
+            if (mainSocket != null){
+                mainSocket.socket.close();
+            }
+            Socket socket = new Socket(Settings.SOCKET_IP, Settings.SOCKET_PORT);
+            mainSocket = new ProxySocket(socket, Settings.SERVER_NAME);
         }
-        Socket socket = new Socket(Settings.SOCKET_IP, Settings.SOCKET_PORT);
-        mainSocket = new ProxySocket(socket, Settings.SERVER_NAME);
         return this;
     }
     
@@ -140,18 +146,19 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
      */
     public void sendMessage(JsonObject message){
         if (message == null) return;
-        
-        if (mainSocket == null){
-            try {
-                Socket socket = new Socket(Settings.SOCKET_IP, Settings.SOCKET_PORT);
-                mainSocket = new ProxySocket(socket, Settings.SERVER_NAME);
+        if (Settings.IS_SERVER_LINKED){
+            if (mainSocket == null){
+                try {
+                    Socket socket = new Socket(Settings.SOCKET_IP, Settings.SOCKET_PORT);
+                    mainSocket = new ProxySocket(socket, Settings.SERVER_NAME);
+                    mainSocket.sendMessage(message);
+                    reconnecting = false;
+                } catch (IOException err) {
+                    err.printStackTrace();
+                }
+            } else {
                 mainSocket.sendMessage(message);
-                reconnecting = false;
-            } catch (IOException err) {
-                err.printStackTrace();
             }
-        } else {
-            mainSocket.sendMessage(message);
         }
     }
     
@@ -192,36 +199,32 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
                             final String encrypted = in.nextLine();
                             String decryptedMessage = decrypt(encrypted);
                             if (decryptedMessage == null || decryptedMessage.isEmpty()){
-                                Main.getInstance().debug("Received bad data from: " + socket.getInetAddress().toString() + "\nMsg: " + encrypted);
+                                Main.debug("Received bad data from: " + socket.getInetAddress().toString() + "\nMsg: " + encrypted);
                                 continue;
                             }
                             final JsonObject json;
                             try {
                                 json = new JsonParser().parse(decryptedMessage).getAsJsonObject();
                             } catch (JsonSyntaxException e) {
-                                Main.getInstance().debug("Received bad data from: " + socket.getInetAddress().toString());
+                                Main.debug("Received bad data from: " + socket.getInetAddress().toString());
                                 continue;
                             }
                             if (json == null) continue;
                             if (!json.has("type")) continue;
                             final String type = json.get("type").getAsString().toUpperCase();
                             if (!type.equals("UPDATE_SERVER_STATS") && !type.equals("MSG_RECEIVED")){
-                                if (Settings.DEVELOPMENT_MODE){
-                                    Main.getInstance().debug("Received Encrypted from " + name + ": \n" + encrypted);
-                                    Main.getInstance().debug("Received message from " + name + ": \n" + gson.toJson(json));
-                                } else {
-                                    Main.getInstance().debug("Received message from " + name + ": \n" + gson.toJson(json));
-                                }
+                                Main.debug("Received message from " + name + ": \n" + GSON.toJson(json));
                             }
                             switch(type){
                                 case "MSG_RECEIVED":{
-                                    Main.getInstance().debug("Received message from " + name + ": \n" + gson.toJson(json));
+                                    Main.debug("Received message from " + name + ": \n" + GSON.toJson(json));
                                     continue;
                                 }
                                 case "UPDATE_SERVER_STATS":{
                                     if (!json.has("stats")) continue;
-                                    Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () ->
-                                            Main.getInstance().proxyStats = gson.fromJson(json.getAsJsonObject("stats"), ProxyStats.class));
+                                    Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+                                        Main.getInstance().setProxyStats(GSON.fromJson(json.getAsJsonObject("stats"), ProxyStats.class));
+                                    });
                                     continue;
                                 }
                                 case "SEND_MSG_TO_PLAYER_POST":{
@@ -269,13 +272,13 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
                                     String world_version = json.get("world_version").getAsString();
                                     String world_server = json.get("world_server").getAsString();
                                     String world_layer_material = json.get("world_layer_material").getAsString();
-                                    Main.getInstance().debug("Received INIT_CREATE_WORLD request: world_name:" + world_name + " world_uuid:" + world_uuid + " world_version:" + world_version + " world_server:" + world_server);
+                                    Main.debug("Received INIT_CREATE_WORLD request: world_name:" + world_name + " world_uuid:" + world_uuid + " world_version:" + world_version + " world_server:" + world_server);
                                     if (Settings.SERVER_NAME.equals(world_server)){
                                         Bukkit.getScheduler().runTask(Main.getInstance(), ( ) -> {
-                                            Main.getInstance().debug("[World Creation] [Phase 1/2] Creating World: " + world_name);
+                                            Main.debug("[World Creation] [Phase 1/2] Creating World: " + world_name);
                                             BWorld world = new BWorld(owner, world_name, world_server, world_version, world_uuid, world_layer_material);
                                             getWorlds().createCustomLayerWorld(world, world_layer_material);
-                                            Main.getInstance().debug("[World Creation] [Phase 2/2] Creating World: " + world_uuid);
+                                            Main.debug("[World Creation] [Phase 2/2] Creating World: " + world_uuid);
                                             getWorlds().createWorld(world);
                                             final Player p = Bukkit.getPlayer(owner);
                                             final boolean teleport = p == null;
@@ -286,10 +289,10 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
                                             json.addProperty("type", "INIT_CREATE_WORLD_SUCCESS");
                                             json.addProperty("teleport", teleport);
                                             sendMessage(json);
-                                            Main.getInstance().debug("[World Creation] Sending message to Proxy: " + json);
+                                            Main.debug("[World Creation] Sending message to Proxy: " + json);
                                         });
                                     } else {
-                                        Main.getInstance().debug("Received INIT_CREATE_WORLD but its meant for another server.\n " + json);
+                                        Main.debug("Received INIT_CREATE_WORLD but its meant for another server.\n " + json);
                                     }
                                     continue;
                                 }
@@ -353,11 +356,11 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
                                         final Player p = Bukkit.getPlayer(owner_uuid);
                                         final World localWorld = Bukkit.getWorld(world.getUUID().toString());
                                         if (p != null && localWorld != null && (world.getOwner().equals(owner_uuid) || world.getMembers().contains(owner_uuid))){
-                                            Main.getInstance().debug("Teleporting " + p + " to " + localWorld.getName());
+                                            Main.debug("Teleporting " + p + " to " + localWorld.getName());
                                             Bukkit.getScheduler().runTask(Main.getInstance(), ( ) -> p.teleport(localWorld.getSpawnLocation()));
                                             getWorlds().addPlayerToWorldOnlineMembers(owner_uuid, world_uuid);
                                         } else {
-                                            Main.getInstance().debug("Teleporting " + owner_uuid + " to " + world.getUUID().toString());
+                                            Main.debug("Teleporting " + owner_uuid + " to " + world.getUUID().toString());
                                         }
                                         sendMSGToPlayer(owner_uuid, "world.join", "world", world.split("-")[0]);
                                         continue;
@@ -533,11 +536,11 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
                                                             final Player p = Bukkit.getPlayer(owner_uuid);
                                                             final World localWorld = Bukkit.getWorld(world.getUUID().toString());
                                                             if (p != null && localWorld != null && (world.getOwner().equals(owner_uuid) || world.getMembers().contains(owner_uuid))){
-                                                                Main.getInstance().debug("Teleporting " + p + " to " + localWorld.getName());
+                                                                Main.debug("Teleporting " + p + " to " + localWorld.getName());
                                                                 Bukkit.getScheduler().runTask(Main.getInstance(), ( ) -> p.teleport(localWorld.getSpawnLocation()));
                                                                 getWorlds().addPlayerToWorldOnlineMembers(owner_uuid, world_uuid);
                                                             } else {
-                                                                Main.getInstance().debug("Teleporting " + owner_uuid + " to " + world.getUUID().toString());
+                                                                Main.debug("Teleporting " + owner_uuid + " to " + world.getUUID().toString());
                                                             }
                                                             sendMSGToPlayer(owner_uuid, "world.join", "world", world.split("-")[0]);
                                                             continue;
@@ -749,14 +752,14 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
                 return false;
             }
             if (Settings.DEVELOPMENT_MODE){
-                Main.getInstance().debug("Sending message to " + name + ": \n" + gson.toJson(message));
-                Main.getInstance().debug("Sending Encrypted Message to " + name + ": \n" + encrypt(gson.toJson(message)));
+                Main.debug("Sending message to " + name + ": \n" + GSON.toJson(message));
+                Main.debug("Sending Encrypted Message to " + name + ": \n" + encrypt(GSON.toJson(message)));
             } else {
-                Main.getInstance().debug("Sending message to " + name + ": \n" + gson.toJson(message));
+                Main.debug("Sending message to " + name + ": \n" + GSON.toJson(message));
             }
             final UUID msgUUID = UUID.randomUUID();
             message.addProperty("socket-msg-uuid", msgUUID.toString());
-            out.println(encrypt(gson.toJson(message)));
+            out.println(encrypt(GSON.toJson(message)));
             
             return true;
         }
@@ -770,7 +773,7 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
             Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
                 if (!reconnecting) return;
                 int currentAttempt = reconnect_attempts.getAndIncrement();
-                Main.getInstance().debug("Reconnecting to Proxy Socket, attempt: " + currentAttempt + " of 10");
+                Main.debug("Reconnecting to Proxy Socket, attempt: " + currentAttempt + " of 10");
                 if (currentAttempt > 10){
                     reconnecting = false;
                     Bukkit.shutdown();
@@ -778,11 +781,11 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
                 }
                 try {
                     init();
-                    Main.getInstance().debug("Reconnected to Proxy Socket");
+                    Main.debug("Reconnected to Proxy Socket");
                     sendUpdate();
                     reconnecting = false;
                 } catch (IOException e) {
-                    Main.getInstance().debug("Failed to reconnect to " + name + " attempt " + currentAttempt);
+                    Main.debug("Failed to reconnect to " + name + " attempt " + currentAttempt);
                 }
             }, 20, 150);
             
@@ -790,8 +793,8 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
         
         public void disable(String reason){
             compute = false;
-            Main.getInstance().debug("Disabling socket: " + socket.toString());
-            Main.getInstance().debug("Disabling socket Reason: " + reason);
+            Main.debug("Disabling socket: " + socket.toString());
+            Main.debug("Disabling socket Reason: " + reason);
             try {
                 socket.close();
             } catch (IOException e) {

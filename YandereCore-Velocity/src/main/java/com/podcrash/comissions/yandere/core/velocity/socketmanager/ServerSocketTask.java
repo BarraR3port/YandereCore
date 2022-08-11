@@ -1,10 +1,7 @@
 package com.podcrash.comissions.yandere.core.velocity.socketmanager;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.podcrash.comissions.yandere.core.velocity.VMain;
 import com.podcrash.comissions.yandere.core.velocity.manager.ServerSocketManager;
-import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 
 import java.io.IOException;
@@ -12,8 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class ServerSocketTask {
     
@@ -36,17 +31,6 @@ public class ServerSocketTask {
                 }
             }
         }).schedule());
-        otherTasks.add(VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), () -> VMain.getInstance().getProxy().getAllServers().forEach(server -> {
-            try {
-                if (server.ping().get() != null){
-                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                    out.writeUTF("GetServer");
-                    out.writeUTF(server.getServerInfo().getName());
-                    server.sendPluginMessage(MinecraftChannelIdentifier.create("lymarket", "bbb"), out.toByteArray());
-                }
-            } catch (ExecutionException | InterruptedException ignored) {
-            }
-        })).repeat(5, TimeUnit.SECONDS).schedule());
     }
     
     public static boolean init(){

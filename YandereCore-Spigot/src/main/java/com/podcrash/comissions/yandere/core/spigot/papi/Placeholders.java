@@ -1,5 +1,10 @@
 package com.podcrash.comissions.yandere.core.spigot.papi;
 
+import com.andrei1058.bedwars.api.arena.IArena;
+import com.andrei1058.bedwars.api.language.Language;
+import com.andrei1058.bedwars.api.language.Messages;
+import com.andrei1058.bedwars.arena.Arena;
+import com.podcrash.comissions.yandere.core.common.data.server.Server;
 import com.podcrash.comissions.yandere.core.spigot.Main;
 import com.podcrash.comissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.comissions.yandere.core.spigot.users.SpigotUser;
@@ -62,7 +67,7 @@ public class Placeholders extends PlaceholderExpansion {
      */
     @Override
     public @NotNull String getIdentifier(){
-        return "bbb";
+        return "yandere";
     }
     
     /**
@@ -91,10 +96,19 @@ public class Placeholders extends PlaceholderExpansion {
     // PLACEHOLDERS
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String identifier){
-        
         if (player == null) return "";
         
+        if (identifier.startsWith("server_size_")){
+            return String.valueOf(Main.getInstance().getProxyStats().getTargetServerSize(identifier.replace("server_size_", "")));
+        }
+        if (identifier.startsWith("server_online_")){
+            return String.valueOf(Main.getInstance().getProxyStats().isTargetServerOnline(identifier.replace("server_online_", "")));
+        }
+        if (identifier.startsWith("server_online_formatted_")){
+            return Main.getInstance().getProxyStats().isTargetServerOnline(identifier.replace("server_online_formatted_", "")) ? "&aABIERTO" : "&cCERRADO";
+        }
         switch(identifier){
+            case "server_name":
             case "server":{
                 return Settings.SERVER_NAME;
             }
@@ -110,14 +124,17 @@ public class Placeholders extends PlaceholderExpansion {
             case "server_version":{
                 return Settings.VERSION;
             }
+            case "proxy_server_size":{
+                return String.valueOf(Main.getInstance().getProxyStats().getAllPlayerSize());
+            }
             case "server_size":{
-                return String.valueOf(Main.getInstance().proxyStats.getAllPlayerSize());
+                return String.valueOf(Main.getInstance().getProxyStats().getTargetServerSize(Settings.SERVER_NAME));
             }
-            case "lobby_online":{
-                return String.valueOf(Main.getInstance().proxyStats.isLobbyOnline());
+            case "server_type_name_formatted":{
+                return Settings.SERVER_TYPE.getName();
             }
-            case "lobby_online_formatted":{
-                return Main.getInstance().proxyStats.isLobbyOnline() ? "&aABIERTO" : "&cCERRADO";
+            case "server_name_number":{
+                return String.valueOf(Settings.SERVER_NAME.charAt(Settings.SERVER_NAME.length() - 1));
             }
             
         }
@@ -163,7 +180,7 @@ public class Placeholders extends PlaceholderExpansion {
                 if (p.getCoins() > 10000){
                     return df.format(p.getCoins() / 1000) + "&eK ⛃";
                 }
-                return p.getCoins() + "&eK ⛃";
+                return df.format(p.getCoins()) + "&e⛃";
             }
             case "level":{
                 return String.valueOf(p.getLevel().getLevel());

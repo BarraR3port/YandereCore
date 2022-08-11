@@ -1,8 +1,8 @@
 sounds:
-  good-sound: "BLOCK_AMETHYST_CLUSTER_HIT"
-  bad-sound: "BLOCK_CANDLE_EXTINGUISH"
+  good-sound: "ENTITY_PLAYER_LEVELUP"
+  bad-sound: "BLOCK_NOTE_BLOCK_PLING"
   super-good-sound: "ENTITY_PLAYER_LEVELUP"
-  tp-successfully: "BLOCK_AMETHYST_CLUSTER_HIT"
+  tp-successfully: "ENTITY_PLAYER_LEVELUP"
   tagging-alert: "BLOCK_NOTE_BLOCK_PLING"
   menu-click: "UI_BUTTON_CLICK"
-  tutorial-finished: "LEVEL_UP"
+  tutorial-finished: "ENTITY_PLAYER_LEVELUP"

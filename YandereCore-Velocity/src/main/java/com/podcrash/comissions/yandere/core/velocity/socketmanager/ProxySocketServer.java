@@ -1,7 +1,9 @@
 package com.podcrash.comissions.yandere.core.velocity.socketmanager;
 
-import com.google.gson.*;
-import com.podcrash.comissions.yandere.core.common.data.server.IServerStats;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.podcrash.comissions.yandere.core.common.data.server.Server;
 import com.podcrash.comissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.comissions.yandere.core.velocity.VMain;
@@ -20,10 +22,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.podcrash.comissions.yandere.core.velocity.VMain.GSON;
+
 public class ProxySocketServer implements Runnable {
     
     private final Socket socket;
-    private final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private Scanner in;
     private PrintWriter out;
     private Server server;
@@ -46,10 +49,10 @@ public class ProxySocketServer implements Runnable {
         }
     }
     
-    public void sendProxyServerStats(IServerStats stats){
+    public void sendProxyServerStats(){
         final JsonObject js = new JsonObject();
         js.addProperty("type", "UPDATE_SERVER_STATS");
-        js.addProperty("stats", gson.toJson(stats));
+        js.addProperty("stats", GSON.toJson(VMain.getInstance().getServerManager()));
         sendMessage(js);
     }
     
@@ -71,10 +74,10 @@ public class ProxySocketServer implements Runnable {
             return;
         }
         final String type = message.get("type").getAsString();
-        if (type != null && !type.equals("MSG_RECEIVED")){
-            VMain.debug("Sending message to " + (server == null ? "Unknown" : server.getProxyName()) + ": \n" + gson.toJson(message));
+        if (type != null && !type.equals("MSG_RECEIVED") && !type.equals("UPDATE_SERVER_STATS")){
+            VMain.debug("Sending message to " + (server == null ? "Unknown" : server.getProxyName()) + ": \n" + GSON.toJson(message));
         }
-        out.println(encrypt(gson.toJson(message)));
+        out.println(encrypt(GSON.toJson(message)));
     }
     
     @Override
@@ -107,32 +110,21 @@ public class ProxySocketServer implements Runnable {
                     if (!json.has("socket-msg-uuid")) continue;
                     String type = json.get("type").getAsString();
                     
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
                     if (type.equals("UPDATE")){
-                        if (!json.has("server_type")) continue;
+                        if (!json.has("server_name")) continue;
                         final String server_name = json.get("server_name").getAsString();
                         final ServerType serverType = ServerType.match(server_name);
                         final int online_players = json.get("online_players").getAsInt();
-                        server = new Server(server_name, online_players, serverType);
-                        ServerSocketManager.getInstance().registerServerSocket(server_name, this);
-                        VMain.getInstance().getServerManager().addServer(server);
+                        ServerSocketTask.otherTasks.add(VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), () -> {
+                                    server = new Server(server_name, online_players, serverType);
+                                    ServerSocketManager.getInstance().registerServerSocket(server_name, this);
+                                    VMain.getInstance().getServerManager().addServer(server);
+                                }
+                        ).schedule());
                         continue;
                     }
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
-                    /*TODO Fix thiss ASAPPPPPPPPPPPP*/
                     
-                    
-                    VMain.debug("Received message from " + (server == null ? "Unknown" : server.getProxyName()) + ": \n" + gson.toJson(json));
+                    VMain.debug("Received message from " + (server == null ? "Unknown" : server.getProxyName()) + ": \n" + GSON.toJson(json));
                     final UUID msgUUID = UUID.fromString(json.get("socket-msg-uuid").getAsString());
                     final JsonObject msg_received = new JsonObject();
                     msg_received.addProperty("type", "MSG_RECEIVED");
@@ -167,13 +159,20 @@ public class ProxySocketServer implements Runnable {
                                 final String currentServer = json.get("current_server").getAsString();
                                 final UUID owner_uuid = UUID.fromString(json.get("owner_uuid").getAsString());
                                 final String msg = json.get("msg").getAsString();
-                                if (serverName.equals("EMPTY")) continue;
+                                
                                 if (VMain.getInstance().getProxy().getPlayer(owner_uuid).isPresent()){
                                     final Player p = VMain.getInstance().getProxy().getPlayer(owner_uuid).get();
                                     if (currentServer.equalsIgnoreCase(serverName)){
                                         p.sendMessage(Utils.format("&cYa estás conectado en el server " + serverName));
                                         return;
                                     }
+                                    if (serverName.equals("EMPTY")){
+                                        p.sendMessage(Utils.format("&cEste server está cerrado o ha ocurrido un bug"));
+                                        p.sendMessage(Utils.format("&cContacta al soporte entregando el siguiente numero de error o una captura:"));
+                                        p.sendMessage(Utils.format("&cCódigo del error:   - &4&lERRN-0001 -"/*TODO CREATE THIS THING*/));
+                                        continue;
+                                    }
+                                    
                                     VMain.getInstance().getProxy().getServer(serverName).ifPresent(server -> {
                                         try {
                                             ConnectionRequestBuilder.Result result = p.createConnectionRequest(server).connect().get(2, TimeUnit.SECONDS);

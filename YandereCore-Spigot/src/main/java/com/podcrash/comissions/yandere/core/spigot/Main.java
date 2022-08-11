@@ -1,7 +1,12 @@
 package com.podcrash.comissions.yandere.core.spigot;
 
-import com.podcrash.comissions.yandere.core.common.BBBApi;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.podcrash.comissions.yandere.core.common.YandereApi;
 import com.podcrash.comissions.yandere.core.common.data.logs.ILogRepository;
+import com.podcrash.comissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.comissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.comissions.yandere.core.spigot.commands.*;
 import com.podcrash.comissions.yandere.core.spigot.commands.punish.EnderSeeCommand;
@@ -14,6 +19,7 @@ import com.podcrash.comissions.yandere.core.spigot.commands.tp.TpAll;
 import com.podcrash.comissions.yandere.core.spigot.commands.tp.TpHere;
 import com.podcrash.comissions.yandere.core.spigot.items.Items;
 import com.podcrash.comissions.yandere.core.spigot.lang.ESLang;
+import com.podcrash.comissions.yandere.core.spigot.listener.DefaultEvents;
 import com.podcrash.comissions.yandere.core.spigot.listener.bedwars.BWGameEvents;
 import com.podcrash.comissions.yandere.core.spigot.listener.bedwars.BWPlayerEvents;
 import com.podcrash.comissions.yandere.core.spigot.listener.lobby.LobbyPlayerEvents;
@@ -22,7 +28,6 @@ import com.podcrash.comissions.yandere.core.spigot.log.LogRepository;
 import com.podcrash.comissions.yandere.core.spigot.menu.inv.EndInvManager;
 import com.podcrash.comissions.yandere.core.spigot.menu.inv.InvManager;
 import com.podcrash.comissions.yandere.core.spigot.papi.Placeholders;
-import com.podcrash.comissions.yandere.core.spigot.settings.ProxyStats;
 import com.podcrash.comissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.comissions.yandere.core.spigot.socket.SpigotSocketClient;
 import com.podcrash.comissions.yandere.core.spigot.sounds.Sounds;
@@ -49,12 +54,13 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-public final class Main extends JavaPlugin implements BBBApi<SpigotUser> {
+public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
     
+    public static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+    private ProxyStats proxyStats = new ProxyStats();
     private static LyApi api;
     private static Main instance;
     private static LuckPerms lpApi;
-    public ProxyStats proxyStats = new ProxyStats();
     private Config config;
     private Config items;
     private Config sounds;
@@ -83,12 +89,18 @@ public final class Main extends JavaPlugin implements BBBApi<SpigotUser> {
         return lpApi;
     }
     
+    public static void debug(String message){
+        if (Settings.DEBUG){
+            instance.getLogger().info(ChatColor.RED + "[DEBUG] " + ChatColor.LIGHT_PURPLE + message);
+        }
+    }
+    
     @Override
     public void onEnable(){
         instance = this;
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        getServer().getMessenger().registerIncomingPluginChannel(this, "lymarket:bbb", new PluginMessage());
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "lymarket:bbb");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "podcrash:yandere", new PluginMessage());
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "podcrash:yandere");
         config = new Config(this, "config.yml");
         items = new Config(this, "items.yml");
         sounds = new Config(this, "sounds.yml");
@@ -131,42 +143,27 @@ public final class Main extends JavaPlugin implements BBBApi<SpigotUser> {
             viaVersionApi = Via.getAPI();
         }
         
-        
-        api.getCommandService().registerCommands(new SetSpawn());
-        api.getCommandService().registerCommands(new DelSpawn());
-        api.getCommandService().registerCommands(new Spawn());
-        api.getCommandService().registerCommands(new Menu());
-        api.getCommandService().registerCommands(new Admin());
-        api.getCommandService().registerCommands(new RankMenu());
-        api.getCommandService().registerCommands(new EnderSeeCommand());
-        api.getCommandService().registerCommands(new InvSeeCommand());
-        api.getCommandService().registerCommands(new SetSpawn());
-        api.getCommandService().registerCommands(new Spawn());
-        api.getCommandService().registerCommands(new DelSpawn());
-        api.getCommandService().registerCommands(new Teleport());
-        api.getCommandService().registerCommands(new TpAll());
-        api.getCommandService().registerCommands(new TpHere());
-        api.getCommandService().registerCommands(new Back());
-        api.getCommandService().registerCommands(new ChatClear());
-        api.getCommandService().registerCommands(new EconomyCommand());
-        api.getCommandService().registerCommands(new LevelCommand());
-        api.getCommandService().registerCommands(new OPCommand());
-        api.getCommandService().registerCommands(new Speed());
-        api.getCommandService().registerCommands(new VanishCommand());
-        api.getCommandService().registerCommands(new XPCommand());
-        
+        registerCommands();
         
         //final MongoDBClient mongo = new MongoDBClient( "mongodb://" + config.getString( "db.host" ) + ":" + config.getString( "db.port" ) , config.getString( "db.database" ) );
         final MongoDBClient mongo = new MongoDBClient(config.getString("db.urli"), config.getString("db.database"));
         players = new PlayersRepository(mongo, "players");
         logs = new LogRepository(mongo, "logs");
         try {
-            socket = new SpigotSocketClient(players).init();
+            socket = new SpigotSocketClient(players);
+            if (Settings.IS_SERVER_LINKED){
+                socket.init();
+                socket.sendUpdate();
+            } else {
+                getServer().getPluginManager().registerEvents(new DefaultEvents(), this);
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF("GetServer");
+                Bukkit.getServer().sendPluginMessage(Main.getInstance(), "podcrash:yandere", out.toByteArray());
+            }
         } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
             getServer().shutdown();
         }
-        socket.sendUpdate();
         switch(Settings.SERVER_TYPE){
             case LOBBY:
             case LOBBY_BED_WARS:{
@@ -201,13 +198,6 @@ public final class Main extends JavaPlugin implements BBBApi<SpigotUser> {
         }, 0L, 20L);
         //new PacketManager( this );
         
-    }
-    
-    @Override
-    public void debug(String message){
-        if (Settings.DEBUG){
-            instance.getLogger().info(ChatColor.RED + "[DEBUG] " + ChatColor.LIGHT_PURPLE + message);
-        }
     }
     
     @Override
@@ -263,52 +253,32 @@ public final class Main extends JavaPlugin implements BBBApi<SpigotUser> {
         return Settings.SERVER_NAME;
     }
     
-    /*public CompletableFuture < Void > managePermissions(UUID player_uuid, UUID world_uuid, boolean delete){
-        if (Settings.SERVER_TYPE != ServerType.WORLDS) return CompletableFuture.completedFuture(null);
-        Main.getInstance().debug("[Permission Manager] Updating permissions to " + player_uuid + " in world " + world_uuid);
-        Main.getInstance().debug("[Permission Manager] Removing all permissions from worlds.");
-        return lpApi.getUserManager().modifyUser(player_uuid, user -> {
-            for ( String perm : Settings.PERMS_WHEN_CREATING_WORLD ){
-                for ( final BWorld world : worlds.getWorlds() ){
-                    user.data().remove(Node.builder(perm).context(MutableContextSet.of("world", world.getUUID().toString()).mutableCopy()).build());
-                }
-            }
-            for ( final BWorld world : worlds.getWorlds() ){
-                user.data().remove(Node.builder("yandere.visit").context(MutableContextSet.of("world", world.getUUID().toString()).mutableCopy()).build());
-            }
-            Main.getInstance().debug("[Permission Manager] Removed all permissions from worlds.");
-            if (delete) return;
-            Main.getInstance().debug("[Permission Manager] Adding all permissions to world=" + world_uuid);
-            for ( String perm : Settings.PERMS_WHEN_CREATING_WORLD ){
-                user.data().add(Node.builder(perm).context(MutableContextSet.of("world", world_uuid.toString()).mutableCopy()).build());
-            }
-        });
+    private void registerCommands(){
+        api.getCommandService().registerCommands(new SetSpawn());
+        api.getCommandService().registerCommands(new DelSpawn());
+        api.getCommandService().registerCommands(new Spawn());
+        api.getCommandService().registerCommands(new Menu());
+        api.getCommandService().registerCommands(new Admin());
+        api.getCommandService().registerCommands(new RankMenu());
+        api.getCommandService().registerCommands(new EnderSeeCommand());
+        api.getCommandService().registerCommands(new InvSeeCommand());
+        api.getCommandService().registerCommands(new SetSpawn());
+        api.getCommandService().registerCommands(new Spawn());
+        api.getCommandService().registerCommands(new DelSpawn());
+        api.getCommandService().registerCommands(new Teleport());
+        api.getCommandService().registerCommands(new TpAll());
+        api.getCommandService().registerCommands(new TpHere());
+        api.getCommandService().registerCommands(new Back());
+        api.getCommandService().registerCommands(new ChatClear());
+        api.getCommandService().registerCommands(new CoinsCommand());
+        api.getCommandService().registerCommands(new EconomyCommand());
+        api.getCommandService().registerCommands(new LevelCommand());
+        api.getCommandService().registerCommands(new OPCommand());
+        api.getCommandService().registerCommands(new DeOpCommand());
+        api.getCommandService().registerCommands(new Speed());
+        api.getCommandService().registerCommands(new VanishCommand());
+        api.getCommandService().registerCommands(new XPCommand());
     }
-    
-    public CompletableFuture < Void > manageVisitorPermissions(UUID player_uuid, UUID world_uuid, boolean delete){
-        if (Settings.SERVER_TYPE != ServerType.WORLDS) return CompletableFuture.completedFuture(null);
-        return lpApi.getUserManager().modifyUser(player_uuid, user -> {
-            for ( final BWorld world : worlds.getWorlds() ){
-                user.data().remove(Node.builder("yandere.visit").context(MutableContextSet.of("world", world.getUUID().toString()).mutableCopy()).build());
-            }
-            Main.getInstance().debug("[Permission Manager] Removed yanderevisit to world=" + world_uuid);
-            if (delete) return;
-            Main.getInstance().debug("[Permission Manager] Adding yanderevisit to world=" + world_uuid);
-            user.data().add(Node.builder("yandere.visit").context(MutableContextSet.of("world", world_uuid.toString()).mutableCopy()).build());
-            
-        });
-    }
-    
-    public void removePermissionsInOneWorld(UUID player_uuid, UUID world_uuid){
-        if (Settings.SERVER_TYPE != ServerType.WORLDS) return;
-        Main.getInstance().debug("[Permission Manager] Updating permissions to " + player_uuid + " in world " + world_uuid);
-        Main.getInstance().debug("[Permission Manager] Removing all permissions from worlds.");
-        lpApi.getUserManager().modifyUser(player_uuid, user -> {
-            for ( String perm : Settings.PERMS_WHEN_CREATING_WORLD ){
-                user.data().remove(Node.builder(perm).context(MutableContextSet.of("world", world_uuid.toString()).mutableCopy()).build());
-            }
-        });
-    }*/
     
     public void reconnectToProxy(){
         socket.disable();

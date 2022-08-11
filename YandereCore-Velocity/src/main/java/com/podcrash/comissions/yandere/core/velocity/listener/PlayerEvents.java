@@ -1,6 +1,9 @@
 package com.podcrash.comissions.yandere.core.velocity.listener;
 
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.podcrash.comissions.yandere.core.common.data.server.Server;
 import com.podcrash.comissions.yandere.core.velocity.VMain;
 import com.podcrash.comissions.yandere.core.velocity.user.VelocityUser;
@@ -8,18 +11,16 @@ import com.podcrash.comissions.yandere.core.velocity.utils.Utils;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
+import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
-import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.network.ProtocolVersion;
+import com.velocitypowered.api.proxy.ServerConnection;
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerPing;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -61,22 +62,6 @@ public class PlayerEvents {
     }
     
     @Subscribe
-    public void onServerPostConnectEvent(ServerPostConnectEvent e){
-        Component firstJoinMsg = LegacyComponentSerializer.legacyAmpersand().deserialize("&aBienvenido a &9Yandere.")
-                //? Hover Message
-                .hoverEvent(LegacyComponentSerializer.legacyAmpersand().deserialize("&7Click para abrir el Menu"))
-                .clickEvent(ClickEvent.runCommand("/menu"));
-        TextComponent secondJoinMsg = LegacyComponentSerializer.legacyAmpersand().deserialize("&aConstruye y disfruta!")
-                .hoverEvent(null)
-                .clickEvent(null);
-        e.getPlayer().sendMessage(firstJoinMsg);
-        e.getPlayer().sendMessage(secondJoinMsg);
-        /*VMain.getInstance().getServerSocketManager().getSocketByServer().forEach( ((serverName, proxySocketServer) -> {
-            proxySocketServer.sendMessage();
-        }));*/
-    }
-    
-    @Subscribe
     public void onPlayerPreLogin(PreLoginEvent e){
         if (e.getUsername().contains("McDown_pw_") || e.getUsername().contains("McDown")){
             e.setResult(PreLoginEvent.PreLoginComponentResult.denied(Utils.format("PENDEJO")));
@@ -93,7 +78,7 @@ public class PlayerEvents {
         timeOnline.remove(uuid);
     }
     
-    @Subscribe(order = PostOrder.FIRST)
+    @Subscribe(order  = PostOrder.FIRST)
     public void onKickedFromServerEvent(KickedFromServerEvent e){
         
         int attempts = 5;
@@ -130,6 +115,31 @@ public class PlayerEvents {
                 }
             }
             event.setPing(prev.asBuilder().build());
+        }
+        
+    }
+    
+    @Subscribe(order = PostOrder.FIRST)
+    public void onPluginMessage(PluginMessageEvent e){
+        e.setResult(PluginMessageEvent.ForwardResult.forward());
+        if (e.getSource() instanceof ServerConnection s){
+            if (e.getIdentifier().getId().equals("podcrash:yandere") || e.getIdentifier().getId().equals("podcrash") || e.getIdentifier().getId().equals("yandere")){
+                RegisteredServer server = s.getServer();
+                ByteArrayDataInput in = ByteStreams.newDataInput(e.getData());
+                String subChannel = in.readUTF();
+                if ("GetServer".equals(subChannel)){
+                    try {
+                        if (server.ping().get() != null){
+                            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                            out.writeUTF("YourServerName");
+                            out.writeUTF(server.getServerInfo().getName());
+                            server.sendPluginMessage(MinecraftChannelIdentifier.create("podcrash", "yandere"), out.toByteArray());
+                        }
+                    } catch (ExecutionException | InterruptedException ignored) {
+                    }
+                    
+                }
+            }
         }
         
     }

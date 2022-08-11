@@ -1,13 +1,15 @@
 package com.podcrash.comissions.yandere.core.velocity;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
+import com.podcrash.comissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.comissions.yandere.core.common.log.Slf4jPluginLogger;
 import com.podcrash.comissions.yandere.core.velocity.commands.Lobby;
 import com.podcrash.comissions.yandere.core.velocity.commands.VAdmin;
 import com.podcrash.comissions.yandere.core.velocity.config.Config;
 import com.podcrash.comissions.yandere.core.velocity.listener.PlayerEvents;
 import com.podcrash.comissions.yandere.core.velocity.manager.PlayersRepository;
-import com.podcrash.comissions.yandere.core.velocity.manager.ServerManager;
 import com.podcrash.comissions.yandere.core.velocity.manager.ServerSocketManager;
 import com.podcrash.comissions.yandere.core.velocity.socketmanager.ProxySocketServer;
 import com.podcrash.comissions.yandere.core.velocity.socketmanager.ServerSocketTask;
@@ -36,10 +38,11 @@ import java.util.concurrent.TimeUnit;
         dependencies = {@Dependency(id = "luckperms")})
 public final class VMain extends LyApiVelocity {
     
+    public final static Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private static VMain instance;
     private static Config config;
     private final ServerSocketManager serverSocketManager = new ServerSocketManager();
-    private final ServerManager serverManager;
+    private final ProxyStats serverManager;
     private final ProxyServer proxy;
     private final Slf4jPluginLogger logger;
     private final Path path;
@@ -60,7 +63,7 @@ public final class VMain extends LyApiVelocity {
         this.proxy = server;
         this.path = path;
         this.logger = new Slf4jPluginLogger(logger);
-        serverManager = new ServerManager();
+        serverManager = new ProxyStats();
     }
     
     @Internal
@@ -86,13 +89,12 @@ public final class VMain extends LyApiVelocity {
         // Plugin startup logic
         instance = this;
         config = new Config(path);
-        proxy.getChannelRegistrar().register(new LegacyChannelIdentifier("lymarket:bbb"));
+        proxy.getChannelRegistrar().register(new LegacyChannelIdentifier("podcrash:yandere"));
         proxy.getEventManager().register(this, new PlayerEvents());
-        serverManager.init();
         if (ServerSocketTask.init()){
             debug("ServerSocketTask started");
         }
-        String url = /*config.getDb_urli( ).equals( "" ) ? "mongodb://" + config.getDb_username( ) + ":" + config.getDb_password( ) + "@" + config.getDb_host( ) + ":" + config.getDb_port( ) :*/ config.getConfig().getDb_urli();
+        String url = config.getConfig().getDb_urli(); /*config.getDb_urli( ).equals( "" ) ? "mongodb://" + config.getDb_username( ) + ":" + config.getDb_password( ) + "@" + config.getDb_host( ) + ":" + config.getDb_port( ) :*/
         final MongoDBClient mongo = new MongoDBClient(url, config.getConfig().getDb_database());
         playersRepository = new PlayersRepository(mongo, "players");
         
@@ -112,7 +114,7 @@ public final class VMain extends LyApiVelocity {
     public void sendInfo(){
         for ( ProxySocketServer socket : VMain.getInstance().getServerSocketManager().getSocketByServer().values() ){
             try {
-                socket.sendProxyServerStats(serverManager);
+                socket.sendProxyServerStats();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -125,7 +127,7 @@ public final class VMain extends LyApiVelocity {
     }
     
     @Internal
-    public ServerManager getServerManager(){
+    public ProxyStats getServerManager(){
         return serverManager;
     }
     

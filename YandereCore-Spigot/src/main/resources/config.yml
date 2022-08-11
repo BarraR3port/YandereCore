@@ -1,17 +1,8 @@
 global:
   prefix: "&eYandere&dCraft"
-  server-type: "LOBBY" #LOBBY, CORE
+  server-type: "" #LOBBY, REGISTRO, SKY_WARS, LOBBY_BED_WARS, BED_WARS, TNT_TAG, PRACTICE, SURVIVAL
   proxy-server-name: ""
   debug: true
-actions:
-  break-blocks: false
-  place-blocks: false
-  player-interact-at-entity: false
-  player-interact-entity: false
-  player-bed-events: false
-  player-drop-items: false
-  player-pickup-items: false
-  consume-items: false
 spawn:
   location:
 db:
@@ -22,29 +13,3 @@ db:
   password: JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK
   database: yandere
   urli: "mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/"
-
-
-perms:
-  when-creating-world:
-    - fawe.bypass
-    - arceon.*
-    - voxelsniper.*
-    - worldedit.*
-    - gopaint.use
-    - gobrush.use
-    - astools.use
-    - models.use
-    - builders.util.*
-    - headdb.*
-    - astools.use
-  when-joining-world:
-    - fawe.bypass
-    - arceon.*
-    - voxelsniper.*
-    - worldedit.*
-    - gopaint.use
-    - gobrush.use
-    - astools.use
-    - models.use
-    - builders.util.*
-  when-joining-as-visitor-to-world:
