@@ -269,48 +269,50 @@ public final class SWPlayerEvents extends MainEvents {
                 }
                 
                 PlayerVisibility visibility = user.getPlayerVisibility();
-                
-                for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
-                    if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
-                    SpigotUser targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
-                    PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
-                    Rank targetRank = targetUser.getRank();
-                    switch(visibility){
-                        case ALL:
-                            p.showPlayer(targetPlayer);
-                            break;
-                        case RANKS:
-                            if (targetRank != Rank.USUARIO){
+                Bukkit.getScheduler().runTaskLater( Main.getInstance(), ()->{
+                    for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
+                        if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
+                        SpigotUser targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
+                        PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
+                        Rank targetRank = targetUser.getRank();
+                        switch(visibility){
+                            case ALL:
                                 p.showPlayer(targetPlayer);
-                            } else {
+                                break;
+                            case RANKS:
+                                if (targetRank != Rank.USUARIO){
+                                    p.showPlayer(targetPlayer);
+                                } else {
+                                    p.hidePlayer(targetPlayer);
+                                }
+                                break;
+                            default:
                                 p.hidePlayer(targetPlayer);
-                            }
-                            break;
-                        default:
-                            p.hidePlayer(targetPlayer);
-                            break;
-                    }
-                    
-                    switch(targetVisibility){
-                        case ALL:{
-                            targetPlayer.showPlayer(p);
-                            break;
+                                break;
                         }
-                        case RANKS:{
-                            if (targetRank != Rank.USUARIO){
+    
+                        switch(targetVisibility){
+                            case ALL:{
                                 targetPlayer.showPlayer(p);
-                            } else {
-                                targetPlayer.hidePlayer(p);
+                                break;
                             }
-                            break;
+                            case RANKS:{
+                                if (user.getRank() != Rank.USUARIO){
+                                    targetPlayer.showPlayer(p);
+                                } else {
+                                    targetPlayer.hidePlayer(p);
+                                }
+                                break;
+                            }
+                            default:{
+                                targetPlayer.hidePlayer(p);
+                                break;
+                            }
                         }
-                        default:{
-                            targetPlayer.hidePlayer(p);
-                            break;
-                        }
+    
                     }
-                    
-                }
+    
+                }, 1L );
             }
         }
     }

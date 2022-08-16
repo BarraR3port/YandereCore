@@ -70,23 +70,32 @@ public abstract class MainEvents implements Listener {
             user.nextPlayerVisibility();
             Main.getInstance().getPlayers().savePlayer(user);
             for ( Player player : Bukkit.getOnlinePlayers() ){
+                if (player.getUniqueId().equals(p.getUniqueId())) continue;
                 switch(currentPlayerVisibility){
                     case ALL:
                         final SpigotUser spigotUser = Main.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
                         if (spigotUser.getRank() == Rank.USUARIO){
                             p.hidePlayer(player);
                         }
-                        p.getInventory().setItem(8, Items.LOBBY_PLAYER_VISIBILITY_RANKS.clone());
                         break;
                     case RANKS:
                         p.hidePlayer(player);
-                        p.getInventory().setItem(8, Items.LOBBY_PLAYER_VISIBILITY_NONE.clone());
                         break;
                     case NONE:
                         p.showPlayer(player);
-                        p.getInventory().setItem(8, Items.LOBBY_PLAYER_VISIBILITY_ALL.clone());
                         break;
                 }
+            }
+            switch(currentPlayerVisibility){
+                case ALL:
+                    p.getInventory().setItem(8, Items.LOBBY_PLAYER_VISIBILITY_RANKS.clone());
+                    break;
+                case RANKS:
+                    p.getInventory().setItem(8, Items.LOBBY_PLAYER_VISIBILITY_NONE.clone());
+                    break;
+                case NONE:
+                    p.getInventory().setItem(8, Items.LOBBY_PLAYER_VISIBILITY_ALL.clone());
+                    break;
             }
             
             p.updateInventory();

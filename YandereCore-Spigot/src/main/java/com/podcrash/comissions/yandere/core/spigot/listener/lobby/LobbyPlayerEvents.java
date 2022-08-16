@@ -72,7 +72,6 @@ public final class LobbyPlayerEvents extends MainEvents {
         SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         if (user.getRank() != Rank.USUARIO){
             p.setAllowFlight(true);
-            
         }
         
         PlayerVisibility visibility = user.getPlayerVisibility();
@@ -104,7 +103,7 @@ public final class LobbyPlayerEvents extends MainEvents {
                     break;
                 }
                 case RANKS:{
-                    if (targetRank != Rank.USUARIO){
+                    if (user.getRank() != Rank.USUARIO){
                         targetPlayer.showPlayer(p);
                     } else {
                         targetPlayer.hidePlayer(p);

@@ -194,7 +194,7 @@ public abstract class User {
             case RANKS:
                 properties.put("lobby-player-visibility", PlayerVisibility.NONE.toString());
                 break;
-            default:
+            case NONE:
                 properties.put("lobby-player-visibility", PlayerVisibility.ALL.toString());
                 break;
         }
