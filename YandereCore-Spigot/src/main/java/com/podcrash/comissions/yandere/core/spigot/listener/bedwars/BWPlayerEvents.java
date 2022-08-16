@@ -49,7 +49,7 @@ public final class BWPlayerEvents extends MainEvents {
         try {
             final World world = e.getTo().getWorld();
             final UUID playerUUID = e.getPlayer().getUniqueId();
-            final SpigotUser user = Main.getInstance().getPlayers().getPlayer(playerUUID);
+            final SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
             final Location loc = e.getTo();
             user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
@@ -77,7 +77,7 @@ public final class BWPlayerEvents extends MainEvents {
         }*/
         
         if (event.isCancelled()) return;
-        SpigotUser user = Main.getInstance().getPlayers().getPlayer(p.getName());
+        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         final String white_msg = p.hasPermission("yandere.chat.whitemessage") ? "&f" : "&7";
         if (p.hasPermission("yandere.chat.color")){
             finalMessage = Utils.format(finalMessage);
@@ -97,28 +97,29 @@ public final class BWPlayerEvents extends MainEvents {
             }
             TextComponent level = Utils.hoverOverMessage(getLevelSupport().getLevel(p),
                     Arrays.asList(
-                            "&eBedWars Level Info:",
-                            "&7⪼ Nivel: &d" + getLevelSupport().getPlayerLevel(p),
-                            "&7⪼ XP: &d" + getLevelSupport().getCurrentXpFormatted(p),
-                            "&7⪼ XP Necesaria para subir: &d" + getLevelSupport().getRequiredXpFormatted(p),
+                            "7e「&eNivel de BedWars&7⏌",
+                            "",
+                            "&7► Nivel: &d" + getLevelSupport().getPlayerLevel(p),
+                            "&7► XP: &d" + getLevelSupport().getCurrentXpFormatted(p),
+                            "&7► XP Necesaria para subir: &d" + getLevelSupport().getRequiredXpFormatted(p),
                             getLevelSupport().getProgressBar(p)));
             TextComponent name = Utils.hoverOverMessage(white_msg + p.getName(),
                     Arrays.asList(
-                            "&7Infomación del jugador:",
-                            "&7⪼ Rango: " + (isDefault ? "&cSin Rango" : prefix),
-                            "&7⪼ Monedas: &d" + getCoinsFormatted(user.getCoins()),
-                            "&7⪼ Nivel: &d" + user.getLevel().getLevelName(),
+                            "&7「&eInformación del jugador&7⏌",
+                            "",
+                            "&7► Rango: " + prefix,
+                            "&7► Monedas: &d" + user.getCoinsFormatted(),
+                            "&7► Nivel: &d" + user.getLevel().getLevelName(),
                             "" + user.getLevel().getProgressBar()/* ,
                             "&7Clan: &d" + clanTag*/));
             TextComponent team = Utils.formatTC("");
             TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
-                    Arrays.asList("&dYandere&5Ranks",
+                    Arrays.asList(
+                            "&7「&eYandere &5Rangos&7⏌",
                             "",
-                            "&7Este jugador tiene el rango " + prefix,
-                            "",
-                            "&7Puedes comprar más rangos en nuestra página web.",
-                            "",
-                            "&7Rangos disponibles: " + Rank.BRONCE.getTabPrefix() + " " + Rank.HIERRO.getTabPrefix() + " " + Rank.ORO.getTabPrefix() + " " + Rank.DIAMANTE.getTabPrefix(),
+                            "&7► Este jugador tiene el rango " + prefix,
+                            "&7► Puedes comprar más rangos en nuestra página web.",
+                            "&7► Rangos disponibles: " + Rank.BRONCE.getTabPrefix() + " " + Rank.HIERRO.getTabPrefix() + " " + Rank.ORO.getTabPrefix() + " " + Rank.DIAMANTE.getTabPrefix(),
                             ""),
                     "https://store.yanderecraft.com");
             
@@ -126,10 +127,11 @@ public final class BWPlayerEvents extends MainEvents {
                 final String teamName = t.getColor().chat() + "「" + t.getDisplayName(Language.getPlayerLanguage(event.getPlayer())).toUpperCase() + "⏌ ";
                 team = Utils.hoverOverMessage(teamName,
                         Arrays.asList(
-                                "&7BedWars Game Info:",
-                                "&7⪼ Equipo: " + t.getColor().chat() + t.getName(),
-                                "&7⪼ Miembros: &d" + t.getMembers().size(),
-                                "&7⪼ Estado: &d" + (t.isBedDestroyed() ? "&cELIMINADO" : "&aACTIVO")));
+                                "&7「&eInformación del Equipo&7⏌",
+                                "",
+                                "&7► Equipo: " + t.getColor().chat() + t.getName(),
+                                "&7► Miembros: &d" + t.getMembers().size(),
+                                "&7► Estado: &d" + (t.isBedDestroyed() ? "&cELIMINADO" : "&aACTIVO")));
             }
             final TextComponent finalTeam = team;
             final String finalMessage3 = finalMessage;
@@ -138,12 +140,12 @@ public final class BWPlayerEvents extends MainEvents {
                 event.getRecipients().addAll(a.getSpectators());
                 for ( Player player : event.getRecipients() ){
                     Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> player.spigot().sendMessage(
+                            Utils.formatTC("&7「ESPECTADOR⏌ "),
                             level,
                             rank,
-                            Utils.formatTC("&7「ESPECTADOR⏌ "),
                             Utils.formatTC((isDefault ? "&7" : white_msg)),
                             name,
-                            Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage3)));
+                            Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage3)));
                 }
                 Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
             } else {
@@ -156,7 +158,7 @@ public final class BWPlayerEvents extends MainEvents {
                                 finalTeam,
                                 rank,
                                 name,
-                                Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage3)));
+                                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage3)));
                     }
                     Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
                     return;
@@ -186,12 +188,12 @@ public final class BWPlayerEvents extends MainEvents {
                     final String finalMessage1 = finalMessage;
                     for ( Player player : event.getRecipients() ){
                         Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> player.spigot().sendMessage(
+                                Utils.formatTC("&7「GLOBAL⏌ "),
                                 level,
                                 finalTeam,
                                 rank,
-                                Utils.formatTC("&7「G⏌ "),
                                 name,
-                                Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage1)));
+                                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage1)));
                     }
                     Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
                 } else {
@@ -215,7 +217,7 @@ public final class BWPlayerEvents extends MainEvents {
                                 finalTeam,
                                 rank,
                                 name,
-                                Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage2)));
+                                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage2)));
                     }
                     Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
                     

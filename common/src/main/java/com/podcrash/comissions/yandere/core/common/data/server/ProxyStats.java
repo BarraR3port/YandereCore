@@ -31,6 +31,10 @@ public final class ProxyStats {
         return servers.values().stream().filter(server -> server.getServerType() == ServerType.LOBBY_BED_WARS).findAny().orElse(emptyServer);
     }
     
+    public Server getRandomBedWarsLobbyServer(){
+        return servers.values().stream().filter(server -> server.getServerType() == ServerType.LOBBY_BED_WARS).findAny().orElse(emptyServer);
+    }
+    
     public Server getRandomPracticeServer(){
         return servers.values().stream().filter(server -> server.getServerType() == ServerType.PRACTICE).findAny().orElse(emptyServer);
     }
@@ -104,9 +108,7 @@ public final class ProxyStats {
     }
     
     public boolean isTargetServerOnline(String serverProxyName){
-        return servers.values().stream().anyMatch(server -> server.getProxyName().equals(serverProxyName) );
+        return servers.values().stream().anyMatch(server -> server.getProxyName().equals(serverProxyName));
     }
-    
-    
     
 }

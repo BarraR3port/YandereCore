@@ -3,5 +3,11 @@ version: '${project.version}'
 main: com.podcrash.comissions.yandere.core.spigot.Main
 depend:
   - LuckPerms
+  - Vault
+softdepend:
+  - StrikePractice
+  - UltraSkyWars
+  - UltraSkyWarsWP
+
 load: POSTWORLD
 api-version: 1.13

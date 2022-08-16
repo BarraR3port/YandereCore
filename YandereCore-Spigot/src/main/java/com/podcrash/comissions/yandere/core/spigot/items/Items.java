@@ -1,16 +1,15 @@
 package com.podcrash.comissions.yandere.core.spigot.items;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.podcrash.comissions.yandere.core.common.data.lobby.PlayerVisibility;
 import com.podcrash.comissions.yandere.core.spigot.Main;
 import com.podcrash.comissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.config.Config;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
 import net.lymarket.lyapi.spigot.utils.Utils;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 
@@ -22,7 +21,6 @@ import java.util.Date;
 public final class Items {
     
     public static ItemStack LOBBY_MENU;
-    public static ItemStack LOBBY_BOOK;
     public static ItemStack SKY_WARS_BASE;
     public static ItemStack BED_WARS_BASE;
     public static ItemStack PRACTICE_BASE;
@@ -43,66 +41,51 @@ public final class Items {
     public static ItemStack GREEN_PANEL;
     public static ItemStack VANISH_OFF;
     public static ItemStack VANISH_ON;
-    public static ItemBuilder RANK_BASE;
-    private static ItemBuilder FOOD;
-    
-    public Items(){
-    
-    }
+    public static ItemStack RANK_BASE;
+    public static ItemStack LOBBY_PLAYER_VISIBILITY_ALL;
+    public static ItemStack LOBBY_PLAYER_VISIBILITY_RANKS;
+    public static ItemStack LOBBY_PLAYER_VISIBILITY_NONE;
+    private static ItemStack FOOD;
     
     public static void init(Config config){
         LOBBY_MENU = new ItemBuilder(config.getItem("lobby-item"))
                 .addTag("lobby-item", "lobby-item")
                 .build();
-        LOBBY_BOOK = new ItemBuilder(config.getItem("lobby-book"))
-                .addTag("lobby-book", "lobby-book")
-                .setBookTitle(Utils.format(Main.getLang().getConfig().getString("lobby-book-details.title")))
-                .setBookAuthor(Utils.format(Main.getLang().getConfig().getString("lobby-book-details.author")))
-                .build();
         
-        BookMeta bookMeta = (BookMeta) LOBBY_BOOK.getItemMeta();
-        
-        final ArrayList<String> pages = new ArrayList<>(Main.getLang().getConfig().getConfigurationSection("lobby-book-details.pages").getKeys(false));
-        
-        for ( String page : pages ){
-            final StringBuilder lines = new StringBuilder();
-            for ( String paragraph : Main.getLang().getConfig().getStringList("lobby-book-details.pages." + page + ".paragraphs") ){
-                lines.append(ChatColor.translateAlternateColorCodes('&', paragraph)).append("\n\n");
-            }
-            bookMeta.addPage(lines.toString());
-            
-        }
-        LOBBY_BOOK.setItemMeta(bookMeta);
-        
-        SKY_WARS_BASE = new ItemBuilder(Material.BOW)
+        SKY_WARS_BASE = new ItemBuilder(Material.SKULL_ITEM)
+                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTNkNTkxNTUzNzhiNGFjNGQyYjE0MmUyZjIzNWQwMzdmNjhhOWI4ZTI0YWU5ZWQ0ODU3MzE2YjI4ZGNlMDU2ZiJ9fX0=")
                 .setDisplayName("&b&lSkyWars")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
         
-        BED_WARS_BASE = new ItemBuilder(Material.BED)
+        BED_WARS_BASE = new ItemBuilder(Material.SKULL_ITEM)
+                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmZiMjkwYTEzZGY4ODI2N2VhNWY1ZmNmNzk2YjYxNTdmZjY0Y2NlZTVjZDM5ZDQ2OTcyNDU5MWJhYmVlZDFmNiJ9fX0=")
                 .setDisplayName("&b&lBedWars")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
         
-        PRACTICE_BASE = new ItemBuilder(Material.DIAMOND_SWORD)
+        PRACTICE_BASE = new ItemBuilder(Material.SKULL_ITEM)
+                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI3NzE3ZDlkMzNkNjlhZjg1NWQ4NGNmY2ExODExMTZhNzI1YzE5MTVmMDBmNTE0NzE2ZDliYmIwZWFlYTZiZiJ9fX0=")
                 .setDisplayName("&b&lPractice PVP")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
         
-        SURVIVAL = new ItemBuilder(XMaterial.GRASS_BLOCK.parseMaterial())
+        SURVIVAL = new ItemBuilder(Material.SKULL_ITEM)
+                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjg3ZjM2ODZjYTJjYzIyMTg1YzQ1NGYzZjk2Zjg2NzNlMDM0ODE0OTVhZDgzNjIzNjEyZGU1MTdhYmNkZWI2ZCJ9fX0=")
                 .setDisplayName("&b&lSurvival")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
         
-        TNT_TAG = new ItemBuilder(XMaterial.TNT.parseMaterial())
+        TNT_TAG = new ItemBuilder(Material.SKULL_ITEM)
+                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2FmNTk3NzZmMmYwMzQxMmM3YjU5NDdhNjNhMGNmMjgzZDUxZmU2NWFjNmRmN2YyZjg4MmUwODM0NDU2NWU5In19fQ==")
                 .setDisplayName("&4&lTNT Tag")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
@@ -159,7 +142,8 @@ public final class Items {
                 .build();
         
         RANK_BASE = new ItemBuilder(XMaterial.WHITE_WOOL.parseMaterial())
-                .addLoreLine("&7Click poner este rango al jugador.");
+                .addLoreLine("&7Click poner este rango al jugador.")
+                .build();
         
         WARP_CASAS_BASE = new ItemBuilder(XMaterial.BRICKS.parseItem())
                 .setDisplayName("&aCasas")
@@ -179,7 +163,8 @@ public final class Items {
                 .addTag("warp", "VARIOS")
                 .build();
         
-        FOOD = new ItemBuilder(new ItemStack(XMaterial.COOKED_BEEF.parseMaterial()));
+        FOOD = new ItemBuilder(new ItemStack(XMaterial.COOKED_BEEF.parseMaterial()))
+                .build();
         
         EMPTY_ITEM = new ItemBuilder(new ItemStack(Material.BARRIER))
                 .setDisplayName(" ")
@@ -190,16 +175,37 @@ public final class Items {
                 .setDisplayName("&7Vanish &cDesactivado")
                 .addLoreLine("&dStaff Utils")
                 .addTag("staff-utils", "vanish-off").build();
+        
         VANISH_ON = new ItemBuilder(new ItemStack(XMaterial.LIME_DYE.parseMaterial()))
                 .setDisplayName("&7Vanish &aActivado")
                 .addLoreLine("&dStaff Utils")
                 .addTag("staff-utils", "vanish-on").build();
         
+        LOBBY_PLAYER_VISIBILITY_ALL = new ItemBuilder(new ItemStack(Material.INK_SACK))
+                .setDyeColor(10)
+                .setDisplayName("&aTodos")
+                .addLoreLine("&7Click para cambiar a la visibilidad a &5Rangos.")
+                .addTag("lobby-player-visibility", "ALL")
+                .build();
+        
+        LOBBY_PLAYER_VISIBILITY_RANKS = new ItemBuilder(new ItemStack(Material.INK_SACK))
+                .setDyeColor(5)
+                .setDisplayName("&5Rangos")
+                .addLoreLine("&7Click para cambiar a la visibilidad a &7Nadie.")
+                .addTag("lobby-player-visibility", "RANKS")
+                .build();
+        
+        LOBBY_PLAYER_VISIBILITY_NONE = new ItemBuilder(new ItemStack(Material.INK_SACK))
+                .setDyeColor(8)
+                .setDisplayName("&7Nadie")
+                .addLoreLine("&7Click para cambiar a la visibilidad a &aTodos.")
+                .addTag("lobby-player-visibility", "NONE")
+                .build();
     }
     
     
     public static ItemStack food(Player target){
-        return FOOD.clone()
+        return new ItemBuilder(FOOD)
                 .setDisplayName("&a" + target.getName() + "'s &7Health Stats:")
                 .addLoreLine("&a► &aVida: &c" + (int) target.getHealth() + "&l" + "\u2764")
                 .addLoreLine("&a► &aComida: &6" + target.getFoodLevel())
@@ -228,12 +234,16 @@ public final class Items {
     }
     
     public static ItemStack head(Player owner){
-        final SpigotUser user = Main.getInstance().getPlayers().getPlayer(owner.getUniqueId());
+        final SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(owner.getUniqueId());
         return new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
                 .setHeadSkin(user.getSkin())
                 .setDisplayName("&a" + owner.getName() + "'s &7Stats:")
                 .addLoreLine("&a► &7Modo De Juego: &b" + owner.getGameMode())
                 .addLoreLine("&a► &7Locación: &d" + (int) owner.getLocation().getX() + " &3" + (int) owner.getLocation().getY() + " &d" + (int) owner.getLocation().getZ())
+                .addLoreLine("&a► Rango: " + user.getRank().getTabPrefix())
+                .addLoreLine("&a► Monedas: &d" + user.getCoinsFormatted())
+                .addLoreLine("&a► Nivel: &d" + user.getLevel().getLevelName())
+                .addLoreLine(user.getLevel().getProgressBar())
                 .addLoreLine("")
                 .addLoreLine("&5STAFF MEMBER")
                 .addLoreLine("&a► &7Vanished " + (Main.getInstance().getVanishManager().isVanished(owner) ? "&aOn" : "&cOff"))
@@ -242,11 +252,25 @@ public final class Items {
                 .build();
     }
     
-    public static void setItems(Player p){
+    public static void setLobbyItems(Player p){
         p.getInventory().clear();
-        p.getInventory().setItem(Main.getInstance().getItems().getInt("items.lobby-item.slot"), LOBBY_MENU);
-        p.getInventory().setItem(Main.getInstance().getItems().getInt("items.lobby-book.slot"), LOBBY_BOOK);
+        p.getInventory().setItem(Main.getInstance().getItems().getInt("items.lobby-item.slot"), LOBBY_MENU.clone());
+        
+        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+        PlayerVisibility playerVisibility = user.getPlayerVisibility();
+        switch(playerVisibility){
+            case ALL:
+                p.getInventory().setItem(8, LOBBY_PLAYER_VISIBILITY_ALL.clone());
+                break;
+            case RANKS:
+                p.getInventory().setItem(8, LOBBY_PLAYER_VISIBILITY_RANKS.clone());
+                break;
+            case NONE:
+                p.getInventory().setItem(8, LOBBY_PLAYER_VISIBILITY_NONE.clone());
+                break;
+        }
         p.updateInventory();
+        
     }
     
     private static String getTime(Long timeLeft){

@@ -20,7 +20,7 @@ public class PluginMessage implements PluginMessageListener {
         if (channel.equals("podcrash:yandere") || channel.equals("BungeeCord")){
             ByteArrayDataInput in = ByteStreams.newDataInput(msg);
             String subChannel = in.readUTF();
-            if ("YourServerName".equals(subChannel)){
+            if ("YourServerName" .equals(subChannel)){
                 String servername = in.readUTF();
                 Settings.SERVER_NAME = servername;
                 Settings.SERVER_TYPE = ServerType.match(servername);

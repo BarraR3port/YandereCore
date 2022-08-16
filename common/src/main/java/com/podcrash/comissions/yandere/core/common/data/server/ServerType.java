@@ -28,6 +28,10 @@ public enum ServerType {
         return EMPTY;
     }
     
+    public static boolean matchServerType(String serverName, ServerType type){
+        return match(serverName).equals(type);
+    }
+    
     public String getPrefix(){
         return prefix;
     }

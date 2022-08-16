@@ -67,11 +67,8 @@ public class PlayersRepository extends IPlayerRepository<VelocityUser> {
     public void createPlayer(String name, UUID uuid, String address){
         VelocityUser user = new VelocityUser(name, uuid);
         user.setAddress(address);
-        user.setOption("allow-visit-plot-requests", true);
-        user.setOption("allow-visit-world-requests", true);
         user.setOption("allow-pm", true);
-        user.setOption("allow-friend-requests", true);
-        user.setOption("changed-plots", false);
+        user.addProperty("lobby-player-visibility", "ALL");
         final net.luckperms.api.model.user.User luckPermsUser = LuckPermsProvider.get().getUserManager().getUser(uuid);
         if (luckPermsUser != null){
             user.setRank(Rank.fromString(luckPermsUser.getPrimaryGroup()));

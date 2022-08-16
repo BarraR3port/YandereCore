@@ -74,11 +74,8 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
     public void createPlayer(String name, UUID uuid, String address){
         SpigotUser user = new SpigotUser(name, uuid);
         user.setAddress(address);
-        user.setOption("allow-visit-plot-requests", true);
-        user.setOption("allow-visit-world-requests", true);
         user.setOption("allow-pm", true);
-        user.setOption("allow-friend-requests", true);
-        user.setOption("changed-plots", false);
+        user.addProperty("lobby-player-visibility", "ALL");
         final net.luckperms.api.model.user.User luckPermsUser = LuckPermsProvider.get().getUserManager().getUser(uuid);
         if (luckPermsUser != null){
             user.setRank(Rank.fromString(luckPermsUser.getPrimaryGroup()));
@@ -89,8 +86,15 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
     
     @Override
     public SpigotUser savePlayer(SpigotUser user){
-        database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", user.getUUID().toString()), user);
-        list.put(user.getUUID(), user);
+        if (database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", user.getUUID().toString()), user)){
+            list.put(user.getUUID(), user);
+        } else {
+            if (database.insertOne(TABLE_NAME, user)){
+                list.put(user.getUUID(), user);
+            } else {
+                Bukkit.getLogger().severe("[YandereCore] Error while saving player " + user.getUUID().toString() + " to database");
+            }
+        }
         return user;
     }
     
@@ -138,7 +142,7 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
     public ArrayList<String> getPlayersUUID(ArrayList<UUID> playersUUID){
         final ArrayList<String> players = new ArrayList<>();
         for ( UUID uuid : playersUUID ){
-            players.add(getPlayer(uuid).getName());
+            players.add(getLocalStoredPlayer(uuid).getName());
         }
         return players;
     }

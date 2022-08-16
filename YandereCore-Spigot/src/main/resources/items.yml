@@ -1,14 +1,8 @@
 items:
   lobby-item:
-    name: "&aVersion Selector"
+    name: "&aSelector de Modalidades"
     material: "COMPASS"
     slot: 0
     description:
-      - "&7Click to select a version"
-    nbt:
-  lobby-book:
-    name: "&aYandere info"
-    material: "WRITTEN_BOOK"
-    slot: 4
-    description:
+      - "&7Click para abrir el menú de modalidades."
     nbt:

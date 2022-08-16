@@ -7,6 +7,7 @@ import com.podcrash.comissions.yandere.core.spigot.menu.admin.AdminMenu;
 import com.podcrash.comissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
 import net.lymarket.lyapi.spigot.menu.UpdatableMenu;
+import net.lymarket.lyapi.spigot.utils.ItemBuilder;
 import net.lymarket.lyapi.spigot.utils.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -36,7 +37,7 @@ public class RankEditor extends UpdatableMenu {
         final Rank userRank = user.getRank();
         int slot = 9;
         for ( Rank rank : Rank.values() ){
-            inventory.setItem(slot, Items.RANK_BASE.clone().setDyeColor(slot - 9)
+            inventory.setItem(slot, new ItemBuilder(Items.RANK_BASE.clone()).setDyeColor(slot - 9)
                     .setDisplayName(rank.getScoreBoardName())
                     .setEnchanted(userRank == rank)
                     .addTag("rank", rank.toString())
@@ -55,8 +56,7 @@ public class RankEditor extends UpdatableMenu {
             final Rank rank = Rank.valueOf(NBTItem.getTag(item, "rank"));
             if (user.getRank() != rank){
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + user.getName() + " group set " + rank.getLpName());
-                user.setRank(rank);
-                Main.getInstance().getPlayers().savePlayer(user);
+                Main.getInstance().getPlayers().setPlayerRank(user, rank);
                 reOpen();
             } else {
                 this.checkSomething(getOwner(), e.getSlot(), item, "&cEste usuario ya tiene este rango", "", getMenuUUID());
@@ -68,7 +68,7 @@ public class RankEditor extends UpdatableMenu {
     
     @Override
     public void onReOpen(){
-        this.user = Main.getInstance().getPlayers().getPlayer(user.getUUID());
+        this.user = Main.getInstance().getPlayers().getLocalStoredPlayer(user.getUUID());
     }
     
     @Override

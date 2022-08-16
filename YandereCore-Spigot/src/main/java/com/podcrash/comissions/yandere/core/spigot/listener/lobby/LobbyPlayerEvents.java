@@ -1,6 +1,7 @@
 package com.podcrash.comissions.yandere.core.spigot.listener.lobby;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.podcrash.comissions.yandere.core.common.data.lobby.PlayerVisibility;
 import com.podcrash.comissions.yandere.core.common.data.loc.Loc;
 import com.podcrash.comissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.comissions.yandere.core.common.data.user.props.Rank;
@@ -8,11 +9,8 @@ import com.podcrash.comissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.comissions.yandere.core.spigot.Main;
 import com.podcrash.comissions.yandere.core.spigot.items.Items;
 import com.podcrash.comissions.yandere.core.spigot.listener.MainEvents;
-import com.podcrash.comissions.yandere.core.spigot.menu.lobby.LobbyMenu;
 import com.podcrash.comissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.comissions.yandere.core.spigot.users.SpigotUser;
-import net.lymarket.lyapi.spigot.LyApi;
-import net.lymarket.lyapi.spigot.utils.NBTItem;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -28,7 +26,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.weather.WeatherChangeEvent;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -47,7 +45,7 @@ public final class LobbyPlayerEvents extends MainEvents {
         try {
             final World world = e.getTo().getWorld();
             final UUID playerUUID = e.getPlayer().getUniqueId();
-            final SpigotUser user = Main.getInstance().getPlayers().getPlayer(playerUUID);
+            final SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
             final Location loc = e.getTo();
             user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
@@ -61,33 +59,65 @@ public final class LobbyPlayerEvents extends MainEvents {
         p.setFireTicks(0);
         p.setExp(0);
         p.setLevel(0);
-        p.setAllowFlight(true);
-        p.setFlying(true);
-        p.setGameMode(GameMode.CREATIVE);
         try {
             p.teleport(Settings.SPAWN_LOCATION);
         } catch (NullPointerException | IllegalArgumentException ex) {
             p.teleport(p.getWorld().getSpawnLocation());
         }
-        Items.setItems(p);
+        Items.setLobbyItems(p);
         p.setHealth(20);
         p.setSaturation(20F);
         p.setGameMode(GameMode.ADVENTURE);
-    }
-    
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerClicks(PlayerInteractEvent e){
-        ItemStack item = e.getItem();
-        if (item == null){
-            return;
+        
+        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+        if (user.getRank() != Rank.USUARIO){
+            p.setAllowFlight(true);
+            
         }
-        if (NBTItem.hasTag(item, "lobby-item")){
-            new LobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
+        
+        PlayerVisibility visibility = user.getPlayerVisibility();
+        
+        for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
+            if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
+            SpigotUser targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
+            PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
+            Rank targetRank = targetUser.getRank();
+            switch(visibility){
+                case ALL:
+                    p.showPlayer(targetPlayer);
+                    break;
+                case RANKS:
+                    if (targetRank != Rank.USUARIO){
+                        p.showPlayer(targetPlayer);
+                    } else {
+                        p.hidePlayer(targetPlayer);
+                    }
+                    break;
+                default:
+                    p.hidePlayer(targetPlayer);
+                    break;
+            }
+            
+            switch(targetVisibility){
+                case ALL:{
+                    targetPlayer.showPlayer(p);
+                    break;
+                }
+                case RANKS:{
+                    if (targetRank != Rank.USUARIO){
+                        targetPlayer.showPlayer(p);
+                    } else {
+                        targetPlayer.hidePlayer(p);
+                    }
+                    break;
+                }
+                default:{
+                    targetPlayer.hidePlayer(p);
+                    break;
+                }
+            }
+            
         }
-        if (NBTItem.hasTag(item, "lobby-book")){
-            return;
-        }
-        e.setCancelled(true);
         
         
     }
@@ -99,53 +129,55 @@ public final class LobbyPlayerEvents extends MainEvents {
         
         if (event.isCancelled()) return;
         
-        SpigotUser user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
+        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         if (p.hasPermission("yandere.chat.color")){
             message = Utils.format(message);
         }
-        //System.out.println(LyApi.getGson().toJson(user));
+        
         event.setCancelled(true);
         
         final String finalMessage = message;
-        //event.setMessage( message );
+        
         boolean isDefault = user.getRank() == Rank.USUARIO;
         
-        //final String clanTag = user.getClanRelation() != null ? (Main.getInstance().getClans().getClan(user.getClanRelation().getClanId()).getTagFormatted()) : "&cSin Clan";
         final String prefix = user.getRank().getTabPrefix();
         final String white_msg = p.hasPermission("yandere.chat.whitemessage") ? "&f" : "&7";
-        for ( Player player : Bukkit.getOnlinePlayers() ){
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-                TextComponent level = Utils.hoverOverMessage(user.getLevel().getLevelName(),
-                        Arrays.asList(
-                                "&7Nivel: &d" + user.getLevel().getLevelName(),
-                                "&7XP: &d" + user.getLevel().getFormattedCurrentXp(),
-                                "&7XP Necesario: &d" + user.getLevel().getFormattedRequiredXp(),
-                                user.getLevel().getProgressBar()));
-                TextComponent name = Utils.hoverOverMessage(white_msg + p.getName(),
-                        Arrays.asList(
-                                "&7Infomación del jugador:",
-                                "&7⪼ Rango: " + (isDefault ? "&cSin Rango" : prefix),
-                                "&7⪼ Monedas: &d" + getCoinsFormatted(user.getCoins()),
-                                "&7⪼ Nivel: &d" + user.getLevel().getLevelName(),
-                                "" + user.getLevel().getProgressBar()/* ,
+        TextComponent level = Utils.hoverOverMessage(user.getLevel().getLevelName(),
+                Arrays.asList(
+                        "&7「&eNivel General&7⏌",
+                        "",
+                        "&7► Nivel: &d" + user.getLevel().getLevelName(),
+                        "&7► XP: &d" + user.getLevel().getFormattedCurrentXp(),
+                        "&7► XP Necesario: &d" + user.getLevel().getFormattedRequiredXp(),
+                        user.getLevel().getProgressBar()));
+        TextComponent name = Utils.hoverOverMessage(white_msg + p.getName(),
+                Arrays.asList(
+                        "&7「&eInformación del jugador&7⏌",
+                        "",
+                        "&7► Rango: " + prefix,
+                        "&7► Monedas: &d" + user.getCoinsFormatted(),
+                        "&7► Nivel: &d" + user.getLevel().getLevelName(),
+                        user.getLevel().getProgressBar()/* ,
                             "&7Clan: &d" + clanTag*/));
-                TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
-                        Arrays.asList("&dYandere&5Ranks",
-                                "",
-                                "&7Este jugador tiene el rango " + prefix,
-                                "",
-                                "&7Puedes comprar más rangos en nuestra página web.",
-                                "",
-                                "&7Rangos disponibles: " + Rank.BRONCE.getTabPrefix() + " " + Rank.HIERRO.getTabPrefix() + " " + Rank.ORO.getTabPrefix() + " " + Rank.DIAMANTE.getTabPrefix(),
-                                ""),
-                        "https://store.yanderecraft.com");
-                player.spigot().sendMessage(
-                        level,
-                        rank,
-                        name,
-                        Utils.formatTC("&8&l⪼ " + (isDefault ? "&7" : white_msg) + finalMessage));
-            });
-        }
+        TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
+                Arrays.asList("&7「&eYandere &5Rangos&7⏌",
+                        "",
+                        "&7► Este jugador tiene el rango " + prefix,
+                        "&7► Puedes comprar más rangos en nuestra página web.",
+                        "&7► Rangos disponibles: " + Rank.BRONCE.getTabPrefix() + " " + Rank.HIERRO.getTabPrefix() + " " + Rank.ORO.getTabPrefix() + " " + Rank.DIAMANTE.getTabPrefix(),
+                        ""),
+                "https://store.yanderecraft.com");
+        TextComponent msg = new TextComponent(level,
+                rank,
+                name,
+                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+        
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+            for ( Player player : Bukkit.getOnlinePlayers() ){
+                player.spigot().sendMessage(msg);
+            }
+        });
+        
         Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
         
         
@@ -153,29 +185,29 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerBreakBlocks(BlockBreakEvent e){
-        if (!Settings.BREAK_BLOCKS) e.setCancelled(true);
+        e.setCancelled(true);
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerPlaceBlocks(BlockPlaceEvent e){
-        if (!Settings.PLACE_BLOCKS) e.setCancelled(true);
+        e.setCancelled(true);
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent e){
-        if (!Settings.PLAYER_INTERACT_AT_ENTITY) e.setCancelled(true);
+        e.setCancelled(true);
         
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent e){
-        if (!Settings.PLAYER_INTERACT_ENTITY) e.setCancelled(true);
+        e.setCancelled(true);
         
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerBedEnterEvent(PlayerBedEnterEvent e){
-        if (!Settings.PLAYER_BED_EVENTS) e.setCancelled(true);
+        e.setCancelled(true);
         
     }
     
@@ -193,13 +225,13 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDropItemEvent(PlayerDropItemEvent e){
-        if (!Settings.PLAYER_DROP_ITEMS) e.setCancelled(true);
+        e.setCancelled(true);
         
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent e){
-        if (!Settings.CONSUME_ITEMS) e.setCancelled(true);
+        e.setCancelled(true);
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -209,7 +241,7 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerItemDamageEvent(PlayerItemDamageEvent e){
-        if (!Settings.CONSUME_ITEMS) e.setCancelled(true);
+        e.setCancelled(true);
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -265,7 +297,7 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawnEvent(PlayerRespawnEvent e){
-        Items.setItems(e.getPlayer());
+        Items.setLobbyItems(e.getPlayer());
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -309,6 +341,11 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler
     public void onPlayerPortal(PlayerPortalEvent e){
+        e.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void onWeatherChangeEvent(WeatherChangeEvent e){
         e.setCancelled(true);
     }
     

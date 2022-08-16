@@ -10,6 +10,7 @@ import com.podcrash.comissions.yandere.core.common.skin.SkinManager;
 import net.lymarket.common.Api;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public abstract class User {
@@ -181,32 +182,38 @@ public abstract class User {
     }
     
     private void addDefaultProps(){
-        properties.put("lobby_player_visibility", PlayerVisibility.ALL.toString());
+        properties.put("lobby-player-visibility", PlayerVisibility.ALL.toString());
     }
     
     public void nextPlayerVisibility(){
-        PlayerVisibility visibility = PlayerVisibility.valueOf(properties.get("lobby_player_visibility"));
-        if (visibility == PlayerVisibility.ALL){
-            properties.put("lobby_player_visibility", PlayerVisibility.FRIENDS.toString());
-        } else if (visibility == PlayerVisibility.FRIENDS){
-            properties.put("lobby_player_visibility", PlayerVisibility.IMPORTANT.toString());
-        } else if (visibility == PlayerVisibility.IMPORTANT){
-            properties.put("lobby_player_visibility", PlayerVisibility.NONE.toString());
-        } else if (visibility == PlayerVisibility.NONE){
-            properties.put("lobby_player_visibility", PlayerVisibility.ALL.toString());
+        PlayerVisibility visibility = PlayerVisibility.valueOf(properties.get("lobby-player-visibility"));
+        switch(visibility){
+            case ALL:
+                properties.put("lobby-player-visibility", PlayerVisibility.RANKS.toString());
+                break;
+            case RANKS:
+                properties.put("lobby-player-visibility", PlayerVisibility.NONE.toString());
+                break;
+            default:
+                properties.put("lobby-player-visibility", PlayerVisibility.ALL.toString());
+                break;
         }
     }
     
-    public void prevPlayerVisibility(){
-        PlayerVisibility visibility = PlayerVisibility.valueOf(properties.get("lobby_player_visibility"));
-        if (visibility == PlayerVisibility.ALL){
-            properties.put("lobby_player_visibility", PlayerVisibility.NONE.toString());
-        } else if (visibility == PlayerVisibility.FRIENDS){
-            properties.put("lobby_player_visibility", PlayerVisibility.ALL.toString());
-        } else if (visibility == PlayerVisibility.IMPORTANT){
-            properties.put("lobby_player_visibility", PlayerVisibility.FRIENDS.toString());
-        } else if (visibility == PlayerVisibility.NONE){
-            properties.put("lobby_player_visibility", PlayerVisibility.IMPORTANT.toString());
-        }
+    public PlayerVisibility getPlayerVisibility(){
+        return PlayerVisibility.valueOf(properties.get("lobby-player-visibility"));
     }
+    
+    public String getCoinsFormatted(){
+        if (coins > 1000000){
+            DecimalFormat df = new DecimalFormat("#.##");
+            return df.format(coins / 1000000) + "&eM ⛃";
+        }
+        if (coins > 10000){
+            DecimalFormat df = new DecimalFormat("#.##");
+            return df.format(coins / 1000) + "&eK ⛃";
+        }
+        return coins + "&e ⛃";
+    }
+    
 }

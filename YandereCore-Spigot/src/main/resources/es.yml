@@ -1,16 +1,3 @@
-lobby-book-details:
-  title: "&eYandere&dCraft Info"
-  author: "&eYandere&dCraft"
-  pages:
-    1:
-      paragraphs:
-        - "Bienvenido a &eYandere&dCraft"
-        - "&rEn este servidor podrás construir, aprender y compartir con más builders sin importar tu nivel de construcción."
-    2:
-      paragraphs:
-        - "Puedes utilizar la brújula para abrir el menú de servidores o usar el comando /ym"
-        - "Puedes unirte a nuestra comunidad y recibir clases en directo uniéndote a nuestro discord: &bhttps://discord.gg/3YudVaFCqW"
-
 spawn:
   set: "&aHas establecido el spawn del mundo en &e%location%&a."
 
@@ -29,8 +16,6 @@ rank:
   demote-other: "&aHas degradado a &e%player% &ade &e%rankFrom% &aa &e%rankTo%"
   promoted-other: "&aEl jugador &e%player% &aha sido promovido a &e%rankTo%&a, felicítalo con un &eGG"
   demoted-other: "&aEl jugador &e%player% &aha sido promovido a &e%rankTo%"
-  setmod: "&aLe has dado &fꪩ&a al jugador &e%player%&a."
-  removemod: "&aLe has quitado &fꪩ&aal jugador &e%player%&a."
 
 alerts:
   friends:

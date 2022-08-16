@@ -59,6 +59,55 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.gson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.mongodb</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.mongodb
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.lymarket</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.lymarket
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>okio</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.okio</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>okhttp3</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.okhttp3
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.lang3</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.lang3
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.logging.log4j</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.log4j
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.bson</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.bson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.slf4j</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.slf4j
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.cryptomorin.xseries</pattern>
+                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.xseries
+                                    </shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -352,7 +401,7 @@
         <dependency>
             <groupId>net.lymarket.lyapi</groupId>
             <artifactId>lyapi-spigot</artifactId>
-            <version>1.2.11</version>
+            <version>1.2.12</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
@@ -370,6 +419,10 @@
                 <exclusion>
                     <groupId>net.lymarket.lyapi</groupId>
                     <artifactId>versionsupport_1_19_R1</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.lymarket.lyapi</groupId>
+                    <artifactId>versionsupport_v1_16_R3</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -463,6 +516,30 @@
             <version>1.0-BETA</version>
             <scope>system</scope>
             <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/bedwars-plugin-1.0-BETA.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.Leonardo0013YT.UltraSkyWars.UltraSkyWars</groupId>
+            <artifactId>UltraSkyWars</artifactId>
+            <version>7.1.0</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/UltraSkyWars.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.Leonardo0013YT.UltraSkyWars.UltraSkyWars</groupId>
+            <artifactId>UltraSkyWars-EloRanks</artifactId>
+            <version>7.1.0</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/UltraSkyWars-EloRanks.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>ga.strikepractice</groupId>
+            <artifactId>UltraSkyWars-EloRanks</artifactId>
+            <version>3.4.6</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/strikepractice-3.4.6.jar</systemPath>
         </dependency>
 
         <!--

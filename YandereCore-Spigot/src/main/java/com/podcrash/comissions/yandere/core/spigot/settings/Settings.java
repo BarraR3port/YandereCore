@@ -13,14 +13,6 @@ public class Settings {
     public static String SERVER_PREFIX = "&eYandere&dCraft";
     public static String SOCKET_IP = "localhost";
     public static int SOCKET_PORT = 5555;
-    public static boolean BREAK_BLOCKS = false;
-    public static boolean PLACE_BLOCKS = false;
-    public static boolean PLAYER_INTERACT_AT_ENTITY = false;
-    public static boolean PLAYER_INTERACT_ENTITY = false;
-    public static boolean PLAYER_BED_EVENTS = false;
-    public static boolean PLAYER_DROP_ITEMS = false;
-    public static boolean PLAYER_PICKUP_ITEMS = false;
-    public static boolean CONSUME_ITEMS = false;
     public static Location SPAWN_LOCATION;
     public static String SERVER_NAME;
     public static boolean DEBUG;
@@ -36,14 +28,6 @@ public class Settings {
     
     public static void init(Config config){
         SERVER_PREFIX = config.getString("global.prefix");
-        BREAK_BLOCKS = config.getBoolean("actions.break-blocks");
-        PLACE_BLOCKS = config.getBoolean("actions.place-blocks");
-        PLAYER_INTERACT_AT_ENTITY = config.getBoolean("actions.player-interact-at-entity");
-        PLAYER_INTERACT_ENTITY = config.getBoolean("actions.player-interact-entity");
-        PLAYER_BED_EVENTS = config.getBoolean("actions.player-bed-events");
-        PLAYER_DROP_ITEMS = config.getBoolean("actions.player-drop-items");
-        PLAYER_PICKUP_ITEMS = config.getBoolean("actions.player-pickup-items");
-        CONSUME_ITEMS = config.getBoolean("actions.consume-items");
         try {
             SPAWN_LOCATION = (Location) config.get("spawn.location", Location.class);
         } catch (NullPointerException | ClassCastException ignored) {

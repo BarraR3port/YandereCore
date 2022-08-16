@@ -1,10 +1,5 @@
 package com.podcrash.comissions.yandere.core.spigot.papi;
 
-import com.andrei1058.bedwars.api.arena.IArena;
-import com.andrei1058.bedwars.api.language.Language;
-import com.andrei1058.bedwars.api.language.Messages;
-import com.andrei1058.bedwars.arena.Arena;
-import com.podcrash.comissions.yandere.core.common.data.server.Server;
 import com.podcrash.comissions.yandere.core.spigot.Main;
 import com.podcrash.comissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.comissions.yandere.core.spigot.users.SpigotUser;
@@ -180,7 +175,7 @@ public class Placeholders extends PlaceholderExpansion {
                 if (p.getCoins() > 10000){
                     return df.format(p.getCoins() / 1000) + "&eK ⛃";
                 }
-                return df.format(p.getCoins()) + "&e⛃";
+                return df.format(p.getCoins()) + " &e⛃";
             }
             case "level":{
                 return String.valueOf(p.getLevel().getLevel());

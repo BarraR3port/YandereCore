@@ -17,6 +17,7 @@ import com.podcrash.comissions.yandere.core.spigot.commands.spawn.Spawn;
 import com.podcrash.comissions.yandere.core.spigot.commands.tp.Teleport;
 import com.podcrash.comissions.yandere.core.spigot.commands.tp.TpAll;
 import com.podcrash.comissions.yandere.core.spigot.commands.tp.TpHere;
+import com.podcrash.comissions.yandere.core.spigot.config.YandereConfig;
 import com.podcrash.comissions.yandere.core.spigot.items.Items;
 import com.podcrash.comissions.yandere.core.spigot.lang.ESLang;
 import com.podcrash.comissions.yandere.core.spigot.listener.DefaultEvents;
@@ -24,6 +25,10 @@ import com.podcrash.comissions.yandere.core.spigot.listener.bedwars.BWGameEvents
 import com.podcrash.comissions.yandere.core.spigot.listener.bedwars.BWPlayerEvents;
 import com.podcrash.comissions.yandere.core.spigot.listener.lobby.LobbyPlayerEvents;
 import com.podcrash.comissions.yandere.core.spigot.listener.plugin.PluginMessage;
+import com.podcrash.comissions.yandere.core.spigot.listener.practice.PracticeGameEvents;
+import com.podcrash.comissions.yandere.core.spigot.listener.practice.PracticePlayerEvents;
+import com.podcrash.comissions.yandere.core.spigot.listener.skywars.SWGameEvents;
+import com.podcrash.comissions.yandere.core.spigot.listener.skywars.SWPlayerEvents;
 import com.podcrash.comissions.yandere.core.spigot.log.LogRepository;
 import com.podcrash.comissions.yandere.core.spigot.menu.inv.EndInvManager;
 import com.podcrash.comissions.yandere.core.spigot.menu.inv.InvManager;
@@ -42,7 +47,6 @@ import net.lymarket.common.db.MongoDBClient;
 import net.lymarket.common.error.LyApiInitializationError;
 import net.lymarket.common.lang.ILang;
 import net.lymarket.lyapi.spigot.LyApi;
-import net.lymarket.lyapi.spigot.config.Config;
 import net.lymarket.lyapi.spigot.menu.IUpdatableMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -57,13 +61,13 @@ import java.util.logging.Level;
 public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
     
     public static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-    private ProxyStats proxyStats = new ProxyStats();
     private static LyApi api;
     private static Main instance;
     private static LuckPerms lpApi;
-    private Config config;
-    private Config items;
-    private Config sounds;
+    private ProxyStats proxyStats = new ProxyStats();
+    private YandereConfig config;
+    private YandereConfig items;
+    private YandereConfig sounds;
     private String nms_version;
     private PlayersRepository players;
     private LogRepository logs;
@@ -101,9 +105,9 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "podcrash:yandere", new PluginMessage());
         getServer().getMessenger().registerOutgoingPluginChannel(this, "podcrash:yandere");
-        config = new Config(this, "config.yml");
-        items = new Config(this, "items.yml");
-        sounds = new Config(this, "sounds.yml");
+        config = new YandereConfig(this, "config.yml");
+        items = new YandereConfig(this, "items.yml");
+        sounds = new YandereConfig(this, "sounds.yml");
         try {
             api = new LyApi(this, "Yandere", "&c[&4ERROR&c] &cNo tienes el siguiente permiso:&e permission", new ESLang(new ConfigGenerator(this, "es.yml"), config.getString("global.prefix"), "&c[&4ERROR&c]"));
         } catch (LyApiInitializationError e) {
@@ -175,7 +179,29 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
                     getServer().getPluginManager().registerEvents(new BWGameEvents(), this);
                     getServer().getPluginManager().registerEvents(new BWPlayerEvents(), this);
                 } else {
-                    getLogger().log(Level.SEVERE, String.format("[%s] - Disabled due to no PodBedWars dependency found!", getDescription().getName()));
+                    getLogger().log(Level.SEVERE, "Disabled due to no PodBedWars dependency found!");
+                    getServer().getPluginManager().disablePlugin(this);
+                    getServer().shutdown();
+                }
+                break;
+            }
+            case SKY_WARS:{
+                if (Bukkit.getPluginManager().getPlugin("UltraSkyWars") != null){
+                    getServer().getPluginManager().registerEvents(new SWGameEvents(), this);
+                    getServer().getPluginManager().registerEvents(new SWPlayerEvents(), this);
+                } else {
+                    getLogger().log(Level.SEVERE, "Disabled due to no UltraSkyWars dependency found!");
+                    getServer().getPluginManager().disablePlugin(this);
+                    getServer().shutdown();
+                }
+                break;
+            }
+            case PRACTICE:{
+                if (Bukkit.getPluginManager().getPlugin("StrikePractice") != null){
+                    getServer().getPluginManager().registerEvents(new PracticeGameEvents(), this);
+                    getServer().getPluginManager().registerEvents(new PracticePlayerEvents(), this);
+                } else {
+                    getLogger().log(Level.SEVERE, "Disabled due to no StrikePractice dependency found!");
                     getServer().getPluginManager().disablePlugin(this);
                     getServer().shutdown();
                 }
@@ -195,7 +221,7 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
                     ((IUpdatableMenu) p.getOpenInventory().getTopInventory().getHolder()).reOpen();
                 }
             }
-        }, 0L, 20L);
+        }, 0L, 60L);
         //new PacketManager( this );
         
     }
@@ -215,15 +241,15 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
     }
     
     @Override
-    public Config getConfig(){
+    public YandereConfig getConfig(){
         return config;
     }
     
-    public Config getItems(){
+    public YandereConfig getItems(){
         return items;
     }
     
-    public Config getSounds(){
+    public YandereConfig getSounds(){
         return sounds;
     }
     

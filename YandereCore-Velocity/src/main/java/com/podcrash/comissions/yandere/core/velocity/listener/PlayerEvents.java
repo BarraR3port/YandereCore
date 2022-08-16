@@ -36,7 +36,7 @@ public class PlayerEvents {
         VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), () -> {
             final long currentTime = System.currentTimeMillis();
             VMain.getInstance().getProxy().getAllPlayers().forEach(player -> {
-                VelocityUser user = VMain.getInstance().getPlayers().getPlayer(player.getUniqueId());
+                VelocityUser user = VMain.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
                 if (user == null){
                     user = VMain.getInstance().getPlayers().getPlayer(player.getUsername());
                     if (user == null){
@@ -78,7 +78,7 @@ public class PlayerEvents {
         timeOnline.remove(uuid);
     }
     
-    @Subscribe(order  = PostOrder.FIRST)
+    @Subscribe(order = PostOrder.FIRST)
     public void onKickedFromServerEvent(KickedFromServerEvent e){
         
         int attempts = 5;
@@ -127,7 +127,7 @@ public class PlayerEvents {
                 RegisteredServer server = s.getServer();
                 ByteArrayDataInput in = ByteStreams.newDataInput(e.getData());
                 String subChannel = in.readUTF();
-                if ("GetServer".equals(subChannel)){
+                if ("GetServer" .equals(subChannel)){
                     try {
                         if (server.ping().get() != null){
                             ByteArrayDataOutput out = ByteStreams.newDataOutput();

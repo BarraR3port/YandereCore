@@ -3,12 +3,11 @@ package com.podcrash.comissions.yandere.core.spigot.menu.lobby;
 import com.cryptomorin.xseries.XMaterial;
 import com.podcrash.comissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.comissions.yandere.core.common.data.server.ServerType;
-import com.podcrash.comissions.yandere.core.common.data.user.props.Stats;
 import com.podcrash.comissions.yandere.core.spigot.Main;
 import com.podcrash.comissions.yandere.core.spigot.items.Items;
 import com.podcrash.comissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
-import net.lymarket.lyapi.spigot.menu.Menu;
+import net.lymarket.lyapi.spigot.menu.UpdatableMenu;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
 import net.lymarket.lyapi.spigot.utils.NBTItem;
 import org.bukkit.entity.Player;
@@ -17,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-public class LobbyMenu extends Menu {
+public class LobbyMenu extends UpdatableMenu {
     
     private final UUID targetUserUUID;
     
@@ -38,7 +37,7 @@ public class LobbyMenu extends Menu {
     
     @Override
     public int getSlots(){
-        return 54;
+        return 45;
     }
     
     @Override
@@ -65,76 +64,74 @@ public class LobbyMenu extends Menu {
     @Override
     public void setMenuItems(){
         
-        SpigotUser user = Main.getInstance().getPlayers().getUpdatedPlayer(targetUserUUID);
+        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(targetUserUUID);
         if (user == null){
             user = Main.getInstance().getPlayers().getPlayer(getOwner().getName());
             user.setUUID(getOwner().getUniqueId());
             Main.getInstance().getPlayers().savePlayer(user);
         }
-        final Stats userStats = user.getStats();
-        inventory.setItem(20, new ItemBuilder(Items.SKY_WARS_BASE.clone())
+        final ProxyStats proxyStats = Main.getInstance().getProxyStats();
+        inventory.setItem(11, new ItemBuilder(Items.SKY_WARS_BASE.clone())
                 .addLoreLine("")
-                .addLoreLine("&7Estado: " + (Main.getInstance().getProxyStats().isSkyWarsOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine("&7Estado: " + (proxyStats.isSkyWarsOnline() ? "&aACTIVO" : "&cCERRADO"))
                 .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + Main.getInstance().getProxyStats().getSkyWarsPlayerSize())
-                .addTag("server-name", Main.getInstance().getProxyStats().getRandomSkyWarsServer().getProxyName())
+                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getSkyWarsPlayerSize())
+                .addTag("server-name", proxyStats.getRandomSkyWarsServer().getProxyName())
                 .build());
         
-        inventory.setItem(22, new ItemBuilder(Items.BED_WARS_BASE.clone())
+        inventory.setItem(13, new ItemBuilder(Items.BED_WARS_BASE.clone())
                 .addLoreLine("")
-                .addLoreLine("&7Estado: " + (Main.getInstance().getProxyStats().isBedWarsOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine("&7Estado: " + (proxyStats.isBedWarsOnline() ? "&aACTIVO" : "&cCERRADO"))
                 .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + Main.getInstance().getProxyStats().getBedWarsPlayerSize())
-                .addTag("server-name", Main.getInstance().getProxyStats().getRandomBedWarsServer().getProxyName())
+                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getBedWarsPlayerSize())
+                .addTag("server-name", proxyStats.getRandomBedWarsServer().getProxyName())
                 .build());
         
-        inventory.setItem(24, new ItemBuilder(Items.PRACTICE_BASE.clone())
+        inventory.setItem(15, new ItemBuilder(Items.PRACTICE_BASE.clone())
                 .addLoreLine("")
-                .addLoreLine("&7Estado: " + (Main.getInstance().getProxyStats().isPracticeOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine("&7Estado: " + (proxyStats.isPracticeOnline() ? "&aACTIVO" : "&cCERRADO"))
                 .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + Main.getInstance().getProxyStats().getPracticePlayerSize())
-                .addTag("server-name", Main.getInstance().getProxyStats().getRandomPracticeServer().getProxyName())
+                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getPracticePlayerSize())
+                .addTag("server-name", proxyStats.getRandomPracticeServer().getProxyName())
                 .build());
         
-        inventory.setItem(39, new ItemBuilder(Items.TNT_TAG.clone())
+        inventory.setItem(30, new ItemBuilder(Items.TNT_TAG.clone())
                 .addLoreLine("")
-                .addLoreLine("&7Estado: " + (Main.getInstance().getProxyStats().isTNTTagOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine("&7Estado: " + (proxyStats.isTNTTagOnline() ? "&aACTIVO" : "&cCERRADO"))
                 .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + Main.getInstance().getProxyStats().getTNTTagPlayerSize())
-                .addTag("server-name", Main.getInstance().getProxyStats().getRandomTNTTagServer().getProxyName())
+                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getTNTTagPlayerSize())
+                .addTag("server-name", proxyStats.getRandomTNTTagServer().getProxyName())
                 .build());
         
-        inventory.setItem(41, new ItemBuilder(Items.SURVIVAL.clone())
+        inventory.setItem(32, new ItemBuilder(Items.SURVIVAL.clone())
                 .addLoreLine("")
-                .addLoreLine("&7Estado: " + (Main.getInstance().getProxyStats().isSurvivalOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine("&7Estado: " + (proxyStats.isSurvivalOnline() ? "&aACTIVO" : "&cCERRADO"))
                 .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + Main.getInstance().getProxyStats().getSurvivalPlayerSize())
-                .addTag("server-name", Main.getInstance().getProxyStats().getRandomSurvivalGamesServer().getProxyName())
+                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getSurvivalPlayerSize())
+                .addTag("server-name", proxyStats.getRandomSurvivalGamesServer().getProxyName())
                 .build());
         
-        /*inventory.setItem(40, new ItemBuilder(Items.WORLDS.clone())
-                //.addLoreLine("&7Mundos: &a" + Main.getInstance().getWorlds().getWorldsByUser(targetUserUUID).size())
-                .addLoreLine("")
-                .addLoreLine("&7Estado: " + (Main.getInstance().getProxyStats().world_1_12_online || Main.getInstance().getProxyStats().world_1_16_online || Main.getInstance().getProxyStats().world_1_18_online ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + (Main.getInstance().getProxyStats().world_1_12_player_size + Main.getInstance().getProxyStats().world_1_16_player_size + Main.getInstance().getProxyStats().world_1_18_player_size))
-                .build());*/
-        
-        inventory.setItem(53, new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
+        inventory.setItem(44, new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
                 .setHeadSkin(user.getSkin())
-                .setDisplayName("&b&lStats")
+                .setDisplayName("&b&lTus Estadísticas:")
                 .addLoreLine("")
-                .addLoreLine("&aTiempo Jugado: " + userStats.getFormattedTimePlayed())
-                .addLoreLine("&eLocation: " + (user.getLastLocation().getServer()))
-                .addLoreLine("&e" + user.getLastLocation().getCurrentServerType() + ":" + (user.getLastLocation().getCurrentServerTypeFormatted()))
+                .addLoreLine("&7► Rango: " + user.getRank().getTabPrefix())
+                .addLoreLine("&7► Monedas: &d" + user.getCoinsFormatted())
+                .addLoreLine("&7► Nivel: &d" + user.getLevel().getLevelName())
+                .addLoreLine(user.getLevel().getProgressBar())
                 .addTag("stats", "stats")
                 .build());
         
         /*inventory.setItem(26, new ItemBuilder(XMaterial.NETHER_STAR.parseItem())
                 .setDisplayName("&bLobby")
-                .addTag("server-name", Main.getInstance().getProxyStats().getRandomLobbyServer().getProxyName())
+                .addTag("server-name", proxyStats.getRandomLobbyServer().getProxyName())
                 .build());*/
-        inventory.setItem(45, super.CLOSE_ITEM);
+        inventory.setItem(36, super.CLOSE_ITEM);
         
     }
+    
+    public void reOpen(){
+        this.setMenuItems();
+    }
+    
 }

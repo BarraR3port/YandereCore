@@ -8,9 +8,12 @@ import net.lymarket.common.db.MongoDBClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 public abstract class IPlayerRepository<U> extends MongoDB<UUID, U> {
+    
+    protected final LinkedHashMap<UUID, U> list = new LinkedHashMap();
     
     public IPlayerRepository(MongoDBClient database, String TABLE_NAME){
         super(database, TABLE_NAME);
@@ -46,11 +49,10 @@ public abstract class IPlayerRepository<U> extends MongoDB<UUID, U> {
     }
     
     public void unloadPlayer(UUID uuid){
+        U user = getLocalStoredPlayer(uuid);
+        database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()), user);
         list.remove(uuid);
-    }
-    
-    public void unloadPlayer(U user){
-        savePlayer(user);
+        
     }
     
     public void deletePlayer(UUID uuid){
