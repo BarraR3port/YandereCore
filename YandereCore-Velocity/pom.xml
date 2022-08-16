@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.podcrash.comissions.yandere.core</groupId>
+        <groupId>com.podcrash.commissions.yandere.core</groupId>
         <artifactId>YandereCore</artifactId>
         <version>1.0-ALPHA</version>
     </parent>
@@ -78,7 +78,7 @@
                                 <yguard>
                                     <inoutpair in="${project.build.directory}/${project.build.finalName}.jar"
                                                out="${project.build.directory}/${project.build.finalName}-OBF.jar"/>
-                                    <rename mainclass="com.podcrash.comissions.yandere.core.velocity.VMain"
+                                    <rename mainclass="com.podcrash.commissions.yandere.core.velocity.VMain"
                                             logfile="${project.build.directory}/yguard.log.xml"
                                             scramble="true">
                                         <keep>
@@ -96,7 +96,7 @@
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
                                                     <include
-                                                            name="com.podcrash.comissions.yandere.core.velocity.VMain"/>
+                                                            name="com.podcrash.commissions.yandere.core.velocity.VMain"/>
                                                     <include
                                                             name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
                                                     <include
@@ -128,7 +128,7 @@
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
                                                     <include
-                                                            name="com.podcrash.comissions.yandere.core.velocity.VMain"/>
+                                                            name="com.podcrash.commissions.yandere.core.velocity.VMain"/>
                                                     <include
                                                             name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
                                                     <include
@@ -160,7 +160,7 @@
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
                                                     <include
-                                                            name="com.podcrash.comissions.yandere.core.velocity.VMain"/>
+                                                            name="com.podcrash.commissions.yandere.core.velocity.VMain"/>
                                                     <include
                                                             name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
                                                     <include
@@ -189,7 +189,7 @@
                                                 <patternset>
                                                     <include name="org.apache.logging.log4j."/>
                                                     <include
-                                                            name="com.podcrash.comissions.yandere.core.velocity.VMain"/>
+                                                            name="com.podcrash.commissions.yandere.core.velocity.VMain"/>
                                                     <include
                                                             name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
                                                     <include

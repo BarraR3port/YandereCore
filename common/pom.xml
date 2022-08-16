@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.podcrash.comissions.yandere.core</groupId>
+        <groupId>com.podcrash.commissions.yandere.core</groupId>
         <artifactId>YandereCore</artifactId>
         <version>1.0-ALPHA</version>
     </parent>

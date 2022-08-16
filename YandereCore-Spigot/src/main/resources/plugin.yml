@@ -1,6 +1,6 @@
 name: YandereCore
 version: '${project.version}'
-main: com.podcrash.comissions.yandere.core.spigot.Main
+main: com.podcrash.commissions.yandere.core.spigot.Main
 depend:
   - LuckPerms
   - Vault

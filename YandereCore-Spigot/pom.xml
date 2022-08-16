@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.podcrash.comissions.yandere.core</groupId>
+        <groupId>com.podcrash.commissions.yandere.core</groupId>
         <artifactId>YandereCore</artifactId>
         <version>1.0-ALPHA</version>
     </parent>
@@ -62,49 +62,52 @@
                             <relocations>
                                 <relocation>
                                     <pattern>com.google.gson</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.gson</shadedPattern>
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.gson
+                                    </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.mongodb</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.mongodb
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.mongodb
                                     </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>net.lymarket</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.lymarket
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.lymarket
                                     </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>okio</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.okio</shadedPattern>
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.okio
+                                    </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>okhttp3</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.okhttp3
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.okhttp3
                                     </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.apache.commons.lang3</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.lang3
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.lang3
                                     </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.apache.logging.log4j</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.log4j
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.log4j
                                     </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.bson</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.bson</shadedPattern>
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.bson
+                                    </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.slf4j</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.slf4j
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.slf4j
                                     </shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.cryptomorin.xseries</pattern>
-                                    <shadedPattern>com.podcrash.comissions.yandere.core.spigot.libs.xseries
+                                    <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.xseries
                                     </shadedPattern>
                                 </relocation>
                             </relocations>
@@ -131,7 +134,7 @@
                                 <yguard>
                                     <inoutpair in="${project.build.directory}/${project.build.finalName}.jar"
                                                out="${project.build.directory}/${project.build.finalName}-OBF.jar"/>
-                                    <rename mainclass="com.podcrash.comissions.yandere.core.spigot.Main"
+                                    <rename mainclass="com.podcrash.commissions.yandere.core.spigot.Main"
                                             logfile="${project.build.directory}/yguard.log.xml"
                                             scramble="true">
                                         <keep>
@@ -170,13 +173,13 @@
                                                     <include name="org.slf4j.**"/>
                                                     <include name="kotlin.**"/>
                                                     <include name="lombok.**"/>
-                                                    <include name="com.podcrash.comissions.yandere.core.spigot.Main"/>
+                                                    <include name="com.podcrash.commissions.yandere.core.spigot.Main"/>
                                                     <include
-                                                            name="users.com.podcrash.comissions.yandere.core.spigot.SpigotUser"/>
+                                                            name="users.com.podcrash.commissions.yandere.core.spigot.SpigotUser"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
                                                     <include
-                                                            name="papi.com.podcrash.comissions.yandere.core.spigot.Placeholders"/>
+                                                            name="papi.com.podcrash.commissions.yandere.core.spigot.Placeholders"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
                                                     <include
@@ -189,16 +192,16 @@
                                                 <patternset>
                                                     <include name="net.lymarket.lyapi.**"/>
                                                     <include
-                                                            name="users.com.podcrash.comissions.yandere.core.spigot.SpigotUser"/>
+                                                            name="users.com.podcrash.commissions.yandere.core.spigot.SpigotUser"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
                                                     <include
-                                                            name="papi.com.podcrash.comissions.yandere.core.spigot.Placeholders"/>
+                                                            name="papi.com.podcrash.commissions.yandere.core.spigot.Placeholders"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
-                                                    <include name="com.podcrash.comissions.yandere.core.spigot.socket.**"/>
+                                                    <include name="com.podcrash.commissions.yandere.core.spigot.socket.**"/>
                                                     <include name="net.lymarket.comissionss.youmind.bbb.common.db.**"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
@@ -232,11 +235,11 @@
                                                 <patternset>
                                                     <include name="net.lymarket.lyapi.**"/>
                                                     <include
-                                                            name="users.com.podcrash.comissions.yandere.core.spigot.SpigotUser"/>
+                                                            name="users.com.podcrash.commissions.yandere.core.spigot.SpigotUser"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
                                                     <include
-                                                            name="papi.com.podcrash.comissions.yandere.core.spigot.Placeholders"/>
+                                                            name="papi.com.podcrash.commissions.yandere.core.spigot.Placeholders"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
                                                     <include
@@ -275,13 +278,13 @@
                                             <package>
                                                 <patternset>
                                                     <include name="org.apache.logging.log4j."/>
-                                                    <include name="com.podcrash.comissions.yandere.core.spigot.Main"/>
+                                                    <include name="com.podcrash.commissions.yandere.core.spigot.Main"/>
                                                     <include
-                                                            name="users.com.podcrash.comissions.yandere.core.spigot.SpigotUser"/>
+                                                            name="users.com.podcrash.commissions.yandere.core.spigot.SpigotUser"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
                                                     <include
-                                                            name="papi.com.podcrash.comissions.yandere.core.spigot.Placeholders"/>
+                                                            name="papi.com.podcrash.commissions.yandere.core.spigot.Placeholders"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.warp.SpigotWarp"/>
                                                     <include

@@ -10,7 +10,7 @@
     <version>${parent.version}</version>
 
     <parent>
-        <groupId>com.podcrash.comissions.yandere.core</groupId>
+        <groupId>com.podcrash.commissions.yandere.core</groupId>
         <artifactId>YandereCore</artifactId>
         <version>1.0-ALPHA</version>
     </parent>
@@ -57,7 +57,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.podcrash.comissions.yandere.core</groupId>
+            <groupId>com.podcrash.commissions.yandere.core</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
