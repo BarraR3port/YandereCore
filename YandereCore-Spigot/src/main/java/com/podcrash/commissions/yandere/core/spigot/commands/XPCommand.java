@@ -28,12 +28,12 @@ public class XPCommand implements ILyCommand {
             if (context.getSender() instanceof Player){
                 Player p = (Player) context.getSender();
                 SpigotUser user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
-                p.spigot().sendMessage(Utils.formatTC(Settings.SERVER_PREFIX), Utils.hoverOverMessage("&7Tienes: &d" +
+                p.spigot().sendMessage(Utils.formatTC(Settings.SERVER_PREFIX), Utils.hoverOverMessage("&7Tienes: &c" +
                                 user.getLevel().getFormattedCurrentXp() + " &5XP",
                         Arrays.asList(
-                                "&7Nivel: &d" + user.getLevel().getLevel(),
-                                "&7XP: &d" + user.getLevel().getFormattedCurrentXp(),
-                                "&7XP Necesario: &d" + user.getLevel().getFormattedRequiredXp(),
+                                "&7Nivel: &c" + user.getLevel().getLevel(),
+                                "&7XP: &c" + user.getLevel().getFormattedCurrentXp(),
+                                "&7XP Necesario: &c" + user.getLevel().getFormattedRequiredXp(),
                                 user.getLevel().getProgressBar())));
                 return new CommandResponse();
             }

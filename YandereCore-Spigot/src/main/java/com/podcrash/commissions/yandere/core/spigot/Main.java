@@ -21,7 +21,6 @@ import com.podcrash.commissions.yandere.core.spigot.config.YandereConfig;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.lang.ESLang;
 import com.podcrash.commissions.yandere.core.spigot.listener.DefaultEvents;
-import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.BWGameEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.BWPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.lobby.LobbyPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.plugin.PluginMessage;
@@ -51,6 +50,7 @@ import net.lymarket.lyapi.spigot.menu.IUpdatableMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -173,18 +173,11 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
             case LOBBY_BED_WARS:{
                 getServer().getPluginManager().registerEvents(new LobbyPlayerEvents(), this);
                 break;
-            }
+            }/*
             case BED_WARS:{
-                if (Bukkit.getPluginManager().getPlugin("PodBedWars") != null){
-                    getServer().getPluginManager().registerEvents(new BWGameEvents(), this);
-                    getServer().getPluginManager().registerEvents(new BWPlayerEvents(), this);
-                } else {
-                    getLogger().log(Level.SEVERE, "Disabled due to no PodBedWars dependency found!");
-                    getServer().getPluginManager().disablePlugin(this);
-                    getServer().shutdown();
-                }
+                getServer().getPluginManager().registerEvents(new PluginInjectionListener(), this);
                 break;
-            }
+            }*/
             case SKY_WARS:{
                 if (Bukkit.getPluginManager().getPlugin("UltraSkyWars") != null){
                     getServer().getPluginManager().registerEvents(new SWGameEvents(), this);
@@ -222,8 +215,10 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
                 }
             }
         }, 0L, 60L);
+    
+        getServer().getPluginManager().callEvent(new PluginEnableEvent(this));
         //new PacketManager( this );
-        
+    
     }
     
     @Override
@@ -353,5 +348,15 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
     
     public EndInvManager getEndInvManager(){
         return endInvManager;
+    }
+    
+    public boolean hookPodBedWars(){
+        try {
+            System.out.println("[YandereCore] BedWars detected, enabling BedWars events");
+            Bukkit.getPluginManager().registerEvents(new BWPlayerEvents(), Main.getInstance());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

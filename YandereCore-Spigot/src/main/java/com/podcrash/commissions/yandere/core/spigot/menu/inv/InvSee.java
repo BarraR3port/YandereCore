@@ -32,7 +32,7 @@ public class InvSee extends InventoryMenu {
     
     @Override
     public String getMenuName(){
-        return "&7Inventario de: &d" + target.getName();
+        return "&7Inventario de: &c" + target.getName();
     }
     
     @Override

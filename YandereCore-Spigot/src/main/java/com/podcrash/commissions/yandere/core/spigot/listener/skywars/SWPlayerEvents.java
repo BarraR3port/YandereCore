@@ -73,18 +73,18 @@ public final class SWPlayerEvents extends MainEvents {
                 Arrays.asList(
                         "&7「&eNivel de SkyWars&7⏌",
                         "",
-                        "&7Nivel: &d" + playerLevel.getLevel(),
-                        "&7XP: &d" + playerLevel.getXp(),
-                        "&7XP Necesario: &d" + playerLevel.getLevelUp())) : Utils.formatTC("");
+                        "&7Nivel: &c" + playerLevel.getLevel(),
+                        "&7XP: &c" + playerLevel.getXp(),
+                        "&7XP Necesario: &c" + playerLevel.getLevelUp())) : Utils.formatTC("");
         TextComponent name = Utils.hoverOverMessage(white_msg + p.getName() + " ",
                 Arrays.asList(
                         "&7「&eInformación del jugador&7⏌",
                         "",
                         "&7► Rango: " + prefix,
-                        "&7► Monedas: &d" + user.getCoinsFormatted(),
-                        "&7► Nivel: &d" + user.getLevel().getLevelName(),
+                        "&7► Monedas: &c" + user.getCoinsFormatted(),
+                        "&7► Nivel: &c" + user.getLevel().getLevelName(),
                         "" + user.getLevel().getProgressBar()/* ,
-                            "&7Clan: &d" + clanTag*/));
+                            "&7Clan: &c" + clanTag*/));
         TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
                 Arrays.asList(
                         "&7「&eYandere &5Rangos&7⏌",
@@ -126,8 +126,8 @@ public final class SWPlayerEvents extends MainEvents {
                                             "&7「&eInformación del Equipo&7⏌",
                                             "",
                                             "&7► Equipo: " + teamName,
-                                            "&7► Miembros: &d" + team.getTeamSize(),
-                                            "&7► Kills: &d" + team.getKills()));
+                                            "&7► Miembros: &c" + team.getTeamSize(),
+                                            "&7► Kills: &c" + team.getKills()));
                             if (message.startsWith("!")){
                                 event.getRecipients().addAll(game.getCached());
                                 msg = new TextComponent(Utils.formatTC("&7「GLOBAL⏌ "), level, rank, teamString, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
@@ -146,7 +146,7 @@ public final class SWPlayerEvents extends MainEvents {
                                             "",
                                             "&7► Elo: " + eloRank.getColor() + eloRank.getName(),
                                             "&7► Máximo Elo: " + eloRank.getMax(),
-                                            "&7► Mínimo Elo: &d" + eloRank.getMin()));
+                                            "&7► Mínimo Elo: &c" + eloRank.getMin()));
                             msg = new TextComponent(level, rank, elo, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
                         }
                     }
@@ -162,7 +162,7 @@ public final class SWPlayerEvents extends MainEvents {
                                         "",
                                         "&7► Elo: " + eloRank.getColor() + eloRank.getName(),
                                         "&7► Máximo Elo: " + eloRank.getMax(),
-                                        "&7► Mínimo Elo: &d" + eloRank.getMin()));
+                                        "&7► Mínimo Elo: &c" + eloRank.getMin()));
                         msg = new TextComponent(Utils.formatTC("&7「ESPECTADOR⏌ "), level, rank, elo, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
                     } else {
                         msg = new TextComponent(level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));

@@ -14,7 +14,7 @@ public class PlayerCoinsChangeEvent extends Event implements Cancellable {
     private final Player player;
     private final Level.GainSource source;
     private final ChangeType type;
-    private int amount;
+    private long amount;
     private boolean cancelled;
     
     /**
@@ -26,7 +26,7 @@ public class PlayerCoinsChangeEvent extends Event implements Cancellable {
      * @param amount - amount of xp.
      * @param source - where did the player receive xp from.
      */
-    public PlayerCoinsChangeEvent(Player player, int amount, Level.GainSource source, ChangeType type){
+    public PlayerCoinsChangeEvent(Player player, long amount, Level.GainSource source, ChangeType type){
         this.player = player;
         this.amount = amount;
         this.source = source;
@@ -47,7 +47,7 @@ public class PlayerCoinsChangeEvent extends Event implements Cancellable {
     /**
      * Get the amount of xp received.
      */
-    public int getAmount(){
+    public long getAmount(){
         return amount;
     }
     

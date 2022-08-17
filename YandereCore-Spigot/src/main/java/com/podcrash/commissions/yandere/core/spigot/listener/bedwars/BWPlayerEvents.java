@@ -97,21 +97,21 @@ public final class BWPlayerEvents extends MainEvents {
             }
             TextComponent level = Utils.hoverOverMessage(getLevelSupport().getLevel(p),
                     Arrays.asList(
-                            "7e「&eNivel de BedWars&7⏌",
+                            "&e「&eNivel de BedWars&7⏌",
                             "",
-                            "&7► Nivel: &d" + getLevelSupport().getPlayerLevel(p),
-                            "&7► XP: &d" + getLevelSupport().getCurrentXpFormatted(p),
-                            "&7► XP Necesaria para subir: &d" + getLevelSupport().getRequiredXpFormatted(p),
+                            "&7► Nivel: &c" + getLevelSupport().getPlayerLevel(p),
+                            "&7► XP: &c" + getLevelSupport().getCurrentXpFormatted(p),
+                            "&7► XP Necesaria para subir: &c" + getLevelSupport().getRequiredXpFormatted(p),
                             getLevelSupport().getProgressBar(p)));
             TextComponent name = Utils.hoverOverMessage(white_msg + p.getName(),
                     Arrays.asList(
                             "&7「&eInformación del jugador&7⏌",
                             "",
                             "&7► Rango: " + prefix,
-                            "&7► Monedas: &d" + user.getCoinsFormatted(),
-                            "&7► Nivel: &d" + user.getLevel().getLevelName(),
+                            "&7► Monedas: &c" + user.getCoinsFormatted(),
+                            "&7► Nivel: &c" + user.getLevel().getLevelName(),
                             "" + user.getLevel().getProgressBar()/* ,
-                            "&7Clan: &d" + clanTag*/));
+                            "&7Clan: &c" + clanTag*/));
             TextComponent team = Utils.formatTC("");
             TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
                     Arrays.asList(
@@ -130,8 +130,8 @@ public final class BWPlayerEvents extends MainEvents {
                                 "&7「&eInformación del Equipo&7⏌",
                                 "",
                                 "&7► Equipo: " + t.getColor().chat() + t.getName(),
-                                "&7► Miembros: &d" + t.getMembers().size(),
-                                "&7► Estado: &d" + (t.isBedDestroyed() ? "&cELIMINADO" : "&aACTIVO")));
+                                "&7► Miembros: &c" + t.getMembers().size(),
+                                "&7► Estado: &c" + (t.isBedDestroyed() ? "&cELIMINADO" : "&aACTIVO")));
             }
             final TextComponent finalTeam = team;
             final String finalMessage3 = finalMessage;

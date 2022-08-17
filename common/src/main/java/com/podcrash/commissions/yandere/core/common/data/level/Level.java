@@ -147,7 +147,7 @@ public class Level {
             locked = 10;
             unlocked = 0;
         }
-        return "§8 [{progress}§8]" .replace("{progress}", "&d" + String.valueOf(new char[unlocked]).replace("\0", "■") + "&7" + String.valueOf(new char[locked]).replace("\0", "■"));
+        return "§8 [{progress}§8]".replace("{progress}", "&c" + String.valueOf(new char[unlocked]).replace("\0", "■") + "&7" + String.valueOf(new char[locked]).replace("\0", "■"));
     }
     
     public String getFormattedRequiredXp(){

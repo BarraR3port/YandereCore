@@ -81,22 +81,22 @@ public final class PracticePlayerEvents extends MainEvents {
                 Arrays.asList(
                         "&7「&eEstadísticas del Jugador&7⏌",
                         "",
-                        "&7► Asesinatos: &d" + stats.getKills(),
-                        "&7► Muertes: &d" + stats.getDeaths(),
-                        "&7► Elo: &d" + stats.getGlobalElo(),
-                        "&7► Nivel: &d" + user.getLevel().getLevelName(),
-                        "&7► XP: &d" + user.getLevel().getFormattedCurrentXp(),
-                        "&7► XP Necesario: &d" + user.getLevel().getFormattedRequiredXp(),
+                        "&7► Asesinatos: &c" + stats.getKills(),
+                        "&7► Muertes: &c" + stats.getDeaths(),
+                        "&7► Elo: &c" + stats.getGlobalElo(),
+                        "&7► Nivel: &c" + user.getLevel().getLevelName(),
+                        "&7► XP: &c" + user.getLevel().getFormattedCurrentXp(),
+                        "&7► XP Necesario: &c" + user.getLevel().getFormattedRequiredXp(),
                         user.getLevel().getProgressBar()));
         TextComponent name = Utils.hoverOverMessage(white_msg + p.getName(),
                 Arrays.asList(
                         "&7「&eInformación del jugador&7⏌",
                         "",
                         "&7► Rango: " + prefix,
-                        "&7► Monedas: &d" + user.getCoinsFormatted(),
-                        "&7► Nivel: &d" + user.getLevel().getLevelName(),
+                        "&7► Monedas: &c" + user.getCoinsFormatted(),
+                        "&7► Nivel: &c" + user.getLevel().getLevelName(),
                         "" + user.getLevel().getProgressBar()/* ,
-                            "&7Clan: &d" + clanTag*/));
+                            "&7Clan: &c" + clanTag*/));
         TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
                 Arrays.asList("&7「&eYandere &5Rangos&7⏌",
                         "",

@@ -25,12 +25,12 @@ public class LevelCommand implements ILyCommand {
             if (context.getSender() instanceof Player){
                 Player p = (Player) context.getSender();
                 SpigotUser user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
-                p.spigot().sendMessage(Utils.formatTC(Settings.SERVER_PREFIX), Utils.hoverOverMessage("&7Eres nivel: &d" +
+                p.spigot().sendMessage(Utils.formatTC(Settings.SERVER_PREFIX), Utils.hoverOverMessage("&7Eres nivel: &c" +
                                 user.getLevel().getLevel(),
                         Arrays.asList(
-                                "&7Nivel: &d" + user.getLevel().getLevel(),
-                                "&7XP: &d" + user.getLevel().getFormattedCurrentXp(),
-                                "&7XP Necesario: &d" + user.getLevel().getFormattedRequiredXp(),
+                                "&7Nivel: &c" + user.getLevel().getLevel(),
+                                "&7XP: &c" + user.getLevel().getFormattedCurrentXp(),
+                                "&7XP Necesario: &c" + user.getLevel().getFormattedRequiredXp(),
                                 user.getLevel().getProgressBar())));
                 return new CommandResponse();
             }
@@ -45,7 +45,7 @@ public class LevelCommand implements ILyCommand {
             
             if (context.getArg(0).equalsIgnoreCase("add") || context.getArg(0).equalsIgnoreCase("get") || context.getArg(0).equalsIgnoreCase("set")){
                 try {
-                    SpigotUser user = Main.getInstance().getPlayers().getPlayer(context.getArg(1));
+                    SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(1));
                     
                     if (context.getArg(0).equalsIgnoreCase("get")){
                         

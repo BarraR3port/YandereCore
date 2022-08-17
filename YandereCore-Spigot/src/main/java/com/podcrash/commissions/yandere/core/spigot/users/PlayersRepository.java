@@ -42,6 +42,23 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
     }
     
     @Override
+    public SpigotUser getLocalStoredPlayer(String name){
+        for ( SpigotUser user : list.values() ){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+                return user;
+            }
+        }
+        Document doc = database.findOneFast(TABLE_NAME, Filters.eq("name", name));
+        if (doc == null) throw new UserNotFoundException(name);
+        SpigotUser user = Api.getGson().fromJson(doc.toJson(), SpigotUser.class);
+        if (user == null){
+            throw new UserNotFoundException(name);
+        }
+        list.put(user.getUUID(), user);
+        return user;
+    }
+    
+    @Override
     public SpigotUser getPlayer(UUID uuid){
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()));
         if (doc == null) throw new UserNotFoundException(uuid.toString());
@@ -148,13 +165,23 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
     }
     
     @Override
+    public UUID getUUIDByName(String name){
+        for ( SpigotUser user : list.values() ){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+                return user.getUUID();
+            }
+        }
+        return getPlayer(name).getUUID();
+    }
+    
+    @Override
     public ArrayList<String> getPlayersName(){
         return database.findMany(TABLE_NAME, SpigotUser.class).stream().map(SpigotUser::getName).collect(Collectors.toCollection(ArrayList::new));
     }
     
     
     @Override
-    public void addCoins(SpigotUser player, int amount){
+    public void addCoins(SpigotUser player, long amount){
         PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, Level.GainSource.COMMAND, ChangeType.ADD);
         if (event.isCancelled()) return;
         player.addCoins(amount);
@@ -164,7 +191,7 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
     }
     
     @Override
-    public void removeCoins(SpigotUser player, int amount){
+    public void removeCoins(SpigotUser player, long amount){
         PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, Level.GainSource.COMMAND, ChangeType.REMOVE);
         if (event.isCancelled()) return;
         if (player.getCoins() - amount <= 0){
@@ -178,7 +205,7 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
     }
     
     @Override
-    public void setCoins(SpigotUser player, int amount){
+    public void setCoins(SpigotUser player, long amount){
         PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, Level.GainSource.COMMAND, ChangeType.SET);
         if (event.isCancelled()) return;
         player.setCoins(Math.max(amount, 0));
@@ -194,7 +221,7 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
         player.getLevel().setLevel(level);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aAhora eres nivel &d" + player.getLevel().getLevel());
+        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aAhora eres nivel &c" + player.getLevel().getLevel());
     }
     
     @Override
@@ -204,7 +231,7 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
         player.getLevel().addLevels(level);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aSubiste al nivel &d" + player.getLevel().getLevel());
+        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aSubiste al nivel &c" + player.getLevel().getLevel());
     }
     
     @Override
@@ -214,7 +241,7 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
         player.getLevel().removeLevels(level);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&cBajaste al nivel &d" + player.getLevel().getLevel());
+        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&cBajaste al nivel &c" + player.getLevel().getLevel());
     }
     
     @Override
@@ -224,7 +251,7 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
         player.getLevel().setXp(xp);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aAhora tienes &d" + xp + " &5XP");
+        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aAhora tienes &c" + xp + " &5XP");
     }
     
     @Override
@@ -234,7 +261,7 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
         player.getLevel().addXp(xp);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&a+&d" + xp + " &5XP");
+        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&a+&c" + xp + " &5XP");
     }
     
     @Override
@@ -244,7 +271,7 @@ public final class PlayersRepository extends IPlayerRepository<SpigotUser> {
         player.getLevel().removeXp(xp);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&c-&d" + xp + " &5XP");
+        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&c-&c" + xp + " &5XP");
     }
     
     @Override

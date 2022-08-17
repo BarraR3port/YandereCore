@@ -64,7 +64,7 @@ public class Settings {
     
     
     public static String getServerNameFormatted(){
-        return "" + SERVER_TYPE.getName() + "&d#" + (SERVER_NAME.charAt(SERVER_NAME.length() - 1));
+        return "" + SERVER_TYPE.getName() + "&c#" + (SERVER_NAME.charAt(SERVER_NAME.length() - 1));
     }
     
 }

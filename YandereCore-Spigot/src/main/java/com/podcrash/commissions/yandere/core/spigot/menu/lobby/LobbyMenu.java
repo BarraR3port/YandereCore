@@ -66,7 +66,7 @@ public class LobbyMenu extends UpdatableMenu {
         
         SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(targetUserUUID);
         if (user == null){
-            user = Main.getInstance().getPlayers().getPlayer(getOwner().getName());
+            user = Main.getInstance().getPlayers().getLocalStoredPlayer(getOwner().getName());
             user.setUUID(getOwner().getUniqueId());
             Main.getInstance().getPlayers().savePlayer(user);
         }
@@ -116,8 +116,8 @@ public class LobbyMenu extends UpdatableMenu {
                 .setDisplayName("&b&lTus Estadísticas:")
                 .addLoreLine("")
                 .addLoreLine("&7► Rango: " + user.getRank().getTabPrefix())
-                .addLoreLine("&7► Monedas: &d" + user.getCoinsFormatted())
-                .addLoreLine("&7► Nivel: &d" + user.getLevel().getLevelName())
+                .addLoreLine("&7► Monedas: &c" + user.getCoinsFormatted())
+                .addLoreLine("&7► Nivel: &c" + user.getLevel().getLevelName())
                 .addLoreLine(user.getLevel().getProgressBar())
                 .addTag("stats", "stats")
                 .build());

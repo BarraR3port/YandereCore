@@ -145,19 +145,19 @@ public final class LobbyPlayerEvents extends MainEvents {
                 Arrays.asList(
                         "&7「&eNivel General&7⏌",
                         "",
-                        "&7► Nivel: &d" + user.getLevel().getLevelName(),
-                        "&7► XP: &d" + user.getLevel().getFormattedCurrentXp(),
-                        "&7► XP Necesario: &d" + user.getLevel().getFormattedRequiredXp(),
+                        "&7► Nivel: &c" + user.getLevel().getLevelName(),
+                        "&7► XP: &c" + user.getLevel().getFormattedCurrentXp(),
+                        "&7► XP Necesario: &c" + user.getLevel().getFormattedRequiredXp(),
                         user.getLevel().getProgressBar()));
         TextComponent name = Utils.hoverOverMessage(white_msg + p.getName(),
                 Arrays.asList(
                         "&7「&eInformación del jugador&7⏌",
                         "",
                         "&7► Rango: " + prefix,
-                        "&7► Monedas: &d" + user.getCoinsFormatted(),
-                        "&7► Nivel: &d" + user.getLevel().getLevelName(),
+                        "&7► Monedas: &c" + user.getCoinsFormatted(),
+                        "&7► Nivel: &c" + user.getLevel().getLevelName(),
                         user.getLevel().getProgressBar()/* ,
-                            "&7Clan: &d" + clanTag*/));
+                            "&7Clan: &c" + clanTag*/));
         TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
                 Arrays.asList("&7「&eYandere &5Rangos&7⏌",
                         "",

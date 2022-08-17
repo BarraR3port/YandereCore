@@ -33,6 +33,10 @@ public abstract class IPlayerRepository<U> extends MongoDB<UUID, U> {
         }
     }
     
+    public abstract U getLocalStoredPlayer(String name);
+    
+    public abstract UUID getUUIDByName(String name);
+    
     public abstract U getPlayer(String name);
     
     public abstract U getPlayer(UUID uuid);
@@ -64,7 +68,7 @@ public abstract class IPlayerRepository<U> extends MongoDB<UUID, U> {
     }
     
     public U savePlayer(UUID uuid){
-        final U user = getPlayer(uuid);
+        final U user = getLocalStoredPlayer(uuid);
         database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()), user);
         return user;
     }
@@ -87,11 +91,11 @@ public abstract class IPlayerRepository<U> extends MongoDB<UUID, U> {
     
     public abstract ArrayList<String> getPlayersName();
     
-    public abstract void addCoins(U player, int amount);
+    public abstract void addCoins(U player, long amount);
     
-    public abstract void removeCoins(U player, int amount);
+    public abstract void removeCoins(U player, long amount);
     
-    public abstract void setCoins(U player, int amount);
+    public abstract void setCoins(U player, long amount);
     
     public abstract void setPlayerLevel(U player, int level);
     

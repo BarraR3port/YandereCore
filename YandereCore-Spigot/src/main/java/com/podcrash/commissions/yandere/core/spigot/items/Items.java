@@ -173,12 +173,12 @@ public final class Items {
         
         VANISH_OFF = new ItemBuilder(new ItemStack(XMaterial.GRAY_DYE.parseMaterial()))
                 .setDisplayName("&7Vanish &cDesactivado")
-                .addLoreLine("&dStaff Utils")
+                .addLoreLine("&cStaff Utils")
                 .addTag("staff-utils", "vanish-off").build();
         
         VANISH_ON = new ItemBuilder(new ItemStack(XMaterial.LIME_DYE.parseMaterial()))
                 .setDisplayName("&7Vanish &aActivado")
-                .addLoreLine("&dStaff Utils")
+                .addLoreLine("&cStaff Utils")
                 .addTag("staff-utils", "vanish-on").build();
         
         LOBBY_PLAYER_VISIBILITY_ALL = new ItemBuilder(new ItemStack(Material.INK_SACK))
@@ -239,10 +239,10 @@ public final class Items {
                 .setHeadSkin(user.getSkin())
                 .setDisplayName("&a" + owner.getName() + "'s &7Stats:")
                 .addLoreLine("&a► &7Modo De Juego: &b" + owner.getGameMode())
-                .addLoreLine("&a► &7Locación: &d" + (int) owner.getLocation().getX() + " &3" + (int) owner.getLocation().getY() + " &d" + (int) owner.getLocation().getZ())
+                .addLoreLine("&a► &7Locación: &c" + (int) owner.getLocation().getX() + " &3" + (int) owner.getLocation().getY() + " &c" + (int) owner.getLocation().getZ())
                 .addLoreLine("&a► Rango: " + user.getRank().getTabPrefix())
-                .addLoreLine("&a► Monedas: &d" + user.getCoinsFormatted())
-                .addLoreLine("&a► Nivel: &d" + user.getLevel().getLevelName())
+                .addLoreLine("&a► Monedas: &c" + user.getCoinsFormatted())
+                .addLoreLine("&a► Nivel: &c" + user.getLevel().getLevelName())
                 .addLoreLine(user.getLevel().getProgressBar())
                 .addLoreLine("")
                 .addLoreLine("&5STAFF MEMBER")

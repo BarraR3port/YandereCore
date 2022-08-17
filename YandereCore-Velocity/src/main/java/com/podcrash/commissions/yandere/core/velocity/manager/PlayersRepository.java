@@ -35,6 +35,24 @@ public class PlayersRepository extends IPlayerRepository<VelocityUser> {
     }
     
     @Override
+    public VelocityUser getLocalStoredPlayer(String name){
+        for ( VelocityUser user : list.values() ){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+                return user;
+            }
+        }
+        
+        Document doc = database.findOneFast(TABLE_NAME, Filters.eq("name", name));
+        if (doc == null) throw new UserNotFoundException(name);
+        VelocityUser user = Api.getGson().fromJson(doc.toJson(), VelocityUser.class);
+        if (user == null){
+            throw new UserNotFoundException(name);
+        }
+        list.put(user.getUUID(), user);
+        return user;
+    }
+    
+    @Override
     public VelocityUser getPlayer(UUID uuid){
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()));
         if (doc == null) return null;
@@ -135,22 +153,32 @@ public class PlayersRepository extends IPlayerRepository<VelocityUser> {
     }
     
     @Override
+    public UUID getUUIDByName(String name){
+        for ( VelocityUser user : list.values() ){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+                return user.getUUID();
+            }
+        }
+        return getPlayer(name).getUUID();
+    }
+    
+    @Override
     public ArrayList<String> getPlayersName(){
         return database.findMany(TABLE_NAME, VelocityUser.class).stream().map(VelocityUser::getName).collect(Collectors.toCollection(ArrayList::new));
     }
     
     @Override
-    public void addCoins(VelocityUser player, int amount){
+    public void addCoins(VelocityUser player, long amount){
     
     }
     
     @Override
-    public void removeCoins(VelocityUser player, int amount){
+    public void removeCoins(VelocityUser player, long amount){
     
     }
     
     @Override
-    public void setCoins(VelocityUser player, int amount){
+    public void setCoins(VelocityUser player, long amount){
     
     }
     

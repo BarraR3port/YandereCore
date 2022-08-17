@@ -1,6 +1,7 @@
 package com.podcrash.commissions.yandere.core.spigot.commands;
 
 import com.podcrash.commissions.yandere.core.common.data.user.User;
+import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.menu.lobby.LobbyMenu;
 import net.lymarket.common.commands.*;
@@ -23,10 +24,10 @@ public final class Menu implements ILyCommand {
             }
             if (context.getArgs().length == 1 && player.hasPermission("yandere.menu.other")){
                 final String userName = context.getArg(0);
-                final User user = Main.getInstance().getPlayers().getPlayer(userName);
-                if (user != null){
+                try {
+                    final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(userName);
                     new LobbyMenu(LyApi.getPlayerMenuUtility(player), user.getUUID()).open();
-                } else {
+                } catch (UserNotFoundException e) {
                     Main.getLang().sendErrorMsg(player, "player.not-found", "player", userName);
                 }
             } else {

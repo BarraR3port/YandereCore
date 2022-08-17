@@ -25,7 +25,7 @@ public class RankMenu implements ILyCommand {
             context.getSender().sendMessage("");
             if (context.getSender() instanceof Player){
                 Player p = (Player) context.getSender();
-                p.spigot().sendMessage(Utils.formatTC("&7Establece el rango a un jugador con este "), Utils.hoverOverMessageSuggestCommand("&dcomando", Collections.singletonList("&e/rank set <jugador> <rango>"), "/rank set "));
+                p.spigot().sendMessage(Utils.formatTC("&7Establece el rango a un jugador con este "), Utils.hoverOverMessageSuggestCommand("&ccomando", Collections.singletonList("&e/rank set <jugador> <rango>"), "/rank set "));
             } else {
                 context.getSender().sendMessage("§e- §dEstablece el rango a un jugador §e- §d/rank set (jugador) (rango)");
             }
@@ -38,7 +38,7 @@ public class RankMenu implements ILyCommand {
                 final String target = context.getArg(1);
                 try {
                     Rank rank = Rank.valueOf(context.getArg(2).toUpperCase(Locale.ROOT));
-                    SpigotUser user = Main.getInstance().getPlayers().getPlayer(target);
+                    SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(target);
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + target + " group set " + rank.getLpName());
                     Main.getInstance().getPlayers().setPlayerRank(user, rank);
                 } catch (NullPointerException e) {

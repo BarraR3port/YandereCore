@@ -16,43 +16,40 @@ public class VanishCommand implements ILyCommand {
     @Command(name = "vanish", permission = "yandere.vanish", usage = "/vanish", aliases = {"v"})
     public CommandResponse command(CommandContext context){
         if (context.getSender() instanceof Player){
-            if (context.getSender().hasPermission("yandere.vanish")){
-                Player p = (Player) context.getSender();
-                if (context.getArgs().length == 0){
-                    if (Main.getInstance().getVanishManager().isVanished(p)){
-                        Main.getInstance().getVanishManager().disable(p);
-                        Utils.playActionBar(p, "&7Vanish &cDesactivado");
-                    } else {
-                        Main.getInstance().getVanishManager().enable(p);
-                        Utils.playActionBar(p, "&7Vanish &aActivado");
-                    }
-                    
-                } else if (context.getArgs().length == 1){
-                    if (Bukkit.getPlayer(context.getArg(0)) != null){
-                        Player target = Bukkit.getPlayer(context.getArg(0));
-                        if (Main.getInstance().getVanishManager().isVanished(target)){
-                            Main.getInstance().getVanishManager().disable(target);
-                            Utils.playActionBar(target, "&7Vanish &cDesactivado");
-                        } else {
-                            Main.getInstance().getVanishManager().enable(target);
-                            Utils.playActionBar(target, "&7Vanish &aActivado");
-                        }
-                        
-                    } else {
-                        Main.getLang().sendErrorMsg(p, "player.not-online", "player", context.getArg(0));
-                    }
+            Player p = (Player) context.getSender();
+            if (context.getArgs().length == 0){
+                if (Main.getInstance().getVanishManager().isVanished(p)){
+                    Main.getInstance().getVanishManager().disable(p);
+                    Utils.playActionBar(p, "&7Vanish &cDesactivado");
                 } else {
-                    p.spigot().sendMessage(Utils.hoverOverMessageSuggestCommand(
-                            Main.getLang().getMSG(
-                                    "error.wrong-command",
-                                    "command",
-                                    "vanish | vanish <player>"),
-                            Collections.singletonList("&7Click aquí"),
-                            "vanish "));
+                    Main.getInstance().getVanishManager().enable(p);
+                    Utils.playActionBar(p, "&7Vanish &aActivado");
+                }
+        
+            } else if (context.getArgs().length == 1){
+                if (Bukkit.getPlayer(context.getArg(0)) != null){
+                    Player target = Bukkit.getPlayer(context.getArg(0));
+                    if (Main.getInstance().getVanishManager().isVanished(target)){
+                        Main.getInstance().getVanishManager().disable(target);
+                        Utils.playActionBar(target, "&7Vanish &cDesactivado");
+                    } else {
+                        Main.getInstance().getVanishManager().enable(target);
+                        Utils.playActionBar(target, "&7Vanish &aActivado");
+                    }
+            
+                } else {
+                    Main.getLang().sendErrorMsg(p, "player.not-online", "player", context.getArg(0));
                 }
             } else {
-                return new CommandResponse("yandere.vanish");
+                p.spigot().sendMessage(Utils.hoverOverMessageSuggestCommand(
+                        Main.getLang().getMSG(
+                                "error.wrong-command",
+                                "command",
+                                "vanish | vanish <player>"),
+                        Collections.singletonList("&7Click aquí"),
+                        "vanish "));
             }
+    
         }
         return new CommandResponse();
     }

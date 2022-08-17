@@ -37,6 +37,7 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
     
     @Override
     public void sendJoinServer(UUID owner, String serverTarget){
+        getPlayers().savePlayer(owner);
         final JsonObject js = new JsonObject();
         js.addProperty("type", "CONNECT_TO_SERVER");
         js.addProperty("current_server", Settings.SERVER_NAME);
@@ -48,6 +49,7 @@ public class SpigotSocketClient extends ISocket<SpigotUser> {
     
     @Override
     public void sendJoinServer(UUID owner, String serverTarget, String msg){
+        getPlayers().savePlayer(owner);
         final JsonObject js = new JsonObject();
         js.addProperty("type", "CONNECT_TO_SERVER");
         js.addProperty("current_server", Settings.SERVER_NAME);

@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class ChatClear implements ILyCommand {
     
-    @Command(name = "chatclear", permission = "yandere.chat.clear", aliases = {"clearchat", "cc"})
+    @Command(name = "chatclear", aliases = {"clearchat", "cc"})
     public CommandResponse command(CommandContext context){
         if (!(context.getSender() instanceof Player)){
             for ( int i = 0; i < 100; i++ ){
@@ -41,14 +41,16 @@ public class ChatClear implements ILyCommand {
                 return new CommandResponse();
             }
         } else if (context.getArg(0).equalsIgnoreCase("all")){
-            for ( int i = 0; i < 100; i++ ){
-                Bukkit.broadcastMessage("");
+            if (p.hasPermission("yandere.chat.clear.all")){
+        
+                for ( int i = 0; i < 100; i++ ){
+                    Bukkit.broadcastMessage("");
+                }
+                if (!(context.getArg(1).equalsIgnoreCase("-s") && p.hasPermission("yandere.chatclear.all.silent"))){
+                    Bukkit.broadcastMessage(Main.getLang().getMSG("chat.clear.all", "player", p.getName()));
+                }
+                return new CommandResponse();
             }
-            if (!(context.getArg(1).equalsIgnoreCase("-s") && p.hasPermission("yandere.chatclear.all.silent"))){
-                Bukkit.broadcastMessage(Main.getLang().getMSG("chat.clear.all", "player", p.getName()));
-            }
-            return new CommandResponse();
-            
         } else {
             Utils.sendMessage(p, "&a| &eComandos Para Limpiar el Chat &a|");
             Utils.sendMessage(p, " ");

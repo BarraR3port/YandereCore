@@ -4,9 +4,7 @@ package com.podcrash.commissions.yandere.core.velocity.listener;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.podcrash.commissions.yandere.core.common.data.server.Server;
 import com.podcrash.commissions.yandere.core.velocity.VMain;
-import com.podcrash.commissions.yandere.core.velocity.user.VelocityUser;
 import com.podcrash.commissions.yandere.core.velocity.utils.Utils;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
@@ -14,7 +12,6 @@ import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
-import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.ServerConnection;
@@ -22,63 +19,34 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerPing;
 
-import java.util.HashMap;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class PlayerEvents {
     
-    private final HashMap<UUID, Long> timeOnline = new HashMap<>();
     
     public PlayerEvents(){
-        
-        VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), () -> {
-            final long currentTime = System.currentTimeMillis();
-            VMain.getInstance().getProxy().getAllPlayers().forEach(player -> {
-                VelocityUser user = VMain.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
-                if (user == null){
-                    user = VMain.getInstance().getPlayers().getPlayer(player.getUsername());
-                    if (user == null){
-                        return;
-                    }
-                    user.setUUID(player.getUniqueId());
-                }
-                user.getStats().addTIME_PLAYED(currentTime - timeOnline.getOrDefault(player.getUniqueId(), 0L));
-                VMain.getInstance().getPlayers().savePlayer(user);
-                timeOnline.remove(player.getUniqueId());
-                timeOnline.put(player.getUniqueId(), currentTime);
-            });
-            
-        }).repeat(5, TimeUnit.SECONDS).schedule();
-        
+    
+    
     }
     
     @Subscribe
     public void onPostLoginEvent(PostLoginEvent e){
         VMain.getInstance().getPlayers().getOrCreatePlayer(e.getPlayer().getUsername(), e.getPlayer().getUniqueId(), String.valueOf(e.getPlayer().getRemoteAddress().getAddress()).replace("/", ""));
-        
-        timeOnline.put(e.getPlayer().getUniqueId(), System.currentTimeMillis());
     }
     
     @Subscribe
     public void onPlayerPreLogin(PreLoginEvent e){
-        if (e.getUsername().contains("McDown_pw_") || e.getUsername().contains("McDown")){
+        String name = e.getUsername();
+        if (name.contains("McDown_pw_") || name.contains("McDown")){
             e.setResult(PreLoginEvent.PreLoginComponentResult.denied(Utils.format("PENDEJO")));
         }
     }
     
     @Subscribe
     public void onDisconnectEvent(DisconnectEvent e){
-        final long currentTime = System.currentTimeMillis();
-        final UUID uuid = e.getPlayer().getUniqueId();
-        final VelocityUser user = VMain.getInstance().getPlayers().getPlayer(uuid);
-        user.getStats().addTIME_PLAYED(currentTime - timeOnline.get(uuid));
-        VMain.getInstance().getPlayers().savePlayer(user);
-        timeOnline.remove(uuid);
     }
     
-    @Subscribe(order = PostOrder.FIRST)
+    /*@Subscribe(order = PostOrder.FIRST)
     public void onKickedFromServerEvent(KickedFromServerEvent e){
         
         int attempts = 5;
@@ -100,7 +68,7 @@ public class PlayerEvents {
         }
         e.setResult(KickedFromServerEvent.DisconnectPlayer.create(Utils.format("&cNo hay lobbys disponibles!")));
         
-    }
+    }*/
     
     @Subscribe(order = PostOrder.LAST)
     public void onProxyPing(ProxyPingEvent event){

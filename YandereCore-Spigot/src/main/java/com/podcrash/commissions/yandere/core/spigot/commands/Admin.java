@@ -36,7 +36,7 @@ public class Admin implements ILyCommand {
                 Settings.DEBUG = !Settings.DEBUG;
                 Main.getInstance().getConfig().set("global.debug", Settings.DEBUG);
                 Main.getInstance().getConfig().saveData();
-                Utils.sendMessage(context.getSender(), "&c&lYandere &dDEBUG " + (Settings.DEBUG ? "&aEnabled" : "&cDisabled"));
+                Utils.sendMessage(context.getSender(), "&c&lYandere &cDEBUG " + (Settings.DEBUG ? "&aEnabled" : "&cDisabled"));
                 return new CommandResponse();
             }
         }
@@ -44,7 +44,7 @@ public class Admin implements ILyCommand {
             Player p = (Player) context.getSender();
             if (context.getArgs().length == 2){
                 if (context.getArg(0).equalsIgnoreCase("menu")){
-                    final SpigotUser target = Main.getInstance().getPlayers().getPlayer(context.getArg(1));
+                    final SpigotUser target = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(1));
                     new AdminMenu(LyApi.getPlayerMenuUtility(p), target).open();
                     return new CommandResponse();
                 }
