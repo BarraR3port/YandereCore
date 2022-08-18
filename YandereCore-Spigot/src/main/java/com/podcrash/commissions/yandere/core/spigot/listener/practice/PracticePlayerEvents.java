@@ -2,12 +2,12 @@ package com.podcrash.commissions.yandere.core.spigot.listener.practice;
 
 import com.podcrash.commissions.yandere.core.common.data.loc.Loc;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.listener.MainEvents;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import ga.strikepractice.StrikePractice;
 import ga.strikepractice.api.StrikePracticeAPI;
 import ga.strikepractice.stats.PlayerStats;
@@ -43,7 +43,7 @@ public final class PracticePlayerEvents extends MainEvents {
         try {
             final World world = e.getTo().getWorld();
             final UUID playerUUID = e.getPlayer().getUniqueId();
-            final SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
+            final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
             final Location loc = e.getTo();
             user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
@@ -62,8 +62,8 @@ public final class PracticePlayerEvents extends MainEvents {
         String message = event.getMessage();
         
         if (event.isCancelled()) return;
-        
-        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+    
+        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         if (p.hasPermission("yandere.chat.color")){
             message = Utils.format(message);
         }

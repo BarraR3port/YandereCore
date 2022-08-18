@@ -1,10 +1,10 @@
 package com.podcrash.commissions.yandere.core.spigot.commands;
 
 import com.podcrash.commissions.yandere.core.common.data.level.Level;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.common.commands.*;
 import net.lymarket.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.utils.Utils;
@@ -27,7 +27,7 @@ public class XPCommand implements ILyCommand {
         if (context.getArgs().length == 0){
             if (context.getSender() instanceof Player){
                 Player p = (Player) context.getSender();
-                SpigotUser user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
+                User user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
                 p.spigot().sendMessage(Utils.formatTC(Settings.SERVER_PREFIX), Utils.hoverOverMessage("&7Tienes: &c" +
                                 user.getLevel().getFormattedCurrentXp() + " &5XP",
                         Arrays.asList(
@@ -49,7 +49,7 @@ public class XPCommand implements ILyCommand {
                 
                 try {
                     OfflinePlayer target = Bukkit.getOfflinePlayer(context.getArg(1));
-                    SpigotUser user = Main.getInstance().getPlayers().getPlayer(target.getUniqueId());
+                    User user = Main.getInstance().getPlayers().getPlayer(target.getUniqueId());
                     if (context.getArg(0).equalsIgnoreCase("get")){
                         final HashMap<String, String> replacements = new HashMap<>();
                         replacements.put("player", context.getArg(1));

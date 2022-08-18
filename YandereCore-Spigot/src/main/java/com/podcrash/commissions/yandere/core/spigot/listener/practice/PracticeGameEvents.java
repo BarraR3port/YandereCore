@@ -1,8 +1,8 @@
 package com.podcrash.commissions.yandere.core.spigot.listener.practice;
 
 import com.podcrash.commissions.yandere.core.common.data.level.Level;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import ga.strikepractice.events.DuelEndEvent;
 import ga.strikepractice.events.FightEndEvent;
 import ga.strikepractice.events.PartyFFAEndEvent;
@@ -18,14 +18,14 @@ public class PracticeGameEvents implements Listener {
     
     @EventHandler
     public void onGameEnd(FightEndEvent event){
-        final ArrayList<SpigotUser> winners = new ArrayList<>();
-        final ArrayList<SpigotUser> losers = new ArrayList<>();
+        final ArrayList<User> winners = new ArrayList<>();
+        final ArrayList<User> losers = new ArrayList<>();
         if (event instanceof DuelEndEvent){
             DuelEndEvent duelEvent = (DuelEndEvent) event;
             winners.add(Main.getInstance().getPlayers().getLocalStoredPlayer(duelEvent.getWinner().getUniqueId()));
             losers.add(Main.getInstance().getPlayers().getLocalStoredPlayer(duelEvent.getLoser().getUniqueId()));
         }
-        
+    
         if (event instanceof PartyFFAEndEvent){
             PartyFFAEndEvent partyFFAEndEvent = (PartyFFAEndEvent) event;
             winners.add(Main.getInstance().getPlayers().getLocalStoredPlayer(partyFFAEndEvent.getWinner().getUniqueId()));
@@ -53,7 +53,7 @@ public class PracticeGameEvents implements Listener {
     
     @EventHandler
     public void onPlayerKill(PlayerGameKillEvent event){
-        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(event.getPlayer().getUniqueId());
+        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(event.getPlayer().getUniqueId());
         Main.getInstance().getPlayers().addCoins(user, 1);
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(user, 7, Level.GainSource.PER_KILL), 65L);
     }

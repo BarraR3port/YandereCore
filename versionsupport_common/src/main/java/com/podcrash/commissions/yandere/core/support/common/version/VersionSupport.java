@@ -7,7 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public abstract class VersionSupport<U> {
     
     protected final JavaPlugin plugin;
-    protected final YandereApi<U> bbbApi;
+    protected final YandereApi bbbApi;
     
     public VersionSupport(JavaPlugin plugin){
         this.plugin = plugin;
@@ -28,7 +28,7 @@ public abstract class VersionSupport<U> {
         
     }
     
-    public YandereApi<U> getBbbApi(){
+    public YandereApi getBbbApi(){
         return bbbApi;
     }
     

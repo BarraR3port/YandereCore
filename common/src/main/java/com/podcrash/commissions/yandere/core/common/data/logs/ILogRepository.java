@@ -8,7 +8,7 @@ import org.bson.Document;
 
 import java.util.UUID;
 
-public abstract class ILogRepository<U> extends MongoDB<UUID, U> {
+public abstract class ILogRepository extends MongoDB<UUID, Log> {
     
     public ILogRepository(MongoDBClient database, String TABLE_NAME){
         super(database, TABLE_NAME);

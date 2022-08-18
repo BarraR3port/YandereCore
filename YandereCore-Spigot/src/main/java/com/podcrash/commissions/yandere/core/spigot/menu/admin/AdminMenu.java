@@ -1,13 +1,13 @@
 package com.podcrash.commissions.yandere.core.spigot.menu.admin;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Stats;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.menu.admin.rank.RankEditor;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
 import net.lymarket.lyapi.spigot.menu.UpdatableMenu;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
@@ -19,9 +19,9 @@ import java.util.Collections;
 
 public class AdminMenu extends UpdatableMenu {
     
-    private SpigotUser target;
+    private User target;
     
-    public AdminMenu(IPlayerMenuUtility playerMenuUtility, SpigotUser target){
+    public AdminMenu(IPlayerMenuUtility playerMenuUtility, User target){
         super(playerMenuUtility);
         this.target = target;
     }

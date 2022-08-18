@@ -111,4 +111,8 @@ public final class ProxyStats {
         return servers.values().stream().anyMatch(server -> server.getProxyName().equals(serverProxyName));
     }
     
+    public EmptyServer getEmptyServer(){
+        return emptyServer;
+    }
+    
 }

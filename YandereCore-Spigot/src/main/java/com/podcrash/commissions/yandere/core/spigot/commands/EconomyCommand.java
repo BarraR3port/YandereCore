@@ -1,8 +1,8 @@
 package com.podcrash.commissions.yandere.core.spigot.commands;
 
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.common.commands.*;
 import net.lymarket.common.commands.response.CommandResponse;
 import org.bukkit.Bukkit;
@@ -22,9 +22,9 @@ public class EconomyCommand implements ILyCommand {
                 Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/money <player>");
                 return new CommandResponse();
             }
-            
+    
             Player p = (Player) context.getSender();
-            SpigotUser user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
+            User user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
             Main.getLang().sendMsg(p, "coins.amount.own", "amount", String.valueOf(user.getCoins()));
             
             return new CommandResponse();
@@ -36,7 +36,7 @@ public class EconomyCommand implements ILyCommand {
         OfflinePlayer target = Bukkit.getOfflinePlayer(context.getArg(0));
         
         try {
-            SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(0));
+            User user = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(0));
             final HashMap<String, String> replacements = new HashMap<>();
             replacements.put("player", context.getArg(0));
             replacements.put("amount", String.valueOf(user.getCoins()));

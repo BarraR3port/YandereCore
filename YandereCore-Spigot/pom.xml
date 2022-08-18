@@ -175,7 +175,7 @@
                                                     <include name="lombok.**"/>
                                                     <include name="com.podcrash.commissions.yandere.core.spigot.Main"/>
                                                     <include
-                                                            name="users.com.podcrash.commissions.yandere.core.spigot.SpigotUser"/>
+                                                            name="users.com.podcrash.commissions.yandere.core.spigot.User"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
                                                     <include
@@ -192,7 +192,7 @@
                                                 <patternset>
                                                     <include name="net.lymarket.lyapi.**"/>
                                                     <include
-                                                            name="users.com.podcrash.commissions.yandere.core.spigot.SpigotUser"/>
+                                                            name="users.com.podcrash.commissions.yandere.core.spigot.User"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
                                                     <include
@@ -235,7 +235,7 @@
                                                 <patternset>
                                                     <include name="net.lymarket.lyapi.**"/>
                                                     <include
-                                                            name="users.com.podcrash.commissions.yandere.core.spigot.SpigotUser"/>
+                                                            name="users.com.podcrash.commissions.yandere.core.spigot.User"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
                                                     <include
@@ -280,7 +280,7 @@
                                                     <include name="org.apache.logging.log4j."/>
                                                     <include name="com.podcrash.commissions.yandere.core.spigot.Main"/>
                                                     <include
-                                                            name="users.com.podcrash.commissions.yandere.core.spigot.SpigotUser"/>
+                                                            name="users.com.podcrash.commissions.yandere.core.spigot.User"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.home.SpigotHome"/>
                                                     <include

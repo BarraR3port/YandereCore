@@ -3,11 +3,11 @@ package com.podcrash.commissions.yandere.core.spigot.listener.skywars;
 import com.cryptomorin.xseries.XMaterial;
 import com.podcrash.commissions.yandere.core.common.data.lobby.PlayerVisibility;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.listener.MainEvents;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import io.github.Leonardo0013YT.UltraSkyWars.UltraSkyWars;
 import io.github.Leonardo0013YT.UltraSkyWars.enums.State;
 import io.github.Leonardo0013YT.UltraSkyWars.game.UltraGame;
@@ -53,7 +53,7 @@ public final class SWPlayerEvents extends MainEvents {
     public void subPlayerChatEvent(AsyncPlayerChatEvent event){
         Player p = event.getPlayer();
         String message = event.getMessage();
-        SpigotUser user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
+        User user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
         if (p.hasPermission("yandere.chat.color")){
             message = Utils.format(message);
         }
@@ -195,8 +195,8 @@ public final class SWPlayerEvents extends MainEvents {
                 p.setHealth(20);
                 p.setSaturation(20F);
                 p.setGameMode(GameMode.ADVENTURE);
-                
-                SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+    
+                User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
                 if (user.getRank() != Rank.USUARIO){
                     p.setAllowFlight(true);
                 }
@@ -205,7 +205,7 @@ public final class SWPlayerEvents extends MainEvents {
                 
                 for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
                     if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
-                    SpigotUser targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
+                    User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
                     PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
                     Rank targetRank = targetUser.getRank();
                     switch(visibility){
@@ -261,18 +261,18 @@ public final class SWPlayerEvents extends MainEvents {
                 p.setHealth(20);
                 p.setSaturation(20F);
                 p.setGameMode(GameMode.ADVENTURE);
-                
-                SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+    
+                User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
                 if (user.getRank() != Rank.USUARIO){
                     p.setAllowFlight(true);
                     
                 }
                 
                 PlayerVisibility visibility = user.getPlayerVisibility();
-                Bukkit.getScheduler().runTaskLater( Main.getInstance(), ()->{
+                Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                     for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
                         if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
-                        SpigotUser targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
+                        User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
                         PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
                         Rank targetRank = targetUser.getRank();
                         switch(visibility){
@@ -290,7 +290,7 @@ public final class SWPlayerEvents extends MainEvents {
                                 p.hidePlayer(targetPlayer);
                                 break;
                         }
-    
+            
                         switch(targetVisibility){
                             case ALL:{
                                 targetPlayer.showPlayer(p);
@@ -309,10 +309,10 @@ public final class SWPlayerEvents extends MainEvents {
                                 break;
                             }
                         }
-    
+            
                     }
-    
-                }, 1L );
+        
+                }, 1L);
             }
         }
     }

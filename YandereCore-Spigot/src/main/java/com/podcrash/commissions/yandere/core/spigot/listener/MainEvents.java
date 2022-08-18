@@ -1,11 +1,11 @@
 package com.podcrash.commissions.yandere.core.spigot.listener;
 
 import com.podcrash.commissions.yandere.core.common.data.lobby.PlayerVisibility;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.menu.lobby.LobbyMenu;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.LyApi;
 import net.lymarket.lyapi.spigot.utils.NBTItem;
 import org.bukkit.Bukkit;
@@ -65,7 +65,7 @@ public abstract class MainEvents implements Listener {
         }
         if (NBTItem.hasTag(item, "lobby-player-visibility")){
             Player p = e.getPlayer();
-            SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+            User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
             PlayerVisibility currentPlayerVisibility = user.getPlayerVisibility();
             user.nextPlayerVisibility();
             Main.getInstance().getPlayers().savePlayer(user);
@@ -73,7 +73,7 @@ public abstract class MainEvents implements Listener {
                 if (player.getUniqueId().equals(p.getUniqueId())) continue;
                 switch(currentPlayerVisibility){
                     case ALL:
-                        final SpigotUser spigotUser = Main.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
+                        final User spigotUser = Main.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
                         if (spigotUser.getRank() == Rank.USUARIO){
                             p.hidePlayer(player);
                         }

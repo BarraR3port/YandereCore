@@ -6,7 +6,7 @@ import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import net.lymarket.lyapi.spigot.config.Config;
 
-public interface YandereApi<U> {
+public interface YandereApi {
     
     void error(String message);
     
@@ -16,9 +16,9 @@ public interface YandereApi<U> {
     
     String getVersion();
     
-    IPlayerRepository<U> getPlayers();
+    IPlayerRepository getPlayers();
     
-    ISocket<U> getSocket();
+    ISocket getSocket();
     
     String getNMSVersion();
     
@@ -26,6 +26,6 @@ public interface YandereApi<U> {
     
     ServerType getServerType();
     
-    ILogRepository<U> getLogs();
+    ILogRepository getLogs();
     
 }

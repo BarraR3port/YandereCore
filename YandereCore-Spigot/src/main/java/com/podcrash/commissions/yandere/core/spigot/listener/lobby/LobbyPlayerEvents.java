@@ -4,19 +4,21 @@ import com.cryptomorin.xseries.XMaterial;
 import com.podcrash.commissions.yandere.core.common.data.lobby.PlayerVisibility;
 import com.podcrash.commissions.yandere.core.common.data.loc.Loc;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.listener.MainEvents;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArmorStand;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,9 +31,12 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.UUID;
 
 public final class LobbyPlayerEvents extends MainEvents {
+    
+    public static LinkedList<UUID> builders = new LinkedList<>();
     
     public LobbyPlayerEvents(){
     }
@@ -45,7 +50,7 @@ public final class LobbyPlayerEvents extends MainEvents {
         try {
             final World world = e.getTo().getWorld();
             final UUID playerUUID = e.getPlayer().getUniqueId();
-            final SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
+            final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
             final Location loc = e.getTo();
             user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
@@ -68,8 +73,8 @@ public final class LobbyPlayerEvents extends MainEvents {
         p.setHealth(20);
         p.setSaturation(20F);
         p.setGameMode(GameMode.ADVENTURE);
-        
-        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+    
+        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         if (user.getRank() != Rank.USUARIO){
             p.setAllowFlight(true);
         }
@@ -78,7 +83,7 @@ public final class LobbyPlayerEvents extends MainEvents {
         
         for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
             if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
-            SpigotUser targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
+            User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
             PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
             Rank targetRank = targetUser.getRank();
             switch(visibility){
@@ -127,8 +132,8 @@ public final class LobbyPlayerEvents extends MainEvents {
         String message = event.getMessage();
         
         if (event.isCancelled()) return;
-        
-        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+    
+        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         if (p.hasPermission("yandere.chat.color")){
             message = Utils.format(message);
         }
@@ -184,53 +189,71 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerBreakBlocks(BlockBreakEvent e){
-        e.setCancelled(true);
+        if (!builders.contains(e.getPlayer().getUniqueId())){
+            e.setCancelled(true);
+        }
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerPlaceBlocks(BlockPlaceEvent e){
-        e.setCancelled(true);
+        if (!builders.contains(e.getPlayer().getUniqueId())){
+            e.setCancelled(true);
+        }
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent e){
-        e.setCancelled(true);
-        
+        if (!builders.contains(e.getPlayer().getUniqueId())){
+            e.setCancelled(true);
+        }
+    
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent e){
-        e.setCancelled(true);
-        
+        if (!builders.contains(e.getPlayer().getUniqueId())){
+            e.setCancelled(true);
+        }
+    
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerBedEnterEvent(PlayerBedEnterEvent e){
-        e.setCancelled(true);
-        
+        if (!builders.contains(e.getPlayer().getUniqueId())){
+            e.setCancelled(true);
+        }
+    
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerBucketFillEvent(PlayerBucketFillEvent e){
-        e.setCancelled(true);
-        
+        if (!builders.contains(e.getPlayer().getUniqueId())){
+            e.setCancelled(true);
+        }
+    
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent e){
-        e.setCancelled(true);
-        
+        if (!builders.contains(e.getPlayer().getUniqueId())){
+            e.setCancelled(true);
+        }
+    
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDropItemEvent(PlayerDropItemEvent e){
-        e.setCancelled(true);
-        
+        if (!builders.contains(e.getPlayer().getUniqueId())){
+            e.setCancelled(true);
+        }
+    
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent e){
-        e.setCancelled(true);
+        if (!builders.contains(e.getPlayer().getUniqueId())){
+            e.setCancelled(true);
+        }
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -265,6 +288,9 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(ignoreCancelled = true)
     public void onEntityTargetLivingEntityEvent(EntityTargetLivingEntityEvent e){
+        if (e.getEntity() instanceof Player) return;
+        if (e.getEntity() instanceof ArmorStand) return;
+        if (e.getEntity() instanceof CraftArmorStand) return;
         e.setCancelled(true);
     }
     
@@ -290,8 +316,10 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(ignoreCancelled = true)
     public void onEntitySpawnEvent(EntitySpawnEvent e){
-        if (!(e.getEntity() instanceof Player))
-            e.setCancelled(true);
+        if (e.getEntity() instanceof Player) return;
+        if (e.getEntity() instanceof ArmorStand) return;
+        if (e.getEntity() instanceof CraftArmorStand) return;
+        e.setCancelled(true);
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -301,7 +329,7 @@ public final class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawnEvent(PlayerMoveEvent e){
-        if (e.getPlayer().getLocation().getY() < 10){
+        if (e.getPlayer().getLocation().getY() < -4){
             e.getPlayer().teleport(e.getPlayer().getWorld().getSpawnLocation());
         }
     }
@@ -338,14 +366,12 @@ public final class LobbyPlayerEvents extends MainEvents {
         }
     }
     
-    @EventHandler
-    public void onPlayerPortal(PlayerPortalEvent e){
-        e.setCancelled(true);
-    }
     
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onWeatherChangeEvent(WeatherChangeEvent e){
-        e.setCancelled(true);
+        if (e.toWeatherState()){
+            e.setCancelled(true);
+        }
     }
     
 }

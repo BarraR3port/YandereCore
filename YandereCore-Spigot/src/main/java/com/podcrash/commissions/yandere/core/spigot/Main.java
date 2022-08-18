@@ -6,8 +6,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.podcrash.commissions.yandere.core.common.YandereApi;
 import com.podcrash.commissions.yandere.core.common.data.logs.ILogRepository;
+import com.podcrash.commissions.yandere.core.common.data.logs.OfflineLogRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
+import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
+import com.podcrash.commissions.yandere.core.common.db.OfflinePlayerRepository;
+import com.podcrash.commissions.yandere.core.common.socket.ISocket;
+import com.podcrash.commissions.yandere.core.common.socket.OfflineSocketClient;
 import com.podcrash.commissions.yandere.core.spigot.commands.*;
 import com.podcrash.commissions.yandere.core.spigot.commands.punish.EnderSeeCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.punish.InvSeeCommand;
@@ -35,8 +40,7 @@ import com.podcrash.commissions.yandere.core.spigot.papi.Placeholders;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.commissions.yandere.core.spigot.socket.SpigotSocketClient;
 import com.podcrash.commissions.yandere.core.spigot.sounds.Sounds;
-import com.podcrash.commissions.yandere.core.spigot.users.PlayersRepository;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
+import com.podcrash.commissions.yandere.core.spigot.users.PlayerRepository;
 import com.podcrash.commissions.yandere.core.spigot.vanish.VanishManager;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.ViaAPI;
@@ -58,7 +62,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
+public final class Main extends JavaPlugin implements YandereApi {
     
     public static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private static LyApi api;
@@ -69,9 +73,9 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
     private YandereConfig items;
     private YandereConfig sounds;
     private String nms_version;
-    private PlayersRepository players;
-    private LogRepository logs;
-    private SpigotSocketClient socket;
+    private IPlayerRepository players;
+    private ILogRepository logs;
+    private ISocket socket;
     private ViaAPI<Player> viaVersionApi;
     private VanishManager vanishManager;
     private InvManager invManager;
@@ -137,41 +141,46 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
                 getServer().shutdown();
             }
         }
-        
-        
+    
+    
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
             new Placeholders(this).register();
         }
-        
+    
         if (Bukkit.getPluginManager().getPlugin("ViaVersion") != null){
             viaVersionApi = Via.getAPI();
         }
-        
+    
         registerCommands();
-        
-        //final MongoDBClient mongo = new MongoDBClient( "mongodb://" + config.getString( "db.host" ) + ":" + config.getString( "db.port" ) , config.getString( "db.database" ) );
-        final MongoDBClient mongo = new MongoDBClient(config.getString("db.urli"), config.getString("db.database"));
-        players = new PlayersRepository(mongo, "players");
-        logs = new LogRepository(mongo, "logs");
-        try {
-            socket = new SpigotSocketClient(players);
-            if (Settings.IS_SERVER_LINKED){
-                socket.init();
-                socket.sendUpdate();
-            } else {
-                getServer().getPluginManager().registerEvents(new DefaultEvents(), this);
-                ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                out.writeUTF("GetServer");
-                Bukkit.getServer().sendPluginMessage(Main.getInstance(), "podcrash:yandere", out.toByteArray());
+        if (config.getBoolean("db.enabled")){
+            final MongoDBClient mongo = new MongoDBClient(config.getString("db.urli"), config.getString("db.database"));
+            players = new PlayerRepository(mongo, "players");
+            logs = new LogRepository(mongo, "logs");
+            try {
+                socket = new SpigotSocketClient(players);
+                if (Settings.IS_SERVER_LINKED){
+                    socket.init();
+                    socket.sendUpdate();
+                } else {
+                    getServer().getPluginManager().registerEvents(new DefaultEvents(), this);
+                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                    out.writeUTF("GetServer");
+                    Bukkit.getServer().sendPluginMessage(Main.getInstance(), "podcrash:yandere", out.toByteArray());
+                }
+            } catch (IOException | IllegalArgumentException e) {
+                e.printStackTrace();
+                getServer().shutdown();
             }
-        } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace();
-            getServer().shutdown();
+        } else {
+            players = new OfflinePlayerRepository();
+            logs = new OfflineLogRepository();
+            socket = new OfflineSocketClient();
         }
         switch(Settings.SERVER_TYPE){
             case LOBBY:
             case LOBBY_BED_WARS:{
                 getServer().getPluginManager().registerEvents(new LobbyPlayerEvents(), this);
+                api.getCommandService().registerCommands(new Build());
                 break;
             }/*
             case BED_WARS:{
@@ -248,11 +257,11 @@ public final class Main extends JavaPlugin implements YandereApi<SpigotUser> {
         return sounds;
     }
     
-    public PlayersRepository getPlayers(){
+    public IPlayerRepository getPlayers(){
         return players;
     }
     
-    public SpigotSocketClient getSocket(){
+    public ISocket getSocket(){
         return socket;
     }
     

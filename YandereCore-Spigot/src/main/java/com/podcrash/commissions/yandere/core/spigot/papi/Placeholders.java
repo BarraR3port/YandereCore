@@ -1,13 +1,11 @@
 package com.podcrash.commissions.yandere.core.spigot.papi;
 
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.text.DecimalFormat;
 
 public class Placeholders extends PlaceholderExpansion {
     
@@ -91,8 +89,7 @@ public class Placeholders extends PlaceholderExpansion {
     // PLACEHOLDERS
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String identifier){
-        if (player == null) return "";
-        
+    
         if (identifier.startsWith("server_size_")){
             return String.valueOf(Main.getInstance().getProxyStats().getTargetServerSize(identifier.replace("server_size_", "")));
         }
@@ -102,16 +99,11 @@ public class Placeholders extends PlaceholderExpansion {
         if (identifier.startsWith("server_online_formatted_")){
             return Main.getInstance().getProxyStats().isTargetServerOnline(identifier.replace("server_online_formatted_", "")) ? "&aABIERTO" : "&cCERRADO";
         }
+    
         switch(identifier){
             case "server_name":
             case "server":{
                 return Settings.SERVER_NAME;
-            }
-            case "health":{
-                return String.valueOf(player.getHealth());
-            }
-            case "gamemode":{
-                return String.valueOf(player.getGameMode());
             }
             case "version":{
                 return plugin.getDescription().getVersion();
@@ -131,14 +123,16 @@ public class Placeholders extends PlaceholderExpansion {
             case "server_name_number":{
                 return String.valueOf(Settings.SERVER_NAME.charAt(Settings.SERVER_NAME.length() - 1));
             }
-            
+        
         }
-        
-        final SpigotUser p = Main.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
-        
+    
+        if (player == null) return "Jugador no encontrado";
+        if (identifier.equals("health")) return String.valueOf(player.getHealth());
+        if (identifier.equals("gamemode")) return String.valueOf(player.getGameMode());
+    
+        final User p = Main.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
         if (p == null) return "Jugador no encontrado";
-        //%dark_coins%
-        
+    
         switch(identifier){
             case "location_server":{
                 return p.getLastLocation().getServer();
@@ -165,17 +159,10 @@ public class Placeholders extends PlaceholderExpansion {
                 return p.getRank().getPrefix();
             }
             case "coins":{
-                return String.valueOf(p.getCoins());
+                return p.getCoinsSemiFormatted();
             }
             case "coins_formatted":{
-                DecimalFormat df = new DecimalFormat("#.##");
-                if (p.getCoins() > 1000000){
-                    return df.format(p.getCoins() / 1000000) + "&eM ⛃";
-                }
-                if (p.getCoins() > 10000){
-                    return df.format(p.getCoins() / 1000) + "&eK ⛃";
-                }
-                return df.format(p.getCoins()) + " &e⛃";
+                return p.getCoinsFormatted();
             }
             case "level":{
                 return String.valueOf(p.getLevel().getLevel());

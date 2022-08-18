@@ -5,7 +5,7 @@ import com.podcrash.commissions.yandere.core.common.data.logs.Log;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import net.lymarket.common.db.MongoDBClient;
 
-public class LogRepository extends ILogRepository<Log> {
+public class LogRepository extends ILogRepository {
     
     
     public LogRepository(MongoDBClient database, String tableName){

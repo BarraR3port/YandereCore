@@ -95,7 +95,7 @@ public class PlayerEvents {
                 RegisteredServer server = s.getServer();
                 ByteArrayDataInput in = ByteStreams.newDataInput(e.getData());
                 String subChannel = in.readUTF();
-                if ("GetServer" .equals(subChannel)){
+                if ("GetServer".equals(subChannel)){
                     try {
                         if (server.ping().get() != null){
                             ByteArrayDataOutput out = ByteStreams.newDataOutput();

@@ -1,8 +1,8 @@
 package com.podcrash.commissions.yandere.core.spigot.commands;
 
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.spigot.Main;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.common.commands.*;
 import net.lymarket.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.utils.Utils;
@@ -38,7 +38,7 @@ public class RankMenu implements ILyCommand {
                 final String target = context.getArg(1);
                 try {
                     Rank rank = Rank.valueOf(context.getArg(2).toUpperCase(Locale.ROOT));
-                    SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(target);
+                    User user = Main.getInstance().getPlayers().getLocalStoredPlayer(target);
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + target + " group set " + rank.getLpName());
                     Main.getInstance().getPlayers().setPlayerRank(user, rank);
                 } catch (NullPointerException e) {

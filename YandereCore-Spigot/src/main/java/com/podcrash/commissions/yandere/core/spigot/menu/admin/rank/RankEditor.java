@@ -1,10 +1,10 @@
 package com.podcrash.commissions.yandere.core.spigot.menu.admin.rank;
 
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.menu.admin.AdminMenu;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
 import net.lymarket.lyapi.spigot.menu.UpdatableMenu;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
@@ -15,9 +15,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class RankEditor extends UpdatableMenu {
     
-    private SpigotUser user;
+    private User user;
     
-    public RankEditor(IPlayerMenuUtility playerMenuUtility, SpigotUser user){
+    public RankEditor(IPlayerMenuUtility playerMenuUtility, User user){
         super(playerMenuUtility);
         this.user = user;
     }

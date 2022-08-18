@@ -2,8 +2,8 @@ package com.podcrash.commissions.yandere.core.spigot.items;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.podcrash.commissions.yandere.core.common.data.lobby.PlayerVisibility;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.config.Config;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
 import net.lymarket.lyapi.spigot.utils.Utils;
@@ -234,7 +234,7 @@ public final class Items {
     }
     
     public static ItemStack head(Player owner){
-        final SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(owner.getUniqueId());
+        final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(owner.getUniqueId());
         return new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
                 .setHeadSkin(user.getSkin())
                 .setDisplayName("&a" + owner.getName() + "'s &7Stats:")
@@ -255,8 +255,8 @@ public final class Items {
     public static void setLobbyItems(Player p){
         p.getInventory().clear();
         p.getInventory().setItem(Main.getInstance().getItems().getInt("items.lobby-item.slot"), LOBBY_MENU.clone());
-        
-        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+    
+        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         PlayerVisibility playerVisibility = user.getPlayerVisibility();
         switch(playerVisibility){
             case ALL:

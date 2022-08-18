@@ -1,11 +1,11 @@
 package com.podcrash.commissions.yandere.core.spigot.commands;
 
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.menu.admin.AdminMenu;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.commissions.yandere.core.spigot.sounds.Sounds;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.common.commands.*;
 import net.lymarket.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.LyApi;
@@ -44,7 +44,7 @@ public class Admin implements ILyCommand {
             Player p = (Player) context.getSender();
             if (context.getArgs().length == 2){
                 if (context.getArg(0).equalsIgnoreCase("menu")){
-                    final SpigotUser target = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(1));
+                    final User target = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(1));
                     new AdminMenu(LyApi.getPlayerMenuUtility(p), target).open();
                     return new CommandResponse();
                 }

@@ -17,7 +17,7 @@ public class Back implements ILyCommand {
             Main.getLang().sendErrorMsg(context.getSender(), "only-players-can-use-this-command");
             return new CommandResponse();
         }
-        SpigotUser user = Main.getInstance().getPlayers().getPlayer(((Player) context.getSender()).getUniqueId());
+        SpigotUser user = (SpigotUser) Main.getInstance().getPlayers().getPlayer(((Player) context.getSender()).getUniqueId());
         
         Location loc = user.getBukkitLocation();
         if (loc == null){

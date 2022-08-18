@@ -1,22 +1,24 @@
 package com.podcrash.commissions.yandere.core.spigot.listener.bedwars;
 
+import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.GameState;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
+import com.andrei1058.bedwars.api.server.ServerType;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.commands.shout.ShoutCommand;
 import com.andrei1058.bedwars.configuration.Permissions;
 import com.andrei1058.bedwars.support.papi.SupportPAPI;
 import com.podcrash.commissions.yandere.core.common.data.loc.Loc;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.listener.MainEvents;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -49,7 +51,7 @@ public final class BWPlayerEvents extends MainEvents {
         try {
             final World world = e.getTo().getWorld();
             final UUID playerUUID = e.getPlayer().getUniqueId();
-            final SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
+            final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
             final Location loc = e.getTo();
             user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
@@ -62,10 +64,10 @@ public final class BWPlayerEvents extends MainEvents {
     }
     
     @EventHandler
-    public void subPlayerChatEvent(AsyncPlayerChatEvent event){
+    public void subPlayerChatEvent(AsyncPlayerChatEvent e){
         
-        Player p = event.getPlayer();
-        String finalMessage = event.getMessage();
+        Player p = e.getPlayer();
+        String finalMessage = e.getMessage();
         
         /*for ( String bloqueada : SMain.getInstance( ).getLySettings( ).getDisallowedWords( ) ) {
             if ( finalMessage.toLowerCase( ).contains( bloqueada ) ) {
@@ -76,13 +78,28 @@ public final class BWPlayerEvents extends MainEvents {
             }
         }*/
         
-        if (event.isCancelled()) return;
-        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+        if (e.isCancelled()) return;
+        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         final String white_msg = p.hasPermission("yandere.chat.whitemessage") ? "&f" : "&7";
         if (p.hasPermission("yandere.chat.color")){
             finalMessage = Utils.format(finalMessage);
         }
-        event.setCancelled(true);
+        
+        if (getServerType() == ServerType.MULTIARENA && p.getWorld().getName().equalsIgnoreCase(BedWars.getLobbyWorld())){
+            if (!config.getBoolean("globalChat")){
+                e.getRecipients().clear();
+                e.getRecipients().addAll(p.getWorld().getPlayers());
+            }
+            e.setFormat(SupportPAPI.getSupportPAPI().replace(e.getPlayer(), getMsg(p, Messages.FORMATTING_CHAT_LOBBY).replace("{vPrefix}", getChatSupport().getPrefix(p)).replace("{vSuffix}", getChatSupport().getSuffix(p))
+                    .replace("{player}", p.getDisplayName()).replace("{level}", getLevelSupport().getLevel(p))).replace("{message}", "%2$s"));
+            for ( Player player : e.getRecipients() ){
+                player.sendMessage(e.getFormat());
+            }
+            return;
+        }
+        
+        e.setCancelled(true);
+        
         
         if (Arena.getArenaByPlayer(p) != null){
             boolean isDefault = user.getRank() == Rank.USUARIO;
@@ -92,8 +109,8 @@ public final class BWPlayerEvents extends MainEvents {
             IArena a = Arena.getArenaByPlayer(p);
             ITeam t = a.getTeam(p);
             Arena.afkCheck.remove(p.getUniqueId());
-            if (getAPI().getAFKUtil().isPlayerAFK(event.getPlayer())){
-                Bukkit.getScheduler().runTask(plugin, () -> getAPI().getAFKUtil().setPlayerAFK(event.getPlayer(), false));
+            if (getAPI().getAFKUtil().isPlayerAFK(e.getPlayer())){
+                Bukkit.getScheduler().runTask(plugin, () -> getAPI().getAFKUtil().setPlayerAFK(e.getPlayer(), false));
             }
             TextComponent level = Utils.hoverOverMessage(getLevelSupport().getLevel(p),
                     Arrays.asList(
@@ -124,7 +141,7 @@ public final class BWPlayerEvents extends MainEvents {
                     "https://store.yanderecraft.com");
             
             if (t != null){
-                final String teamName = t.getColor().chat() + "「" + t.getDisplayName(Language.getPlayerLanguage(event.getPlayer())).toUpperCase() + "⏌ ";
+                final String teamName = t.getColor().chat() + "「" + t.getDisplayName(Language.getPlayerLanguage(e.getPlayer())).toUpperCase() + "⏌ ";
                 team = Utils.hoverOverMessage(teamName,
                         Arrays.asList(
                                 "&7「&eInformación del Equipo&7⏌",
@@ -136,9 +153,9 @@ public final class BWPlayerEvents extends MainEvents {
             final TextComponent finalTeam = team;
             final String finalMessage3 = finalMessage;
             if (a.isSpectator(p)){
-                event.getRecipients().clear();
-                event.getRecipients().addAll(a.getSpectators());
-                for ( Player player : event.getRecipients() ){
+                e.getRecipients().clear();
+                e.getRecipients().addAll(a.getSpectators());
+                for ( Player player : e.getRecipients() ){
                     Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> player.spigot().sendMessage(
                             Utils.formatTC("&7「ESPECTADOR⏌ "),
                             level,
@@ -150,9 +167,9 @@ public final class BWPlayerEvents extends MainEvents {
                 Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
             } else {
                 if (a.getStatus() == GameState.waiting || a.getStatus() == GameState.starting){
-                    event.getRecipients().clear();
-                    event.getRecipients().addAll(a.getPlayers());
-                    for ( Player player : event.getRecipients() ){
+                    e.getRecipients().clear();
+                    e.getRecipients().addAll(a.getPlayers());
+                    for ( Player player : e.getRecipients() ){
                         Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> player.spigot().sendMessage(
                                 level,
                                 finalTeam,
@@ -165,28 +182,28 @@ public final class BWPlayerEvents extends MainEvents {
                 }
                 if (finalMessage.startsWith("!") || finalMessage.startsWith("shout") || finalMessage.startsWith("SHOUT") || finalMessage.startsWith(getMsg(p, Messages.MEANING_SHOUT))){
                     if (!(p.hasPermission(Permissions.PERMISSION_SHOUT_COMMAND) || p.hasPermission(Permissions.PERMISSION_ALL))){
-                        event.setCancelled(true);
+                        e.setCancelled(true);
                         p.sendMessage(getMsg(p, Messages.COMMAND_NOT_FOUND_OR_INSUFF_PERMS));
                         return;
                     }
                     if (ShoutCommand.isShoutCooldown(p)){
-                        event.setCancelled(true);
+                        e.setCancelled(true);
                         p.sendMessage(getMsg(p, Messages.COMMAND_COOLDOWN).replace("{seconds}", String.valueOf(Math.round(ShoutCommand.getShoutCooldown(p)))));
                         return;
                     }
                     ShoutCommand.updateShout(p);
-                    
-                    event.getRecipients().clear();
-                    event.getRecipients().addAll(a.getPlayers());
-                    event.getRecipients().addAll(a.getSpectators());
-                    
+    
+                    e.getRecipients().clear();
+                    e.getRecipients().addAll(a.getPlayers());
+                    e.getRecipients().addAll(a.getSpectators());
+    
                     if (finalMessage.startsWith("!")) finalMessage = finalMessage.replaceFirst("!", "");
                     if (finalMessage.startsWith("shout")) finalMessage = finalMessage.replaceFirst("SHOUT", "");
                     if (finalMessage.startsWith("shout")) finalMessage = finalMessage.replaceFirst("shout", "");
                     if (finalMessage.startsWith(getMsg(p, Messages.MEANING_SHOUT)))
                         finalMessage = finalMessage.replaceFirst(getMsg(p, Messages.MEANING_SHOUT), "");
                     final String finalMessage1 = finalMessage;
-                    for ( Player player : event.getRecipients() ){
+                    for ( Player player : e.getRecipients() ){
                         Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> player.spigot().sendMessage(
                                 Utils.formatTC("&7「GLOBAL⏌ "),
                                 level,
@@ -198,20 +215,20 @@ public final class BWPlayerEvents extends MainEvents {
                     Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
                 } else {
                     final String finalMessage2 = finalMessage;
-                    event.getRecipients().clear();
+                    e.getRecipients().clear();
                     assert t != null;
                     if (a.getMaxInTeam() == 1){
-                        event.getRecipients().addAll(a.getPlayers());
-                        event.getRecipients().addAll(a.getSpectators());
+                        e.getRecipients().addAll(a.getPlayers());
+                        e.getRecipients().addAll(a.getSpectators());
                     } else {
-                        event.getRecipients().addAll(t.getMembers());
+                        e.getRecipients().addAll(t.getMembers());
                     }
-                    
-                    event.setFormat(SupportPAPI.getSupportPAPI().replace(event.getPlayer(), getMsg(p, Messages.FORMATTING_CHAT_TEAM).replace("{vPrefix}", getChatSupport().getPrefix(p)).replace("{vSuffix}", getChatSupport().getSuffix(p))
-                            .replace("{player}", p.getDisplayName()).replace("{team}", t.getColor().chat() + "「" + t.getDisplayName(Language.getPlayerLanguage(event.getPlayer())).toUpperCase() + "⏌")
+    
+                    e.setFormat(SupportPAPI.getSupportPAPI().replace(e.getPlayer(), getMsg(p, Messages.FORMATTING_CHAT_TEAM).replace("{vPrefix}", getChatSupport().getPrefix(p)).replace("{vSuffix}", getChatSupport().getSuffix(p))
+                            .replace("{player}", p.getDisplayName()).replace("{team}", t.getColor().chat() + "「" + t.getDisplayName(Language.getPlayerLanguage(e.getPlayer())).toUpperCase() + "⏌")
                             .replace("{level}", getLevelSupport().getLevel(p))).replace("{finalMessage}", "%2$s"));
-                    
-                    for ( Player player : event.getRecipients() ){
+    
+                    for ( Player player : e.getRecipients() ){
                         Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> player.spigot().sendMessage(
                                 level,
                                 finalTeam,

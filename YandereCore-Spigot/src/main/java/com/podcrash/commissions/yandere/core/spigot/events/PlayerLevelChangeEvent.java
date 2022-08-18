@@ -14,8 +14,8 @@ public class PlayerLevelChangeEvent extends Event implements Cancellable {
     
     private final Player player;
     private final Level level;
-    protected boolean canceled;
     private final ChangeType type;
+    protected boolean canceled;
     
     
     /**

@@ -9,7 +9,8 @@ import com.podcrash.commissions.yandere.core.velocity.commands.Lobby;
 import com.podcrash.commissions.yandere.core.velocity.commands.VAdmin;
 import com.podcrash.commissions.yandere.core.velocity.config.Config;
 import com.podcrash.commissions.yandere.core.velocity.listener.PlayerEvents;
-import com.podcrash.commissions.yandere.core.velocity.manager.PlayersRepository;
+import com.podcrash.commissions.yandere.core.velocity.listener.ServerEvents;
+import com.podcrash.commissions.yandere.core.velocity.manager.PlayerRepository;
 import com.podcrash.commissions.yandere.core.velocity.manager.ServerSocketManager;
 import com.podcrash.commissions.yandere.core.velocity.socketmanager.ProxySocketServer;
 import com.podcrash.commissions.yandere.core.velocity.socketmanager.ServerSocketTask;
@@ -46,7 +47,7 @@ public final class VMain extends LyApiVelocity {
     private final ProxyServer proxy;
     private final Slf4jPluginLogger logger;
     private final Path path;
-    private PlayersRepository playersRepository;
+    private PlayerRepository playersRepository;
     
     
     /**
@@ -91,12 +92,13 @@ public final class VMain extends LyApiVelocity {
         config = new Config(path);
         proxy.getChannelRegistrar().register(new LegacyChannelIdentifier("podcrash:yandere"));
         proxy.getEventManager().register(this, new PlayerEvents());
+        proxy.getEventManager().register(this, new ServerEvents());
         if (ServerSocketTask.init()){
             debug("ServerSocketTask started");
         }
         String url = config.getConfig().getDb_urli(); /*config.getDb_urli( ).equals( "" ) ? "mongodb://" + config.getDb_username( ) + ":" + config.getDb_password( ) + "@" + config.getDb_host( ) + ":" + config.getDb_port( ) :*/
         final MongoDBClient mongo = new MongoDBClient(url, config.getConfig().getDb_database());
-        playersRepository = new PlayersRepository(mongo, "players");
+        playersRepository = new PlayerRepository(mongo, "players");
         
         VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), this::sendInfo).repeat(5, TimeUnit.SECONDS).schedule();
         
@@ -141,7 +143,7 @@ public final class VMain extends LyApiVelocity {
         return logger;
     }
     
-    public PlayersRepository getPlayers(){
+    public PlayerRepository getPlayers(){
         return playersRepository;
     }
 }

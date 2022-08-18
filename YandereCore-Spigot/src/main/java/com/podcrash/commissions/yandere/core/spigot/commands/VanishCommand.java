@@ -25,7 +25,7 @@ public class VanishCommand implements ILyCommand {
                     Main.getInstance().getVanishManager().enable(p);
                     Utils.playActionBar(p, "&7Vanish &aActivado");
                 }
-        
+    
             } else if (context.getArgs().length == 1){
                 if (Bukkit.getPlayer(context.getArg(0)) != null){
                     Player target = Bukkit.getPlayer(context.getArg(0));
@@ -36,7 +36,7 @@ public class VanishCommand implements ILyCommand {
                         Main.getInstance().getVanishManager().enable(target);
                         Utils.playActionBar(target, "&7Vanish &aActivado");
                     }
-            
+    
                 } else {
                     Main.getLang().sendErrorMsg(p, "player.not-online", "player", context.getArg(0));
                 }

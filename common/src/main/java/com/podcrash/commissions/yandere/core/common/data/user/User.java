@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.util.*;
 
-public abstract class User {
+public class User {
     private final Date createDate = new Date();
     private final LinkedHashMap<String, Boolean> options = new LinkedHashMap<>();
     private final LinkedHashMap<String, String> properties = new LinkedHashMap<>();
@@ -205,15 +205,19 @@ public abstract class User {
     }
     
     public String getCoinsFormatted(){
-        if (coins > 1000000){
+        if (coins > 1000000f){
             DecimalFormat df = new DecimalFormat("#.##");
-            return df.format(coins / 1000000) + "&eM ⛃";
+            return df.format(coins / 1000000f) + "&eM ⛃";
         }
-        if (coins > 10000){
+        if (coins > 10000f){
             DecimalFormat df = new DecimalFormat("#.##");
-            return df.format(coins / 1000) + "&eK ⛃";
+            return df.format(coins / 1000f) + "&eK ⛃";
         }
         return coins + "&e ⛃";
+    }
+    
+    public String getCoinsSemiFormatted(){
+        return new DecimalFormat("###,###,###.#").format(coins) + "&e ⛃";
     }
     
 }

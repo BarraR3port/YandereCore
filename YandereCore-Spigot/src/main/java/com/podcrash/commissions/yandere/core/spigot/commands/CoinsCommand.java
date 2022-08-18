@@ -1,8 +1,8 @@
 package com.podcrash.commissions.yandere.core.spigot.commands;
 
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.common.commands.*;
 import net.lymarket.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.utils.Utils;
@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 
 public class CoinsCommand implements ILyCommand {
     
-    @Command(name = "coins", permission = "yandere.admin")
+    @Command(name = "coins", permission = "yandere.admin", aliases = "eco")
     public CommandResponse command(CommandContext context){
         if (context.getArg(0).equalsIgnoreCase("add") || context.getArg(0).equalsIgnoreCase("remove") || context.getArg(0).equalsIgnoreCase("get") || context.getArg(0).equalsIgnoreCase("set")){
             
             try {
-                SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(1));
+                User user = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(1));
                 
                 if (context.getArg(0).equalsIgnoreCase("get")){
                     final HashMap<String, String> replacements = new HashMap<>();

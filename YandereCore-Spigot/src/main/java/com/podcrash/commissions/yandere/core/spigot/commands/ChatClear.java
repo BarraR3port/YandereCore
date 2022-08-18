@@ -42,7 +42,7 @@ public class ChatClear implements ILyCommand {
             }
         } else if (context.getArg(0).equalsIgnoreCase("all")){
             if (p.hasPermission("yandere.chat.clear.all")){
-        
+    
                 for ( int i = 0; i < 100; i++ ){
                     Bukkit.broadcastMessage("");
                 }

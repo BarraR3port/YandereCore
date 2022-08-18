@@ -3,9 +3,9 @@ package com.podcrash.commissions.yandere.core.spigot.menu.lobby;
 import com.cryptomorin.xseries.XMaterial;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
-import com.podcrash.commissions.yandere.core.spigot.users.SpigotUser;
 import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
 import net.lymarket.lyapi.spigot.menu.UpdatableMenu;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
@@ -63,8 +63,8 @@ public class LobbyMenu extends UpdatableMenu {
     
     @Override
     public void setMenuItems(){
-        
-        SpigotUser user = Main.getInstance().getPlayers().getLocalStoredPlayer(targetUserUUID);
+    
+        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(targetUserUUID);
         if (user == null){
             user = Main.getInstance().getPlayers().getLocalStoredPlayer(getOwner().getName());
             user.setUUID(getOwner().getUniqueId());
