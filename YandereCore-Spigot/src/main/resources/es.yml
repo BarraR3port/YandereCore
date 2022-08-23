@@ -139,3 +139,10 @@ error:
         not-enough: "&cNo le puedes quitar más XP a &e%player%&c."
       amount:
         invalid: "&cEl XP es inválido."
+menu:
+  close: "&cCerrar"
+  filler-glass-color-id: "15"
+  prev: "&aAnterior"
+  next: "&aSiguiente"
+  deny: "&cCancelar"
+  accept: "&aAceptar"

@@ -43,7 +43,10 @@ public class ProxySocketServer implements Runnable {
     
     public void closeConnections(){
         try {
-            socket.close();
+            if (!socket.isClosed()){
+                socket.close();
+            }
+    
         } catch (IOException error) {
             error.printStackTrace();
         }
@@ -167,17 +170,15 @@ public class ProxySocketServer implements Runnable {
                                         return;
                                     }
                                     if (serverName.equals("EMPTY")){
-                                        p.sendMessage(Utils.format("&cEste server está cerrado o ha ocurrido un bug"));
-                                        p.sendMessage(Utils.format("&cContacta al soporte entregando el siguiente numero de error o una captura:"));
-                                        p.sendMessage(Utils.format("&cCódigo del error:   - &4&lERRN-0001 -"/*TODO CREATE THIS THING*/));
+                                        p.sendMessage(Utils.format("&cEste server está cerrado."));
                                         continue;
                                     }
                                     
                                     VMain.getInstance().getProxy().getServer(serverName).ifPresent(server -> {
                                         try {
-                                            ConnectionRequestBuilder.Result result = p.createConnectionRequest(server).connect().get(2, TimeUnit.SECONDS);
+                                            ConnectionRequestBuilder.Result result = p.createConnectionRequest(server).connect().get(5, TimeUnit.SECONDS);
                                             if (!result.getStatus().equals(ConnectionRequestBuilder.Status.SUCCESS)){
-                                                p.sendMessage(Utils.format("&cError al conectar, probablemente tu versión no es compatible con la de este server."));
+                                                p.sendMessage(Utils.format("&cError al conectar, espera unos segundos."));
                                             }
                                         } catch (InterruptedException | ExecutionException | TimeoutException ignored) {
                                         }

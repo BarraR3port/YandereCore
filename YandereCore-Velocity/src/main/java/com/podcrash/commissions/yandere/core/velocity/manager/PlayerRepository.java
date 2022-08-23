@@ -6,10 +6,9 @@ import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
-import com.podcrash.commissions.yandere.core.velocity.user.VelocityUser;
 import net.luckperms.api.LuckPermsProvider;
-import net.lymarket.common.Api;
-import net.lymarket.common.db.MongoDBClient;
+import net.lymarket.lyapi.common.Api;
+import net.lymarket.lyapi.common.db.MongoDBClient;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -84,7 +83,7 @@ public class PlayerRepository extends IPlayerRepository {
     
     @Override
     public void createPlayer(String name, UUID uuid, String address){
-        VelocityUser user = new VelocityUser(name, uuid);
+        User user = new User(name, uuid);
         user.setAddress(address);
         user.setOption("allow-pm", true);
         user.addProperty("lobby-player-visibility", "ALL");

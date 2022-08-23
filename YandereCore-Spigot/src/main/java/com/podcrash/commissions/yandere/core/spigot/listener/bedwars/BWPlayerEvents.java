@@ -1,12 +1,10 @@
 package com.podcrash.commissions.yandere.core.spigot.listener.bedwars;
 
-import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.GameState;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
-import com.andrei1058.bedwars.api.server.ServerType;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.commands.shout.ShoutCommand;
 import com.andrei1058.bedwars.configuration.Permissions;
@@ -64,40 +62,14 @@ public final class BWPlayerEvents extends MainEvents {
     }
     
     @EventHandler
-    public void subPlayerChatEvent(AsyncPlayerChatEvent e){
-        
+    public boolean subPlayerChatEvent(AsyncPlayerChatEvent e){
         Player p = e.getPlayer();
         String finalMessage = e.getMessage();
-        
-        /*for ( String bloqueada : SMain.getInstance( ).getLySettings( ).getDisallowedWords( ) ) {
-            if ( finalMessage.toLowerCase( ).contains( bloqueada ) ) {
-                p.sendMessage( Main.getApi( ).getUtils( ).prefix( ) + " &cNo puedes escribir la palabra: &4&l" + bloqueada + "&c." );
-                p.playSound( p.getLocation( ) , XSound.ENTITY_BAT_HURT.parseSound( ) , 3 , ( float ) 0.2 );
-                event.setCancelled( true );
-                return;
-            }
-        }*/
-        
-        if (e.isCancelled()) return;
         User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         final String white_msg = p.hasPermission("yandere.chat.whitemessage") ? "&f" : "&7";
         if (p.hasPermission("yandere.chat.color")){
             finalMessage = Utils.format(finalMessage);
         }
-        
-        if (getServerType() == ServerType.MULTIARENA && p.getWorld().getName().equalsIgnoreCase(BedWars.getLobbyWorld())){
-            if (!config.getBoolean("globalChat")){
-                e.getRecipients().clear();
-                e.getRecipients().addAll(p.getWorld().getPlayers());
-            }
-            e.setFormat(SupportPAPI.getSupportPAPI().replace(e.getPlayer(), getMsg(p, Messages.FORMATTING_CHAT_LOBBY).replace("{vPrefix}", getChatSupport().getPrefix(p)).replace("{vSuffix}", getChatSupport().getSuffix(p))
-                    .replace("{player}", p.getDisplayName()).replace("{level}", getLevelSupport().getLevel(p))).replace("{message}", "%2$s"));
-            for ( Player player : e.getRecipients() ){
-                player.sendMessage(e.getFormat());
-            }
-            return;
-        }
-        
         e.setCancelled(true);
         
         
@@ -114,7 +86,7 @@ public final class BWPlayerEvents extends MainEvents {
             }
             TextComponent level = Utils.hoverOverMessage(getLevelSupport().getLevel(p),
                     Arrays.asList(
-                            "&e「&eNivel de BedWars&7⏌",
+                            "&7「&eNivel de BedWars&7⏌",
                             "",
                             "&7► Nivel: &c" + getLevelSupport().getPlayerLevel(p),
                             "&7► XP: &c" + getLevelSupport().getCurrentXpFormatted(p),
@@ -130,7 +102,7 @@ public final class BWPlayerEvents extends MainEvents {
                             "" + user.getLevel().getProgressBar()/* ,
                             "&7Clan: &c" + clanTag*/));
             TextComponent team = Utils.formatTC("");
-            TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
+            TextComponent rank = Utils.hoverOverMessageURL(isDefault ? " " : prefix,
                     Arrays.asList(
                             "&7「&eYandere &5Rangos&7⏌",
                             "",
@@ -164,7 +136,7 @@ public final class BWPlayerEvents extends MainEvents {
                             name,
                             Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage3)));
                 }
-                Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
+                Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
             } else {
                 if (a.getStatus() == GameState.waiting || a.getStatus() == GameState.starting){
                     e.getRecipients().clear();
@@ -177,19 +149,19 @@ public final class BWPlayerEvents extends MainEvents {
                                 name,
                                 Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage3)));
                     }
-                    Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
-                    return;
+                    Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
+                    return true;
                 }
                 if (finalMessage.startsWith("!") || finalMessage.startsWith("shout") || finalMessage.startsWith("SHOUT") || finalMessage.startsWith(getMsg(p, Messages.MEANING_SHOUT))){
                     if (!(p.hasPermission(Permissions.PERMISSION_SHOUT_COMMAND) || p.hasPermission(Permissions.PERMISSION_ALL))){
                         e.setCancelled(true);
                         p.sendMessage(getMsg(p, Messages.COMMAND_NOT_FOUND_OR_INSUFF_PERMS));
-                        return;
+                        return true;
                     }
                     if (ShoutCommand.isShoutCooldown(p)){
                         e.setCancelled(true);
                         p.sendMessage(getMsg(p, Messages.COMMAND_COOLDOWN).replace("{seconds}", String.valueOf(Math.round(ShoutCommand.getShoutCooldown(p)))));
-                        return;
+                        return true;
                     }
                     ShoutCommand.updateShout(p);
     
@@ -212,7 +184,7 @@ public final class BWPlayerEvents extends MainEvents {
                                 name,
                                 Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage1)));
                     }
-                    Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
+                    Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
                 } else {
                     final String finalMessage2 = finalMessage;
                     e.getRecipients().clear();
@@ -236,11 +208,11 @@ public final class BWPlayerEvents extends MainEvents {
                                 name,
                                 Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage2)));
                     }
-                    Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
+                    Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
                     
                 }
             }
         }
-        
+        return true;
     }
 }

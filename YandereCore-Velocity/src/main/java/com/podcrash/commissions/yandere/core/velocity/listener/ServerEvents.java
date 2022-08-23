@@ -6,6 +6,9 @@ import com.podcrash.commissions.yandere.core.velocity.utils.Utils;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import com.velocitypowered.api.proxy.server.ServerPing;
+
+import java.util.concurrent.CompletableFuture;
 
 public class ServerEvents {
     
@@ -15,40 +18,46 @@ public class ServerEvents {
         final ServerType serverType = ServerType.match(serverName);
         if (e.getServerKickReason().isEmpty()) return;
         final String randomLobbyServer = VMain.getInstance().getServerManager().getRandomLobbyServer().getProxyName();
+        boolean connectToRandomLobby = false;
         if (serverType.equals(ServerType.BED_WARS)){
             final String bwLobby = VMain.getInstance().getServerManager().getRandomBedWarsLobbyServer().getProxyName();
-            if (bwLobby.equals("EMPTY")){
-                e.getPlayer().sendMessage(Utils.format("&cNo hay Lobbys de BedWars disponibles!"));
-                connectToLobby(randomLobbyServer, e);
+            if (bwLobby.equalsIgnoreCase("EMPTY")){
+                e.getPlayer().sendMessage(Utils.format("&cNo hay Lobbies de BedWars disponibles!"));
+                connectToRandomLobby = true;
+            } else {
+                e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(bwLobby).get()));
                 return;
             }
-            e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(bwLobby).get()));
-            return;
         }
         if (serverType.equals(ServerType.SKY_WARS)){
             final String swLobby = VMain.getInstance().getServerManager().getRandomSkyWarsServer().getProxyName();
-            if (swLobby.equals("EMPTY")){
-                e.getPlayer().sendMessage(Utils.format("&cNo hay Lobbys de SkyWars disponibles!"));
-                connectToLobby(randomLobbyServer, e);
+            if (swLobby.equalsIgnoreCase("EMPTY")){
+                e.getPlayer().sendMessage(Utils.format("&cNo hay Lobbies de SkyWars disponibles!"));
+                connectToRandomLobby = true;
+            } else {
+                e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(swLobby).get()));
                 return;
             }
-            e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(swLobby).get()));
-            return;
         }
-        connectToLobby(randomLobbyServer, e);
-        
-        
+        if (connectToRandomLobby){
+            if (VMain.getInstance().getProxy().getServer(randomLobbyServer).isPresent()){
+                RegisteredServer server = VMain.getInstance().getProxy().getServer(randomLobbyServer).get();
+                CompletableFuture<ServerPing> ping = server.ping();
+                ping.whenCompleteAsync((ServerPing serverPing, Throwable throwable) -> {
+                    if (throwable != null){
+                        throwable.printStackTrace();
+                        e.setResult(KickedFromServerEvent.DisconnectPlayer.create(Utils.format("&cNo hay Lobbies disponibles!")));
+                        return;
+                    }
+                    e.setResult(KickedFromServerEvent.RedirectPlayer.create(server));
+                });
+            }
+        }
+    
     }
     
     private void connectToLobby(String lobby, KickedFromServerEvent e){
-        if (VMain.getInstance().getProxy().getServer(lobby).isPresent()){
-            RegisteredServer server = VMain.getInstance().getProxy().getServer(lobby).get();
-            if (server.ping().isDone()){
-                e.setResult(KickedFromServerEvent.RedirectPlayer.create(server));
-                return;
-            }
-        }
-        e.setResult(KickedFromServerEvent.DisconnectPlayer.create(Utils.format("&cNo hay lobbys disponibles!")));
+    
         
     }
     

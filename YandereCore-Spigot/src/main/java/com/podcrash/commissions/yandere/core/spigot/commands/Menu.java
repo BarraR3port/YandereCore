@@ -4,8 +4,8 @@ import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.menu.lobby.LobbyMenu;
-import net.lymarket.common.commands.*;
-import net.lymarket.common.commands.response.CommandResponse;
+import net.lymarket.lyapi.common.commands.*;
+import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.LyApi;
 import org.bukkit.entity.Player;
 

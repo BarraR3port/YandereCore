@@ -1,5 +1,7 @@
 package com.podcrash.commissions.yandere.core.common.data.logs;
 
+import net.lymarket.lyapi.common.Api;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
@@ -91,5 +93,10 @@ public class Log {
     
     public void setServer(String server){
         this.server = server;
+    }
+    
+    @Override
+    public String toString(){
+        return Api.getGson().toJson(this);
     }
 }

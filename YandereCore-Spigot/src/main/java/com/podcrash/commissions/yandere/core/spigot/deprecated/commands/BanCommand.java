@@ -8,7 +8,7 @@ import org.lydark.api.common.data.players.LydarkPlayer;
 import org.lydark.api.spigot.SMain;
 import org.lydark.api.spigot.commands.ILyCommand;
 import org.lydark.api.spigot.commands.CommandContext;
-import net.lymarket.common.commands.*;
+import net.lymarket.lyapi.common.commands.*;
 import org.lydark.api.spigot.punish.SPunishManager;
 import org.lydark.core.spigot.Core;
 import org.lydark.core.spigot.staff.PunishDateType;

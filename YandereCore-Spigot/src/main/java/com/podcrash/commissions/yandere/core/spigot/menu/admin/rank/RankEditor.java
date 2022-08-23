@@ -24,7 +24,7 @@ public class RankEditor extends UpdatableMenu {
     
     @Override
     public String getMenuName(){
-        return "Cambia el rango de: " + user.getName();
+        return "&c► &7Cambia el rango de: " + user.getName();
     }
     
     @Override

@@ -57,18 +57,16 @@ public final class PracticePlayerEvents extends MainEvents {
     
     
     @Override
-    public void subPlayerChatEvent(AsyncPlayerChatEvent event){
+    public boolean subPlayerChatEvent(AsyncPlayerChatEvent event){
         Player p = event.getPlayer();
         String message = event.getMessage();
-        
-        if (event.isCancelled()) return;
     
         User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         if (p.hasPermission("yandere.chat.color")){
             message = Utils.format(message);
         }
         event.setCancelled(true);
-        
+    
         PlayerStats stats = api.getPlayerStats(p);
         
         final String finalMessage = message;
@@ -97,7 +95,7 @@ public final class PracticePlayerEvents extends MainEvents {
                         "&7► Nivel: &c" + user.getLevel().getLevelName(),
                         "" + user.getLevel().getProgressBar()/* ,
                             "&7Clan: &c" + clanTag*/));
-        TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
+        TextComponent rank = Utils.hoverOverMessageURL(isDefault ? " " : prefix,
                 Arrays.asList("&7「&eYandere &5Rangos&7⏌",
                         "",
                         "&7Este jugador tiene el rango " + prefix,
@@ -110,15 +108,15 @@ public final class PracticePlayerEvents extends MainEvents {
                 rank,
                 name,
                 Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
-        
+    
         Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             for ( Player player : Bukkit.getOnlinePlayers() ){
                 player.spigot().sendMessage(msg);
             }
         });
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
-        
-        
+        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
+    
+        return true;
     }
     
     

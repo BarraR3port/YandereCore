@@ -6,6 +6,8 @@ import com.google.inject.Inject;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.log.Slf4jPluginLogger;
 import com.podcrash.commissions.yandere.core.velocity.commands.Lobby;
+import com.podcrash.commissions.yandere.core.velocity.commands.Ping;
+import com.podcrash.commissions.yandere.core.velocity.commands.Stream;
 import com.podcrash.commissions.yandere.core.velocity.commands.VAdmin;
 import com.podcrash.commissions.yandere.core.velocity.config.Config;
 import com.podcrash.commissions.yandere.core.velocity.listener.PlayerEvents;
@@ -23,12 +25,15 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
-import net.lymarket.common.db.MongoDBClient;
+import com.velocitypowered.api.scheduler.ScheduledTask;
+import net.lymarket.lyapi.common.db.MongoDBClient;
 import net.lymarket.lyapi.velocity.LyApiVelocity;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "yandere",
@@ -47,8 +52,8 @@ public final class VMain extends LyApiVelocity {
     private final ProxyServer proxy;
     private final Slf4jPluginLogger logger;
     private final Path path;
+    private final HashMap<UUID, ScheduledTask> streams = new HashMap<>();
     private PlayerRepository playersRepository;
-    
     
     /**
      * Constructor for ChatRegulator Plugin
@@ -99,18 +104,21 @@ public final class VMain extends LyApiVelocity {
         String url = config.getConfig().getDb_urli(); /*config.getDb_urli( ).equals( "" ) ? "mongodb://" + config.getDb_username( ) + ":" + config.getDb_password( ) + "@" + config.getDb_host( ) + ":" + config.getDb_port( ) :*/
         final MongoDBClient mongo = new MongoDBClient(url, config.getConfig().getDb_database());
         playersRepository = new PlayerRepository(mongo, "players");
-        
+    
         VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), this::sendInfo).repeat(5, TimeUnit.SECONDS).schedule();
-        
+    
         new Lobby(proxy.getCommandManager());
         new VAdmin(proxy.getCommandManager());
-        
+        new Stream(proxy.getCommandManager());
+        new Ping(proxy.getCommandManager());
+    
     }
     
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event){
         // Plugin shutdown logic
         ServerSocketTask.stopTasks();
+        logger.info(ChatColor.BLUE + "YandereCore Velocity plugin shutdown");
     }
     
     public void sendInfo(){
@@ -145,5 +153,13 @@ public final class VMain extends LyApiVelocity {
     
     public PlayerRepository getPlayers(){
         return playersRepository;
+    }
+    
+    public HashMap<UUID, ScheduledTask> getStreams(){
+        return streams;
+    }
+    
+    public void setStreams(UUID uuid, ScheduledTask task){
+        streams.put(uuid, task);
     }
 }

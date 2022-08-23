@@ -101,7 +101,7 @@
                                                             name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
                                                     <include
                                                             name="user.net.lymarket.comissions.youmind.bbb.velocity.VelocityUser"/>
-                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="net.lymarket.lyapi.common.**"/>
                                                     <include name="com.yworks.**"/>
                                                     <include name="org.spongepowered.**"/>
                                                     <include name="com.google.**"/>
@@ -133,7 +133,7 @@
                                                             name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
                                                     <include
                                                             name="user.net.lymarket.comissions.youmind.bbb.velocity.VelocityUser"/>
-                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="net.lymarket.lyapi.common.**"/>
                                                     <include name="xyz.xenondevs.particle.**"/>
                                                     <include name="com.cryptomorin.xseries.**"/>
                                                     <include name="org.spongepowered.**"/>
@@ -165,7 +165,7 @@
                                                             name="config.net.lymarket.comissions.youmind.bbb.velocity.Config"/>
                                                     <include
                                                             name="user.net.lymarket.comissions.youmind.bbb.velocity.VelocityUser"/>
-                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="net.lymarket.lyapi.common.**"/>
                                                     <include name="xyz.xenondevs.particle.*"/>
                                                     <include name="com.cryptomorin.xseries.*"/>
                                                     <include name="org.spongepowered.**"/>
@@ -201,7 +201,7 @@
                                                             name="net.lymarket.comissionss.youmind.bbb.common.data.**"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.common.skin.**"/>
-                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="net.lymarket.lyapi.common.**"/>
                                                     <include name="xyz.xenondevs.particle.**"/>
                                                     <include name="com.cryptomorin.xseries.**"/>
                                                     <include name="org.spongepowered.**"/>
@@ -275,7 +275,14 @@
         <dependency>
             <groupId>net.lymarket.lyapi</groupId>
             <artifactId>lyapi-velocity</artifactId>
-            <version>1.2.5</version>
+            <version>1.2.12</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lymarket.lyapi</groupId>
+            <artifactId>common</artifactId>
+            <version>1.2.12</version>
             <scope>compile</scope>
         </dependency>
 

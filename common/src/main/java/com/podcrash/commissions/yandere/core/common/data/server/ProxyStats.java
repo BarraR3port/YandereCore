@@ -111,6 +111,10 @@ public final class ProxyStats {
         return servers.values().stream().anyMatch(server -> server.getProxyName().equals(serverProxyName));
     }
     
+    public int getTargetServerPlayers(String serverProxyName){
+        return servers.values().stream().filter(server -> server.getProxyName().equals(serverProxyName)).mapToInt(Server::getOnlinePlayers).sum();
+    }
+    
     public EmptyServer getEmptyServer(){
         return emptyServer;
     }

@@ -1,7 +1,7 @@
 package com.podcrash.commissions.yandere.core.common.data.loc;
 
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
-import net.lymarket.common.Api;
+import net.lymarket.lyapi.common.Api;
 
 import java.util.UUID;
 

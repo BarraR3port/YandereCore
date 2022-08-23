@@ -3,7 +3,7 @@ package com.podcrash.commissions.yandere.core.spigot.socket;
 
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.users.PlayerRepository;
-import net.lymarket.common.db.MongoDBClient;
+import net.lymarket.lyapi.common.db.MongoDBClient;
 import net.lymarket.lyapi.spigot.LyApi;
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class SpigotSocketClientTest {
     
-    @Test
+    
     public void test(){
         
         final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
@@ -22,7 +22,7 @@ public class SpigotSocketClientTest {
         System.out.println(LyApi.getGson().toJson(user));
     }
     
-    @Test
+    
     public void test2(){
         final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
         PlayerRepository players = new PlayerRepository(mongo, "players");
@@ -36,10 +36,12 @@ public class SpigotSocketClientTest {
     
     @Test
     public void test3(){
-        int amount = 16;
-        int spawnLimit = 10;
-        
-        System.out.println(Math.min(amount, spawnLimit));
-        
+        int initial = 2;
+        int amount = 10;
+        int midValue = initial - amount;
+        int finalValue = Math.max(midValue, 0);
+    
+        System.out.println(finalValue);
+    
     }
 }

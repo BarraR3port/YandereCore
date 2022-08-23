@@ -3,25 +3,24 @@ package com.podcrash.commissions.yandere.core.common.data.user.props;
 import java.util.Arrays;
 
 public enum Rank {
-    ADMIN("admin", "§c§l「Admin⏌", "§c§l「Admin⏌ §f", "§c§lAdmin"),
-    DEV("dev", "§d「Dev⏌", "§d「Dev⏌ §f", "§d§lDeveloper"),
-    MOD("mod", "§9「Mod⏌", "§9「Mod⏌ §f", "§9Mod"),
-    AFILIADO("afiliado", "§4「Af⏌", "§4「Afiliado⏌ §f", "§9Afiliado"),
-    DIAMANTE("diamante", "§b§l「Diamante⏌ ", "§b§l「Diamante⏌ §f", "§b§lDiamante"),
-    ORO("oro", "§e「Oro⏌", "§e「Oro⏌ §f", "§eOro"),
-    HIERRO("hierro", "§7「Hierro⏌", "§7「Hierro⏌ §7", "§7Hierro"),
-    BRONCE("bronce", "§6「Bronce⏌", "§6「Bronce⏌ §7", "§6Bronce"),
+    ADMIN("admin", "§c§l「Admin⏌ §f", "§c§l「Admin⏌ §f", "§c§lAdmin"),
+    DEV("dev", "§d「Dev⏌ §f", "§d「Dev⏌ §f", "§d§lDeveloper"),
+    MOD("mod", "§9「Mod⏌ §f", "§9「Mod⏌ §f", "§9Mod"),
+    AFILIADO("afiliado", "§4「Af⏌ §f", "§4「Afiliado⏌ §f", "§9Afiliado"),
+    DIAMANTE("diamante", "§b§l「D⏌ §f", "§b§l「Diamante⏌ §f", "§b§lDiamante"),
+    ORO("oro", "§e「O⏌ §f", "§e「Oro⏌ §f", "§eOro"),
+    HIERRO("hierro", "§7「H⏌ §7", "§7「Hierro⏌ §7", "§7Hierro"),
+    BRONCE("bronce", "§6「B⏌ §7", "§6「Bronce⏌ §7", "§6Bronce"),
     USUARIO("default", "§7", "§7", "§7Usuario");
     
     private final String lpName;
-    private final String prefix;
-    
-    private final String lpScoreBoardName;
+    private final String tagNamePrefix;
     private final String tabPrefix;
+    private final String lpScoreBoardName;
     
-    Rank(String lpName, String prefix, String tabPrefix, String lpScoreBoardName){
+    Rank(String lpName, String tagNamePrefix, String tabPrefix, String lpScoreBoardName){
         this.lpName = lpName;
-        this.prefix = prefix;
+        this.tagNamePrefix = tagNamePrefix;
         this.tabPrefix = tabPrefix;
         this.lpScoreBoardName = lpScoreBoardName;
     }
@@ -35,8 +34,8 @@ public enum Rank {
         return this.lpName;
     }
     
-    public String getPrefix(){
-        return this.prefix;
+    public String getTagNamePrefix(){
+        return this.tagNamePrefix;
     }
     
     public String getTabPrefix(){

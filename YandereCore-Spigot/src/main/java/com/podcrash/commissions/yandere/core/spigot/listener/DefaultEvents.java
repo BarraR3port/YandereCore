@@ -28,8 +28,8 @@ public class DefaultEvents extends MainEvents {
     }
     
     @Override
-    public void subPlayerChatEvent(AsyncPlayerChatEvent e){
-    
+    public boolean subPlayerChatEvent(AsyncPlayerChatEvent e){
+        return true;
     }
     
     @Override

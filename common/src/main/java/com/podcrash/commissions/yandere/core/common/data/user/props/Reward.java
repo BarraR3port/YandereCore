@@ -1,44 +1,35 @@
 package com.podcrash.commissions.yandere.core.common.data.user.props;
 
-import java.util.Date;
-import java.util.UUID;
+import com.podcrash.commissions.yandere.core.common.data.reward.RewardType;
 
-public abstract class Reward {
-    
-    private final UUID uuid;
+import java.util.Date;
+
+public class Reward {
+    private final String id;
     private final Date createDate;
-    private String name;
-    private Date expireDate;
+    private final String name;
+    private final RewardType type;
     
-    public Reward(String name, Date expireDate){
+    public Reward(String name, RewardType type, String id){
         this.name = name;
-        this.uuid = UUID.randomUUID();
+        this.id = id;
         this.createDate = new Date();
-        this.expireDate = expireDate;
+        this.type = type;
     }
     
     public String getName(){
         return name;
     }
     
-    public void setName(String name){
-        this.name = name;
-    }
-    
-    public UUID getUuid(){
-        return uuid;
+    public String getID(){
+        return id;
     }
     
     public Date getCreateDate(){
         return createDate;
     }
     
-    public Date getExpireDate(){
-        return expireDate;
+    public RewardType getType(){
+        return type;
     }
-    
-    public void setExpireDate(Date expireDate){
-        this.expireDate = expireDate;
-    }
-    
 }

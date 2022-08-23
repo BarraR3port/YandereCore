@@ -37,7 +37,7 @@ public class Lobby implements SimpleCommand {
                             player.createConnectionRequest(bedWarsLobby).fireAndForget();
                         }
                     } catch (InterruptedException | ExecutionException ex) {
-                        player.sendMessage(Utils.format("&cNo hay lobbys disponibles!"));
+                        player.sendMessage(Utils.format("&cNo hay Lobbies disponibles!"));
                     }
                 }
             }

@@ -3,11 +3,11 @@ version: '${project.version}'
 main: com.podcrash.commissions.yandere.core.spigot.Main
 depend:
   - LuckPerms
-  - Vault
 softdepend:
   - StrikePractice
   - UltraSkyWars
   - UltraSkyWarsWP
+  - BedWarsProxy
 
 load: POSTWORLD
 api-version: 1.13

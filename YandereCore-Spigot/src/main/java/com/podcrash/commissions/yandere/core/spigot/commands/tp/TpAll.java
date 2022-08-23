@@ -2,8 +2,8 @@ package com.podcrash.commissions.yandere.core.spigot.commands.tp;
 
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.tp.TpManager;
-import net.lymarket.common.commands.*;
-import net.lymarket.common.commands.response.CommandResponse;
+import net.lymarket.lyapi.common.commands.*;
+import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;

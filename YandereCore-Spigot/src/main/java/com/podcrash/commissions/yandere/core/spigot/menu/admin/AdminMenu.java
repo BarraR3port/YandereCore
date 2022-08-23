@@ -27,7 +27,7 @@ public class AdminMenu extends UpdatableMenu {
     }
     
     public String getMenuName(){
-        return "Administrar a: " + target.getName();
+        return "&c► &7Administrar a: " + target.getName();
     }
     
     public int getSlots(){

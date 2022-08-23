@@ -5,12 +5,12 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.podcrash.commissions.yandere.core.common.YandereApi;
-import com.podcrash.commissions.yandere.core.common.data.logs.ILogRepository;
 import com.podcrash.commissions.yandere.core.common.data.logs.OfflineLogRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.db.OfflinePlayerRepository;
+import com.podcrash.commissions.yandere.core.common.log.ILogRepository;
 import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import com.podcrash.commissions.yandere.core.common.socket.OfflineSocketClient;
 import com.podcrash.commissions.yandere.core.spigot.commands.*;
@@ -23,10 +23,12 @@ import com.podcrash.commissions.yandere.core.spigot.commands.tp.Teleport;
 import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpAll;
 import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpHere;
 import com.podcrash.commissions.yandere.core.spigot.config.YandereConfig;
+import com.podcrash.commissions.yandere.core.spigot.cooldowns.CoolDownManager;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.lang.ESLang;
 import com.podcrash.commissions.yandere.core.spigot.listener.DefaultEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.BWPlayerEvents;
+import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.lobby.LBWPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.lobby.LobbyPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.plugin.PluginMessage;
 import com.podcrash.commissions.yandere.core.spigot.listener.practice.PracticeGameEvents;
@@ -45,11 +47,11 @@ import com.podcrash.commissions.yandere.core.spigot.vanish.VanishManager;
 import com.viaversion.viaversion.api.Via;
 import com.viaversion.viaversion.api.ViaAPI;
 import net.luckperms.api.LuckPerms;
-import net.lymarket.common.config.ConfigGenerator;
-import net.lymarket.common.db.MongoDBClient;
-import net.lymarket.common.error.LyApiInitializationError;
-import net.lymarket.common.lang.ILang;
+import net.lymarket.lyapi.common.db.MongoDBClient;
+import net.lymarket.lyapi.common.error.LyApiInitializationError;
+import net.lymarket.lyapi.common.lang.ILang;
 import net.lymarket.lyapi.spigot.LyApi;
+import net.lymarket.lyapi.spigot.config.Config;
 import net.lymarket.lyapi.spigot.menu.IUpdatableMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -68,6 +70,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     private static LyApi api;
     private static Main instance;
     private static LuckPerms lpApi;
+    private final CoolDownManager coolDownManager = new CoolDownManager();
     private ProxyStats proxyStats = new ProxyStats();
     private YandereConfig config;
     private YandereConfig items;
@@ -80,6 +83,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     private VanishManager vanishManager;
     private InvManager invManager;
     private EndInvManager endInvManager;
+    private boolean hockedIntoBedWars = false;
     
     public static LyApi getApi(){
         return api;
@@ -92,11 +96,6 @@ public final class Main extends JavaPlugin implements YandereApi {
     public static Main getInstance(){
         return instance;
     }
-    
-    public static LuckPerms getLuckPerms(){
-        return lpApi;
-    }
-    
     public static void debug(String message){
         if (Settings.DEBUG){
             instance.getLogger().info(ChatColor.RED + "[DEBUG] " + ChatColor.LIGHT_PURPLE + message);
@@ -113,7 +112,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         items = new YandereConfig(this, "items.yml");
         sounds = new YandereConfig(this, "sounds.yml");
         try {
-            api = new LyApi(this, "Yandere", "&c[&4ERROR&c] &cNo tienes el siguiente permiso:&e permission", new ESLang(new ConfigGenerator(this, "es.yml"), config.getString("global.prefix"), "&c[&4ERROR&c]"));
+            api = new LyApi(this, "Yandere", "&c[&4ERROR&c] &cNo tienes el siguiente permiso:&e permission", new ESLang(new Config(this, "es.yml"), config.getString("global.prefix"), "&c[&4ERROR&c]"));
         } catch (LyApiInitializationError e) {
             e.printStackTrace();
             getServer().shutdown();
@@ -122,15 +121,6 @@ public final class Main extends JavaPlugin implements YandereApi {
         Settings.init(config);
         Items.init(items);
         Sounds.init(sounds);
-        
-        /*try {
-            Class<?> supp = Class.forName("net.lymarket.lyapi.support.version." + nms_version + "." + nms_version);
-            this.nms = (VersionSupport) supp.getConstructor(Class.forName("org.bukkit.plugin.java.JavaPlugin")).newInstance(this);
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException |
-                 ClassNotFoundException e) {
-            e.printStackTrace();
-            getServer().shutdown();
-        }*/
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") != null){
             RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
             if (provider != null){
@@ -177,20 +167,21 @@ public final class Main extends JavaPlugin implements YandereApi {
             socket = new OfflineSocketClient();
         }
         switch(Settings.SERVER_TYPE){
-            case LOBBY:
-            case LOBBY_BED_WARS:{
+            case LOBBY:{
                 getServer().getPluginManager().registerEvents(new LobbyPlayerEvents(), this);
                 api.getCommandService().registerCommands(new Build());
                 break;
-            }/*
-            case BED_WARS:{
-                getServer().getPluginManager().registerEvents(new PluginInjectionListener(), this);
+            }
+            case LOBBY_BED_WARS:{
+                getServer().getPluginManager().registerEvents(new LBWPlayerEvents(), this);
+                api.getCommandService().registerCommands(new Build());
                 break;
-            }*/
+            }
             case SKY_WARS:{
                 if (Bukkit.getPluginManager().getPlugin("UltraSkyWars") != null){
                     getServer().getPluginManager().registerEvents(new SWGameEvents(), this);
                     getServer().getPluginManager().registerEvents(new SWPlayerEvents(), this);
+                    api.getCommandService().registerCommands(new Build());
                 } else {
                     getLogger().log(Level.SEVERE, "Disabled due to no UltraSkyWars dependency found!");
                     getServer().getPluginManager().disablePlugin(this);
@@ -200,6 +191,7 @@ public final class Main extends JavaPlugin implements YandereApi {
             }
             case PRACTICE:{
                 if (Bukkit.getPluginManager().getPlugin("StrikePractice") != null){
+                    api.getCommandService().registerCommands(new Build());
                     getServer().getPluginManager().registerEvents(new PracticeGameEvents(), this);
                     getServer().getPluginManager().registerEvents(new PracticePlayerEvents(), this);
                 } else {
@@ -359,13 +351,26 @@ public final class Main extends JavaPlugin implements YandereApi {
         return endInvManager;
     }
     
+    public CoolDownManager getCoolDownManager(){
+        return coolDownManager;
+    }
+    
     public boolean hookPodBedWars(){
         try {
-            System.out.println("[YandereCore] BedWars detected, enabling BedWars events");
-            Bukkit.getPluginManager().registerEvents(new BWPlayerEvents(), Main.getInstance());
-            return true;
+            if (!hockedIntoBedWars){
+                System.out.println("[YandereCore] BedWars detected, enabling BedWars events");
+                Bukkit.getPluginManager().registerEvents(new BWPlayerEvents(), Main.getInstance());
+                hockedIntoBedWars = true;
+                return true;
+            } else {
+                return false;
+            }
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    public boolean isHookedIntoBedWars(){
+        return hockedIntoBedWars;
     }
 }

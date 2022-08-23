@@ -1,13 +1,17 @@
 package com.podcrash.commissions.yandere.core.common.data.user;
 
 import com.podcrash.commissions.yandere.core.common.data.level.Level;
+import com.podcrash.commissions.yandere.core.common.data.lobby.JoinBedWarsArenaType;
+import com.podcrash.commissions.yandere.core.common.data.lobby.JoinSkyWarsArenaType;
 import com.podcrash.commissions.yandere.core.common.data.lobby.PlayerVisibility;
 import com.podcrash.commissions.yandere.core.common.data.loc.Loc;
+import com.podcrash.commissions.yandere.core.common.data.reward.BetaTester;
+import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Reward;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Stats;
 import com.podcrash.commissions.yandere.core.common.skin.SkinManager;
-import net.lymarket.common.Api;
+import net.lymarket.lyapi.common.Api;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -38,6 +42,7 @@ public class User {
         this.coins = 0;
         addDefaultProps();
         addDefaultOptions();
+        addDefaultRewards();
     }
     
     public String getName(){
@@ -178,25 +183,53 @@ public class User {
     }
     
     private void addDefaultOptions(){
+        options.put("announcements-streams", true);
         //options.put("lobby_")
     }
     
     private void addDefaultProps(){
         properties.put("lobby-player-visibility", PlayerVisibility.ALL.toString());
+        properties.put("lobby-sw-join-type", JoinSkyWarsArenaType.RANDOM.toString());
+        properties.put("lobby-bw-join-type", JoinBedWarsArenaType.RANDOM.toString());
+    }
+    
+    private void addDefaultRewards(){
+        if (new Date().before(new Date("10/10/2022"))){
+            rewards.add(new BetaTester());
+        }
     }
     
     public void nextPlayerVisibility(){
         PlayerVisibility visibility = PlayerVisibility.valueOf(properties.get("lobby-player-visibility"));
         switch(visibility){
-            case ALL:
+            case ALL:{
                 properties.put("lobby-player-visibility", PlayerVisibility.RANKS.toString());
                 break;
-            case RANKS:
+            }
+            case RANKS:{
                 properties.put("lobby-player-visibility", PlayerVisibility.NONE.toString());
                 break;
-            case NONE:
+            }
+            case NONE:{
                 properties.put("lobby-player-visibility", PlayerVisibility.ALL.toString());
                 break;
+            }
+        }
+    }
+    
+    public void nextJoinArenaType(ServerType serverType){
+        switch(serverType){
+            case SKY_WARS:{
+                JoinSkyWarsArenaType type = JoinSkyWarsArenaType.valueOf(properties.get("lobby-sw-join-type")).getNext();
+                properties.put("lobby-sw-join-type", type.toString());
+                break;
+            }
+            case BED_WARS:{
+                JoinBedWarsArenaType type = JoinBedWarsArenaType.valueOf(properties.get("lobby-bw-join-type")).getNext();
+                properties.put("lobby-bw-join-type", type.toString());
+                break;
+            }
+            
         }
     }
     
@@ -204,20 +237,28 @@ public class User {
         return PlayerVisibility.valueOf(properties.get("lobby-player-visibility"));
     }
     
+    public JoinSkyWarsArenaType getJoinSkyWarsArenaType(){
+        return JoinSkyWarsArenaType.valueOf(properties.get("lobby-sw-join-type"));
+    }
+    
+    public JoinBedWarsArenaType getJoinBedWarsArenaType(){
+        return JoinBedWarsArenaType.valueOf(properties.get("lobby-bw-join-type"));
+    }
+    
     public String getCoinsFormatted(){
-        if (coins > 1000000f){
-            DecimalFormat df = new DecimalFormat("#.##");
+        if (coins >= 1000000f){
+            DecimalFormat df = new DecimalFormat("#.#");
             return df.format(coins / 1000000f) + "&eM ⛃";
         }
-        if (coins > 10000f){
-            DecimalFormat df = new DecimalFormat("#.##");
+        if (coins >= 10000f){
+            DecimalFormat df = new DecimalFormat("#.#");
             return df.format(coins / 1000f) + "&eK ⛃";
         }
         return coins + "&e ⛃";
     }
     
     public String getCoinsSemiFormatted(){
-        return new DecimalFormat("###,###,###.#").format(coins) + "&e ⛃";
+        return new DecimalFormat("###,###,###").format(coins) + "&e ⛃";
     }
     
 }

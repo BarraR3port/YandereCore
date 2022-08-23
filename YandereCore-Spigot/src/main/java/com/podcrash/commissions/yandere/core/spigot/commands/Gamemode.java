@@ -1,8 +1,8 @@
 /*
 package com.podcrash.commissions.yandere.core.spigot.commands;
 
-import net.lymarket.common.commands.*;
-import net.lymarket.common.commands.response.CommandResponse;
+import net.lymarket.lyapi.common.commands.*;
+import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;

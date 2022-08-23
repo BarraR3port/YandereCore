@@ -1,9 +1,12 @@
 package com.podcrash.commissions.yandere.core.spigot.items;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.podcrash.commissions.yandere.core.common.data.lobby.JoinBedWarsArenaType;
+import com.podcrash.commissions.yandere.core.common.data.lobby.JoinSkyWarsArenaType;
 import com.podcrash.commissions.yandere.core.common.data.lobby.PlayerVisibility;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
+import com.podcrash.commissions.yandere.core.spigot.items.lobby.LobbyItem;
 import net.lymarket.lyapi.spigot.config.Config;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
 import net.lymarket.lyapi.spigot.utils.Utils;
@@ -20,7 +23,21 @@ import java.util.Date;
 
 public final class Items {
     
-    public static ItemStack LOBBY_MENU;
+    public static LobbyItem LOBBY_MENU;
+    public static LobbyItem MULTI_LOBBY_MENU;
+    public static LobbyItem MULTI_LOBBY_MENU_HOT_BAR;
+    public static LobbyItem LOBBY_PLAYER_VISIBILITY_ALL;
+    public static LobbyItem LOBBY_PLAYER_VISIBILITY_RANKS;
+    public static LobbyItem LOBBY_PLAYER_VISIBILITY_NONE;
+    public static LobbyItem LOBBY_JOIN_ARENA_SKYWARS_SOLO;
+    public static LobbyItem LOBBY_JOIN_ARENA_SKYWARS_TEAM;
+    public static LobbyItem LOBBY_JOIN_ARENA_SKYWARS_RANKED;
+    public static LobbyItem LOBBY_JOIN_ARENA_SKYWARS_RANDOM;
+    public static LobbyItem LOBBY_JOIN_ARENA_BEDWARS_SOLO;
+    public static LobbyItem LOBBY_JOIN_ARENA_BEDWARS_DUO;
+    public static LobbyItem LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3;
+    public static LobbyItem LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4;
+    public static LobbyItem LOBBY_JOIN_ARENA_BEDWARS_RANDOM;
     public static ItemStack SKY_WARS_BASE;
     public static ItemStack BED_WARS_BASE;
     public static ItemStack PRACTICE_BASE;
@@ -42,16 +59,28 @@ public final class Items {
     public static ItemStack VANISH_OFF;
     public static ItemStack VANISH_ON;
     public static ItemStack RANK_BASE;
-    public static ItemStack LOBBY_PLAYER_VISIBILITY_ALL;
-    public static ItemStack LOBBY_PLAYER_VISIBILITY_RANKS;
-    public static ItemStack LOBBY_PLAYER_VISIBILITY_NONE;
     private static ItemStack FOOD;
+    private static Config config;
     
-    public static void init(Config config){
-        LOBBY_MENU = new ItemBuilder(config.getItem("lobby-item"))
-                .addTag("lobby-item", "lobby-item")
-                .build();
+    public static void init(Config itemsConfig){
+        config = itemsConfig;
+        LOBBY_MENU = new LobbyItem(itemsConfig.getItem("lobby-item"), itemsConfig.getInt("items.lobby-item.slot"));
+        LOBBY_PLAYER_VISIBILITY_ALL = new LobbyItem(itemsConfig.getItem("lobby-player-visibility-all-item"), itemsConfig.getInt("items.lobby-player-visibility-all-item.slot"));
+        LOBBY_PLAYER_VISIBILITY_RANKS = new LobbyItem(itemsConfig.getItem("lobby-player-visibility-ranks-item"), itemsConfig.getInt("items.lobby-player-visibility-ranks-item.slot"));
+        LOBBY_PLAYER_VISIBILITY_NONE = new LobbyItem(itemsConfig.getItem("lobby-player-visibility-none-item"), itemsConfig.getInt("items.lobby-player-visibility-none-item.slot"));
+        LOBBY_JOIN_ARENA_SKYWARS_SOLO = new LobbyItem(itemsConfig.getItem("lobby-player-join-arena-skywars-solo"), itemsConfig.getInt("items.lobby-player-join-arena-skywars-solo.slot"));
+        LOBBY_JOIN_ARENA_SKYWARS_TEAM = new LobbyItem(itemsConfig.getItem("lobby-player-join-arena-skywars-team"), itemsConfig.getInt("items.lobby-player-join-arena-skywars-team.slot"));
+        LOBBY_JOIN_ARENA_SKYWARS_RANKED = new LobbyItem(itemsConfig.getItem("lobby-player-join-arena-skywars-ranked"), itemsConfig.getInt("items.lobby-player-join-arena-skywars-ranked.slot"));
+        LOBBY_JOIN_ARENA_SKYWARS_RANDOM = new LobbyItem(itemsConfig.getItem("lobby-player-join-arena-skywars-random"), itemsConfig.getInt("items.lobby-player-join-arena-skywars-random.slot"));
         
+        LOBBY_JOIN_ARENA_BEDWARS_SOLO = new LobbyItem(itemsConfig.getItem("lobby-player-join-arena-bedwars-solo"), itemsConfig.getInt("items.lobby-player-join-arena-bedwars-solo.slot"));
+        LOBBY_JOIN_ARENA_BEDWARS_DUO = new LobbyItem(itemsConfig.getItem("lobby-player-join-arena-bedwars-duo"), itemsConfig.getInt("items.lobby-player-join-arena-bedwars-duo.slot"));
+        LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3 = new LobbyItem(itemsConfig.getItem("lobby-player-join-arena-bedwars-3v3v3v3"), itemsConfig.getInt("items.lobby-player-join-arena-bedwars-3v3v3v3.slot"));
+        LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4 = new LobbyItem(itemsConfig.getItem("lobby-player-join-arena-bedwars-4v4v4v4"), itemsConfig.getInt("items.lobby-player-join-arena-bedwars-4v4v4v4.slot"));
+        LOBBY_JOIN_ARENA_BEDWARS_RANDOM = new LobbyItem(itemsConfig.getItem("lobby-player-join-arena-bedwars-random"), itemsConfig.getInt("items.lobby-player-join-arena-bedwars-random.slot"));
+        
+        MULTI_LOBBY_MENU = new LobbyItem(itemsConfig.getItem("lobby-multi-lobby-item"), itemsConfig.getInt("items.lobby-multi-lobby-item.slot"));
+        MULTI_LOBBY_MENU_HOT_BAR = new LobbyItem(itemsConfig.getItem("lobby-multi-lobby-item-hotbar"), itemsConfig.getInt("items.lobby-multi-lobby-item-hotbar.slot"));
         SKY_WARS_BASE = new ItemBuilder(Material.SKULL_ITEM)
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTNkNTkxNTUzNzhiNGFjNGQyYjE0MmUyZjIzNWQwMzdmNjhhOWI4ZTI0YWU5ZWQ0ODU3MzE2YjI4ZGNlMDU2ZiJ9fX0=")
                 .setDisplayName("&b&lSkyWars")
@@ -59,7 +88,6 @@ public final class Items {
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
-        
         BED_WARS_BASE = new ItemBuilder(Material.SKULL_ITEM)
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmZiMjkwYTEzZGY4ODI2N2VhNWY1ZmNmNzk2YjYxNTdmZjY0Y2NlZTVjZDM5ZDQ2OTcyNDU5MWJhYmVlZDFmNiJ9fX0=")
                 .setDisplayName("&b&lBedWars")
@@ -67,7 +95,6 @@ public final class Items {
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
-        
         PRACTICE_BASE = new ItemBuilder(Material.SKULL_ITEM)
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI3NzE3ZDlkMzNkNjlhZjg1NWQ4NGNmY2ExODExMTZhNzI1YzE5MTVmMDBmNTE0NzE2ZDliYmIwZWFlYTZiZiJ9fX0=")
                 .setDisplayName("&b&lPractice PVP")
@@ -75,7 +102,6 @@ public final class Items {
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
-        
         SURVIVAL = new ItemBuilder(Material.SKULL_ITEM)
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjg3ZjM2ODZjYTJjYzIyMTg1YzQ1NGYzZjk2Zjg2NzNlMDM0ODE0OTVhZDgzNjIzNjEyZGU1MTdhYmNkZWI2ZCJ9fX0=")
                 .setDisplayName("&b&lSurvival")
@@ -83,7 +109,6 @@ public final class Items {
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
-        
         TNT_TAG = new ItemBuilder(Material.SKULL_ITEM)
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2FmNTk3NzZmMmYwMzQxMmM3YjU5NDdhNjNhMGNmMjgzZDUxZmU2NWFjNmRmN2YyZjg4MmUwODM0NDU2NWU5In19fQ==")
                 .setDisplayName("&4&lTNT Tag")
@@ -91,116 +116,80 @@ public final class Items {
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
-        
         AVAILABLE_WORLD = new ItemBuilder(XMaterial.LIME_STAINED_GLASS_PANE.parseMaterial(), 5)
                 .setDisplayName("&7Mundo &aDisponible")
                 .addLoreLine("&7Click para configurar un mundo.")
                 .addTag("world-available", "world-available")
                 .build();
-        
         UNAVAILABLE_WORLD = new ItemBuilder(XMaterial.RED_STAINED_GLASS_PANE.parseMaterial(), 14)
                 .setDisplayName("&7Mundo &cno disponible")
                 .addLoreLine("&7Necesitas ser un rango más alto")
                 .addLoreLine("&7para acceder a este slot.")
                 .addTag("world-unavailable", "world-unavailable")
                 .build();
-        
         CREATED_WORLD_BASE = new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
                 //.setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjgwZDMyOTVkM2Q5YWJkNjI3NzZhYmNiOGRhNzU2ZjI5OGE1NDVmZWU5NDk4YzRmNjlhMWMyYzc4NTI0YzgyNCJ9fX0=").build();
                 .setHeadSkin("ewogICJ0aW1lc3RhbXAiIDogMTU5NDUxNTc5OTE5OCwKICAicHJvZmlsZUlkIiA6ICJhYTZhNDA5NjU4YTk0MDIwYmU3OGQwN2JkMzVlNTg5MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJiejE0IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzYzZjRkNTU1ZmIzYjkzNTdhZjc1ODJmMjczODAwZjFkYTRhYzY5YjA0MjEwYzNhYTM0ZTYzZGIyYTQyMzViYmYiCiAgICB9CiAgfQp9").build();
-        
         PLAYERS_IN_WORLD_BASE = new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
                 //.setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzBjZjZjZGMxMWRiNzRjMGQ3N2JhMzc1NmM2ZmRlMzQ1ZmU1NDQzZWNmN2VhNGE0MWQxNjI1NGU2NTk1ODRjZiJ9fX0").build();
                 .setHeadSkin("ewogICJ0aW1lc3RhbXAiIDogMTU5NDUxNTc5OTE5OCwKICAicHJvZmlsZUlkIiA6ICJhYTZhNDA5NjU4YTk0MDIwYmU3OGQwN2JkMzVlNTg5MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJiejE0IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzYzZjRkNTU1ZmIzYjkzNTdhZjc1ODJmMjczODAwZjFkYTRhYzY5YjA0MjEwYzNhYTM0ZTYzZGIyYTQyMzViYmYiCiAgICB9CiAgfQp9").build();
-        
         PLOT_31_BASE = new ItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 0)
                 .setDisplayName("&7Plots &a31")
                 .addLoreLine("&7Click para entrar a este plot.")
                 .addLoreLine("&7Tamaño: &a31x31")
                 .addTag("plot-type", "P31")
                 .build();
-        
         PLOT_101_BASE = new ItemBuilder(XMaterial.LIGHT_GRAY_WOOL.parseMaterial(), 8)
                 .setDisplayName("&7Plots &a101")
                 .addLoreLine("&7Click para entrar a este plot.")
                 .addLoreLine("&7Tamaño: &a101x101")
                 .addTag("plot-type", "P101")
                 .build();
-        
         PLOT_501_BASE = new ItemBuilder(XMaterial.GRAY_WOOL.parseMaterial(), 7)
                 .setDisplayName("&7Plots &a501x501")
                 .addLoreLine("&7Click para entrar a este plot.")
                 .addLoreLine("&7Tamaño: &a501x501")
                 .addTag("plot-type", "P501")
                 .build();
-        
         PLOT_1001_BASE = new ItemBuilder(XMaterial.BLACK_WOOL.parseMaterial(), 15)
                 .setDisplayName("&7Plots &a1001x1001")
                 .addLoreLine("&7Click para entrar a este plot.")
                 .addLoreLine("&7Tamaño: &a1001x1001")
                 .addTag("plot-type", "P1001")
                 .build();
-        
         RANK_BASE = new ItemBuilder(XMaterial.WHITE_WOOL.parseMaterial())
                 .addLoreLine("&7Click poner este rango al jugador.")
                 .build();
-        
         WARP_CASAS_BASE = new ItemBuilder(XMaterial.BRICKS.parseItem())
                 .setDisplayName("&aCasas")
                 .addLoreLine("&7Click para ir a la warp de Casas.")
                 .addTag("warp", "CASAS")
                 .build();
-        
         WARP_ARBOLES_BASE = new ItemBuilder(XMaterial.JUNGLE_SAPLING.parseItem())
                 .setDisplayName("&aArboles")
                 .addLoreLine("&7Click para ir a la warp de Arboles")
                 .addTag("warp", "ARBOLES")
                 .build();
-        
         WARP_VARIOS_BASE = new ItemBuilder(XMaterial.CHEST.parseItem())
                 .setDisplayName("&aVarios")
                 .addLoreLine("&7Click para ir a las otras warps")
                 .addTag("warp", "VARIOS")
                 .build();
-        
         FOOD = new ItemBuilder(new ItemStack(XMaterial.COOKED_BEEF.parseMaterial()))
                 .build();
-        
         EMPTY_ITEM = new ItemBuilder(new ItemStack(Material.BARRIER))
                 .setDisplayName(" ")
                 .build();
         GREEN_PANEL = new ItemBuilder(Material.STAINED_GLASS_PANE, 5).setDisplayName(" ").build();
-        
         VANISH_OFF = new ItemBuilder(new ItemStack(XMaterial.GRAY_DYE.parseMaterial()))
                 .setDisplayName("&7Vanish &cDesactivado")
                 .addLoreLine("&cStaff Utils")
                 .addTag("staff-utils", "vanish-off").build();
-        
         VANISH_ON = new ItemBuilder(new ItemStack(XMaterial.LIME_DYE.parseMaterial()))
                 .setDisplayName("&7Vanish &aActivado")
                 .addLoreLine("&cStaff Utils")
                 .addTag("staff-utils", "vanish-on").build();
         
-        LOBBY_PLAYER_VISIBILITY_ALL = new ItemBuilder(new ItemStack(Material.INK_SACK))
-                .setDyeColor(10)
-                .setDisplayName("&aTodos")
-                .addLoreLine("&7Click para cambiar a la visibilidad a &5Rangos.")
-                .addTag("lobby-player-visibility", "ALL")
-                .build();
-        
-        LOBBY_PLAYER_VISIBILITY_RANKS = new ItemBuilder(new ItemStack(Material.INK_SACK))
-                .setDyeColor(5)
-                .setDisplayName("&5Rangos")
-                .addLoreLine("&7Click para cambiar a la visibilidad a &7Nadie.")
-                .addTag("lobby-player-visibility", "RANKS")
-                .build();
-        
-        LOBBY_PLAYER_VISIBILITY_NONE = new ItemBuilder(new ItemStack(Material.INK_SACK))
-                .setDyeColor(8)
-                .setDisplayName("&7Nadie")
-                .addLoreLine("&7Click para cambiar a la visibilidad a &aTodos.")
-                .addTag("lobby-player-visibility", "NONE")
-                .build();
     }
     
     
@@ -254,21 +243,111 @@ public final class Items {
     
     public static void setLobbyItems(Player p){
         p.getInventory().clear();
-        p.getInventory().setItem(Main.getInstance().getItems().getInt("items.lobby-item.slot"), LOBBY_MENU.clone());
+        p.getInventory().setItem(LOBBY_MENU.getSlot(), LOBBY_MENU.getItem());
+        p.getInventory().setItem(MULTI_LOBBY_MENU_HOT_BAR.getSlot(), MULTI_LOBBY_MENU_HOT_BAR.getItem());
     
         User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         PlayerVisibility playerVisibility = user.getPlayerVisibility();
         switch(playerVisibility){
             case ALL:
-                p.getInventory().setItem(8, LOBBY_PLAYER_VISIBILITY_ALL.clone());
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_ALL.getSlot(), LOBBY_PLAYER_VISIBILITY_ALL.getItem());
                 break;
             case RANKS:
-                p.getInventory().setItem(8, LOBBY_PLAYER_VISIBILITY_RANKS.clone());
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_RANKS.getSlot(), LOBBY_PLAYER_VISIBILITY_RANKS.getItem());
                 break;
             case NONE:
-                p.getInventory().setItem(8, LOBBY_PLAYER_VISIBILITY_NONE.clone());
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_NONE.getSlot(), LOBBY_PLAYER_VISIBILITY_NONE.getItem());
                 break;
         }
+        p.updateInventory();
+    
+    }
+    
+    public static void setSkyWarsLobbyItems(Player p){
+        p.getInventory().clear();
+        p.getInventory().setItem(LOBBY_MENU.getSlot(), LOBBY_MENU.getItem());
+        p.getInventory().setItem(MULTI_LOBBY_MENU_HOT_BAR.getSlot(), MULTI_LOBBY_MENU_HOT_BAR.getItem());
+        for ( String name : config.getConfigurationSection("items").getKeys(false) ){
+            if (!name.startsWith("lobby-skywars-")) continue;
+            p.getInventory().setItem(config.getInt("items." + name + ".slot"), config.getItem(name));
+        }
+        
+        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+        PlayerVisibility playerVisibility = user.getPlayerVisibility();
+        switch(playerVisibility){
+            case ALL:
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_ALL.getSlot(), LOBBY_PLAYER_VISIBILITY_ALL.getItem());
+                break;
+            case RANKS:
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_RANKS.getSlot(), LOBBY_PLAYER_VISIBILITY_RANKS.getItem());
+                break;
+            case NONE:
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_NONE.getSlot(), LOBBY_PLAYER_VISIBILITY_NONE.getItem());
+                break;
+        }
+        JoinSkyWarsArenaType joinArenaType = user.getJoinSkyWarsArenaType();
+        switch(joinArenaType){
+            case SOLO:
+                p.getInventory().setItem(LOBBY_JOIN_ARENA_SKYWARS_SOLO.getSlot(), LOBBY_JOIN_ARENA_SKYWARS_SOLO.getItem());
+                break;
+            case TEAM:
+                p.getInventory().setItem(LOBBY_JOIN_ARENA_SKYWARS_TEAM.getSlot(), LOBBY_JOIN_ARENA_SKYWARS_TEAM.getItem());
+                break;
+            case RANKED:
+                p.getInventory().setItem(LOBBY_JOIN_ARENA_SKYWARS_RANKED.getSlot(), LOBBY_JOIN_ARENA_SKYWARS_RANKED.getItem());
+                break;
+            case RANDOM:
+                p.getInventory().setItem(LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getSlot(), LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getItem());
+                break;
+        }
+        
+        
+        p.updateInventory();
+        
+    }
+    
+    public static void setBedWarsLobbyItems(Player p){
+        p.getInventory().clear();
+        p.getInventory().setItem(LOBBY_MENU.getSlot(), LOBBY_MENU.getItem());
+        p.getInventory().setItem(MULTI_LOBBY_MENU_HOT_BAR.getSlot(), MULTI_LOBBY_MENU_HOT_BAR.getItem());
+        for ( String name : config.getConfigurationSection("items").getKeys(false) ){
+            if (!name.startsWith("lobby-bedwars-")) continue;
+            p.getInventory().setItem(config.getInt("items." + name + ".slot"), config.getItem(name));
+        }
+        
+        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+        PlayerVisibility playerVisibility = user.getPlayerVisibility();
+        switch(playerVisibility){
+            case ALL:
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_ALL.getSlot(), LOBBY_PLAYER_VISIBILITY_ALL.getItem());
+                break;
+            case RANKS:
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_RANKS.getSlot(), LOBBY_PLAYER_VISIBILITY_RANKS.getItem());
+                break;
+            case NONE:
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_NONE.getSlot(), LOBBY_PLAYER_VISIBILITY_NONE.getItem());
+                break;
+        }
+        JoinBedWarsArenaType joinArenaType = user.getJoinBedWarsArenaType();
+        switch(joinArenaType){
+            case SOLO:
+                p.getInventory().setItem(LOBBY_JOIN_ARENA_BEDWARS_SOLO.getSlot(), LOBBY_JOIN_ARENA_BEDWARS_SOLO.getItem());
+                break;
+            case DUO:
+                p.getInventory().setItem(LOBBY_JOIN_ARENA_BEDWARS_DUO.getSlot(), LOBBY_JOIN_ARENA_BEDWARS_DUO.getItem());
+                break;
+            case _3V3V3V3:
+                p.getInventory().setItem(LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3.getSlot(), LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3.getItem());
+                break;
+            case _4V4V4V4:
+                p.getInventory().setItem(LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4.getSlot(), LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4.getItem());
+                break;
+            case RANDOM:
+                p.getInventory().setItem(LOBBY_JOIN_ARENA_BEDWARS_RANDOM.getSlot(), LOBBY_JOIN_ARENA_BEDWARS_RANDOM.getItem());
+                break;
+        }
+        
+        
         p.updateInventory();
         
     }

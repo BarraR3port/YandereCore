@@ -1,8 +1,182 @@
 items:
   lobby-item:
-    name: "&aSelector de Modalidades"
+    name: "&cModalidades &8╏ &7Click derecho"
     material: "COMPASS"
     slot: 0
     description:
-      - "&7Click para abrir el menú de modalidades."
+      - ""
+      - "&7Click para abrir un menú donde"
+      - "&7encontrarás todas las modaliedades"
+      - "&7disponibles en el servidor."
     nbt:
+      - "lobby-item:lobby-item"
+      - "item-prop:no-move"
+
+  lobby-multi-lobby-item:
+    name: "&6Lobbies &8╏ &7Click derecho"
+    material: "FIREWORK_CHARGE"
+    slot: 8
+    firework:
+      colors:
+        - "WHITE"
+    description:
+      - ""
+      - "&7Click para abrir un menú donde"
+      - "&7encontrarás todos los lobbies"
+      - "&7disponibles en este modo de juego."
+    nbt:
+      - "lobby-multi-lobby:lobby-multi-lobby"
+      - "item-prop:no-move"
+
+
+  lobby-multi-lobby-item-hotbar:
+    name: "&6Lobbies &8╏ &7Click derecho"
+    material: "NETHER_STAR"
+    slot: 8
+    description:
+      - ""
+      - "&7Click para abrir un menú donde"
+      - "&7encontrarás todos los lobbies"
+      - "&7disponibles en este modo de juego."
+    nbt:
+      - "lobby-multi-lobby:lobby-multi-lobby"
+      - "item-prop:no-move"
+
+  lobby-skywars-menu-lobby:
+    name: "&6SkyWars &8╏ &7Click derecho"
+    material: "BOW"
+    slot: 4
+    description:
+      - ""
+      - "&7Click para abrir el menu de &6SkyWars."
+    nbt:
+      - "command:sw_lobby"
+      - "item-prop:no-move"
+
+  lobby-player-visibility-all-item:
+    name: "&aTodos &8╏ &7Click derecho"
+    material: "INK_SACK"
+    slot: 7
+    dyeColor: 10
+    description:
+      - ""
+      - "&7Click para cambiar a la visibilidad a &5Rangos."
+    nbt:
+      - "lobby-player-visibility:ALL"
+      - "item-prop:no-move"
+
+  lobby-player-visibility-ranks-item:
+    name: "&5Rangos &8╏ &7Click derecho"
+    material: "INK_SACK"
+    slot: 7
+    dyeColor: 5
+    description:
+      - ""
+      - "&7Click para cambiar a la visibilidad a &7Nadie."
+    nbt:
+      - "lobby-player-visibility:RANKS"
+      - "item-prop:no-move"
+
+  lobby-player-visibility-none-item:
+    name: "&7Nadie &8╏ &7Click derecho"
+    material: "INK_SACK"
+    slot: 7
+    dyeColor: 8
+    description:
+      - ""
+      - "&7Click para cambiar a la visibilidad a &aTodos."
+    nbt:
+      - "lobby-player-visibility:NONE"
+      - "item-prop:no-move"
+
+
+  lobby-player-join-arena-skywars-solo:
+    name: "&7(Click Izq.) &fModo: &cSolo &8╏ &aJugar &7(Click Der.)"
+    material: "FEATHER"
+    slot: 1
+    description:
+      - ""
+      - "&7Click para cambiar a &a&lEquipo."
+    nbt:
+      - "lobby-player-join-arena:SOLO"
+      - "item-prop:no-move"
+
+
+  lobby-player-join-arena-skywars-team:
+    name: "&7(Click Izq.) &fModo: &cEquipo &8╏ &aJugar &7(Click Der.)"
+    material: "FEATHER"
+    slot: 1
+    description:
+      - ""
+      - "&7Click para cambiar a &a&lRanked."
+    nbt:
+      - "lobby-player-join-arena:TEAM"
+      - "item-prop:no-move"
+
+  lobby-player-join-arena-skywars-ranked:
+    name: "&7(Click Izq.) &fModo: &cRanked &8╏ &aJugar &7(Click Der.)"
+    material: "FEATHER"
+    slot: 1
+    description:
+      - ""
+      - "&7Click para cambiar a &a&lAleatorio."
+    nbt:
+      - "lobby-player-join-arena:RANKED"
+      - "item-prop:no-move"
+
+  lobby-player-join-arena-skywars-random:
+    name: "&7(Click Izq.) &fModo: &cAleatorio &8╏ &aJugar &7(Click Der.)"
+    material: "FEATHER"
+    slot: 1
+    description:
+      - ""
+      - "&7Click para cambiar a &a&lSolo."
+    nbt:
+      - "lobby-player-join-arena:RANDOM"
+      - "item-prop:no-move"
+
+  lobby-player-join-arena-bedwars-solo:
+    name: "&7(Click Izq.) &fModo: &cSolo &8╏ &aJugar &7(Click Der.)"
+    material: "FEATHER"
+    slot: 1
+    description:
+    nbt:
+      - "lobby-player-join-arena:SOLO"
+      - "item-prop:no-move"
+
+
+  lobby-player-join-arena-bedwars-duo:
+    name: "&7(Click Izq.) &fModo: &cDuo &8╏ &aJugar &7(Click Der.)"
+    material: "FEATHER"
+    slot: 1
+    description:
+    nbt:
+      - "lobby-player-join-arena:DUO"
+      - "item-prop:no-move"
+
+  lobby-player-join-arena-bedwars-3v3v3v3:
+    name: "&7(Click Izq.) &fModo: &c3v3 &8╏ &aJugar &7(Click Der.)"
+    material: "FEATHER"
+    slot: 1
+    description:
+    nbt:
+      - "lobby-player-join-arena:_3V3V3V3"
+      - "item-prop:no-move"
+
+  lobby-player-join-arena-bedwars-4v4v4v4:
+    name: "&7(Click Izq.) &fModo: &c4v4 &8╏ &aJugar &7(Click Der.)"
+    material: "FEATHER"
+    slot: 1
+    description:
+    nbt:
+      - "lobby-player-join-arena:_4V4V4V4"
+      - "item-prop:no-move"
+
+  lobby-player-join-arena-bedwars-random:
+    name: "&7(Click Izq.) &fModo: &cAleatorio &8╏ &aJugar &7(Click Der.)"
+    material: "FEATHER"
+    slot: 1
+    description:
+    nbt:
+      - "lobby-player-join-arena:RANDOM"
+      - "item-prop:no-move"

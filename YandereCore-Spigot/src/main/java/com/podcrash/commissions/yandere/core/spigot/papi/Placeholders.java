@@ -156,7 +156,7 @@ public class Placeholders extends PlaceholderExpansion {
                 return p.getRank().getScoreBoardName();
             }
             case "rank_prefix":{
-                return p.getRank().getPrefix();
+                return p.getRank().getTagNamePrefix();
             }
             case "coins":{
                 return p.getCoinsSemiFormatted();

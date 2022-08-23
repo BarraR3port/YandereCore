@@ -159,7 +159,7 @@
                                                             name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
-                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="net.lymarket.lyapi.common.**"/>
                                                     <include name="com.yworks.**"/>
                                                     <include name="org.spigotmc.**"/>
                                                     <include name="com.google.**"/>
@@ -213,7 +213,7 @@
                                                             name="net.lymarket.comissionss.youmind.bbb.support.version.v1_16_R3.v1_16_R3"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
-                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="net.lymarket.lyapi.common.**"/>
                                                     <include name="xyz.xenondevs.particle.**"/>
                                                     <include name="com.cryptomorin.xseries.**"/>
                                                     <include name="org.spigotmc.**"/>
@@ -255,7 +255,7 @@
                                                             name="net.lymarket.comissionss.youmind.bbb.support.version.v1_16_R3.v1_16_R3"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
-                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="net.lymarket.lyapi.common.**"/>
                                                     <include name="xyz.xenondevs.particle.*"/>
                                                     <include name="com.cryptomorin.xseries.*"/>
                                                     <include name="org.spigotmc.**"/>
@@ -302,7 +302,7 @@
                                                             name="net.lymarket.comissionss.youmind.bbb.support.version.v1_16_R3.v1_16_R3"/>
                                                     <include
                                                             name="net.lymarket.comissionss.youmind.bbb.support.version.v1_18_R2.v1_18_R2"/>
-                                                    <include name="net.lymarket.common.**"/>
+                                                    <include name="net.lymarket.lyapi.common.**"/>
                                                     <include name="xyz.xenondevs.particle.**"/>
                                                     <include name="com.cryptomorin.xseries.**"/>
                                                     <include name="org.spigotmc.**"/>
@@ -507,18 +507,19 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>PodBedWars</artifactId>
             <version>1.0-BETA</version>
             <scope>system</scope>
             <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/bedwars-plugin-1.0-BETA.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.andrei1058.bedwars</groupId>
+            <artifactId>PodBedWarsProxyPlugin</artifactId>
+            <version>1.0-BETA</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/BedWarsProxy-Plugin-1.2.7.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -543,6 +544,15 @@
             <version>3.4.6</version>
             <scope>system</scope>
             <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/strikepractice-3.4.6.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.Leonardo0013YT.UltraSkyWars</groupId>
+            <artifactId>UltraSkyWars-Setup</artifactId>
+            <version>3.4.6</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/USW-Injections/UltraSkyWars-Setup.jar
+            </systemPath>
         </dependency>
 
         <!--

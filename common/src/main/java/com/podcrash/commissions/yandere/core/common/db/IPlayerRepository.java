@@ -4,8 +4,8 @@ import com.mongodb.client.model.Filters;
 import com.podcrash.commissions.yandere.core.common.data.level.Level;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
-import net.lymarket.common.db.MongoDB;
-import net.lymarket.common.db.MongoDBClient;
+import net.lymarket.lyapi.common.db.MongoDB;
+import net.lymarket.lyapi.common.db.MongoDBClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;

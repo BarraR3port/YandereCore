@@ -1,5 +1,7 @@
 package com.podcrash.commissions.yandere.core.common.data.logs;
 
+import com.podcrash.commissions.yandere.core.common.log.ILogRepository;
+
 public final class OfflineLogRepository extends ILogRepository {
     
     

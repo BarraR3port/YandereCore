@@ -32,7 +32,7 @@ public class LobbyMenu extends UpdatableMenu {
     
     @Override
     public String getMenuName(){
-        return "YandereCraft";
+        return "&1► &8Menú de Modalidades";
     }
     
     @Override
@@ -45,16 +45,22 @@ public class LobbyMenu extends UpdatableMenu {
         final ItemStack item = e.getCurrentItem();
         if (NBTItem.hasTag(item, "server-name")){
             final String proxy_server_name = NBTItem.getTag(item, "server-name");
-            if (!proxy_server_name.equals(ServerType.EMPTY.getName())){
-                Main.getInstance().getSocket().sendJoinServer(getOwner().getUniqueId(), proxy_server_name);
+            if (!proxy_server_name.equalsIgnoreCase(ServerType.EMPTY.getName())){
+                ServerType serverType = ServerType.match(proxy_server_name);
+                switch(serverType){
+                    case TNT_TAG:
+                    case SURVIVAL:
+                    case PRACTICE:
+                    case EMPTY:
+                        Main.getInstance().getSocket().sendJoinServer(getOwner().getUniqueId(), proxy_server_name);
+                        break;
+                    default:
+                        new MultiLobbyMenu(playerMenuUtility, serverType).open();
+                }
             } else {
                 final Player p = (Player) e.getWhoClicked();
-                super.checkSomething(p, e.getSlot(), item, "&cNo Servers Disponibles", "", this.getMenuUUID());
-                
+                super.checkSomething(p, e.getSlot(), item, "&cNo hay servers disponibles.", "", this.getMenuUUID());
             }
-            
-        } else if (NBTItem.hasTag(item, "type")){
-            Main.getInstance().getSocket().sendJoinServer(getOwner().getUniqueId(), "lobby");
         } else if (NBTItem.hasTag(item, "ly-menu-close")){
             getOwner().closeInventory();
         }
@@ -125,7 +131,8 @@ public class LobbyMenu extends UpdatableMenu {
         /*inventory.setItem(26, new ItemBuilder(XMaterial.NETHER_STAR.parseItem())
                 .setDisplayName("&bLobby")
                 .addTag("server-name", proxyStats.getRandomLobbyServer().getProxyName())
-                .build());*/
+                .build());
+        */
         inventory.setItem(36, super.CLOSE_ITEM);
         
     }

@@ -1,8 +1,8 @@
 package com.podcrash.commissions.yandere.core.spigot.commands;
 
 import com.podcrash.commissions.yandere.core.spigot.listener.lobby.LobbyPlayerEvents;
-import net.lymarket.common.commands.*;
-import net.lymarket.common.commands.response.CommandResponse;
+import net.lymarket.lyapi.common.commands.*;
+import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

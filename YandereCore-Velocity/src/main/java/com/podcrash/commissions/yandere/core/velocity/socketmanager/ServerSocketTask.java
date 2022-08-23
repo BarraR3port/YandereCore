@@ -28,6 +28,8 @@ public class ServerSocketTask {
                     VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), new ProxySocketServer(s)).schedule();
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (java.util.concurrent.RejectedExecutionException ignored) {
+                    break;
                 }
             }
         }).schedule());
@@ -47,8 +49,10 @@ public class ServerSocketTask {
     }
     
     public static void stopTasks(){
+        for ( ProxySocketServer server : ServerSocketManager.getInstance().getSocketByServer().values() ){
+            server.closeConnections();
+        }
         compute = false;
-        VMain.getInstance().getProxy().getAllServers().forEach(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName()).ifPresent(ProxySocketServer::closeConnections));
         for ( ScheduledTask t : otherTasks ){
             t.cancel();
         }

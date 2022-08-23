@@ -12,7 +12,7 @@ import com.podcrash.commissions.yandere.core.spigot.events.PlayerLevelChangeEven
 import com.podcrash.commissions.yandere.core.spigot.events.PlayerRankChangeEvent;
 import com.podcrash.commissions.yandere.core.spigot.events.PlayerXpChangeEvent;
 import net.luckperms.api.LuckPermsProvider;
-import net.lymarket.common.db.MongoDBClient;
+import net.lymarket.lyapi.common.db.MongoDBClient;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bson.Document;
 import org.bukkit.Bukkit;

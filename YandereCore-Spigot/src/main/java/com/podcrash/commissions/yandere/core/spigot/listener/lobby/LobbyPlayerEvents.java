@@ -17,7 +17,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArmorStand;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -78,9 +77,7 @@ public final class LobbyPlayerEvents extends MainEvents {
         if (user.getRank() != Rank.USUARIO){
             p.setAllowFlight(true);
         }
-        
         PlayerVisibility visibility = user.getPlayerVisibility();
-        
         for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
             if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
             User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
@@ -101,7 +98,6 @@ public final class LobbyPlayerEvents extends MainEvents {
                     p.hidePlayer(targetPlayer);
                     break;
             }
-            
             switch(targetVisibility){
                 case ALL:{
                     targetPlayer.showPlayer(p);
@@ -120,19 +116,14 @@ public final class LobbyPlayerEvents extends MainEvents {
                     break;
                 }
             }
-            
         }
-        
-        
     }
     
     @Override
-    public void subPlayerChatEvent(AsyncPlayerChatEvent event){
+    public boolean subPlayerChatEvent(AsyncPlayerChatEvent event){
         Player p = event.getPlayer();
         String message = event.getMessage();
         
-        if (event.isCancelled()) return;
-    
         User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         if (p.hasPermission("yandere.chat.color")){
             message = Utils.format(message);
@@ -163,7 +154,7 @@ public final class LobbyPlayerEvents extends MainEvents {
                         "&7► Nivel: &c" + user.getLevel().getLevelName(),
                         user.getLevel().getProgressBar()/* ,
                             "&7Clan: &c" + clanTag*/));
-        TextComponent rank = Utils.hoverOverMessageURL(isDefault ? "" : prefix,
+        TextComponent rank = Utils.hoverOverMessageURL(isDefault ? " " : prefix,
                 Arrays.asList("&7「&eYandere &5Rangos&7⏌",
                         "",
                         "&7► Este jugador tiene el rango " + prefix,
@@ -182,78 +173,73 @@ public final class LobbyPlayerEvents extends MainEvents {
             }
         });
         
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Utils.getServer(), finalMessage, p.getName());
+        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
         
-        
+        return true;
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerBreakBlocks(BlockBreakEvent e){
-        if (!builders.contains(e.getPlayer().getUniqueId())){
-            e.setCancelled(true);
-        }
+        if (builders.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
+    
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerPlaceBlocks(BlockPlaceEvent e){
-        if (!builders.contains(e.getPlayer().getUniqueId())){
-            e.setCancelled(true);
-        }
+        if (builders.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
+    
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractAtEntityEvent(PlayerInteractAtEntityEvent e){
-        if (!builders.contains(e.getPlayer().getUniqueId())){
-            e.setCancelled(true);
-        }
+        if (builders.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
+    
     
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent e){
-        if (!builders.contains(e.getPlayer().getUniqueId())){
-            e.setCancelled(true);
-        }
+        if (builders.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
+    
     
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerBedEnterEvent(PlayerBedEnterEvent e){
-        if (!builders.contains(e.getPlayer().getUniqueId())){
-            e.setCancelled(true);
-        }
+        if (builders.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
     
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerBucketFillEvent(PlayerBucketFillEvent e){
-        if (!builders.contains(e.getPlayer().getUniqueId())){
-            e.setCancelled(true);
-        }
+        if (builders.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
     
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent e){
-        if (!builders.contains(e.getPlayer().getUniqueId())){
-            e.setCancelled(true);
-        }
+        if (builders.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
     
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDropItemEvent(PlayerDropItemEvent e){
-        if (!builders.contains(e.getPlayer().getUniqueId())){
-            e.setCancelled(true);
-        }
+        if (builders.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
     
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent e){
-        if (!builders.contains(e.getPlayer().getUniqueId())){
-            e.setCancelled(true);
-        }
+        if (builders.contains(e.getPlayer().getUniqueId())) return;
+        e.setCancelled(true);
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -290,7 +276,7 @@ public final class LobbyPlayerEvents extends MainEvents {
     public void onEntityTargetLivingEntityEvent(EntityTargetLivingEntityEvent e){
         if (e.getEntity() instanceof Player) return;
         if (e.getEntity() instanceof ArmorStand) return;
-        if (e.getEntity() instanceof CraftArmorStand) return;
+    
         e.setCancelled(true);
     }
     
@@ -318,7 +304,7 @@ public final class LobbyPlayerEvents extends MainEvents {
     public void onEntitySpawnEvent(EntitySpawnEvent e){
         if (e.getEntity() instanceof Player) return;
         if (e.getEntity() instanceof ArmorStand) return;
-        if (e.getEntity() instanceof CraftArmorStand) return;
+    
         e.setCancelled(true);
     }
     

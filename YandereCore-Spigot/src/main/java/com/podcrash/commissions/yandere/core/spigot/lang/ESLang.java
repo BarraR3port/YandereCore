@@ -1,7 +1,7 @@
 package com.podcrash.commissions.yandere.core.spigot.lang;
 
-import net.lymarket.common.config.ConfigGenerator;
-import net.lymarket.common.lang.ILang;
+import net.lymarket.lyapi.common.config.ConfigGenerator;
+import net.lymarket.lyapi.common.lang.ILang;
 
 public final class ESLang extends ILang {
     
