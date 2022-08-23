@@ -181,8 +181,10 @@ public class ProxySocketServer implements Runnable {
                                                 p.sendMessage(Utils.format("&cError al conectar, espera unos segundos."));
                                             }
                                         } catch (InterruptedException | ExecutionException | TimeoutException ignored) {
+                                            p.sendMessage(Utils.format("&cError al conectar, espera unos segundos."));
                                         }
                                     });
+    
                                     if (!msg.equalsIgnoreCase("EMPTY")){
                                         p.sendMessage(Utils.format(msg.replace("%player%", p.getUsername())));
                                     }
