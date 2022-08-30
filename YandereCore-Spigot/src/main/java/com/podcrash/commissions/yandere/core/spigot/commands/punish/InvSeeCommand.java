@@ -5,16 +5,15 @@ import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 public class InvSeeCommand implements ILyCommand {
     
-    @Command(name = "invsee", permission = "yandere.invsee", usage = "/invsee <player>", aliases = {"inv"})
+    @Command(name = "invsee", permission = "yandere.invsee", usage = "/invsee <jugador>", aliases = {"inv"})
     public CommandResponse command(CommandContext context){
         if (context.getSender() instanceof Player){
             Player p = (Player) context.getSender();
@@ -36,7 +35,7 @@ public class InvSeeCommand implements ILyCommand {
                         Main.getLang().getMSG(
                                 "error.wrong-command",
                                 "command",
-                                "invsee <player>"),
+                                "invsee <jugador>"),
                         Collections.singletonList("&7Click aquí"),
                         "invsee "));
             }
@@ -45,10 +44,10 @@ public class InvSeeCommand implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext TabContext){
-        ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext TabContext){
+        LinkedList<String> list = new LinkedList<>();
         if (TabContext.getArgs().length == 1){
-            list = Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toCollection(ArrayList::new));
+            list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(p -> !TabContext.getSender().getName().equals(p)).collect(Collectors.toList()));
         }
         return list;
     }

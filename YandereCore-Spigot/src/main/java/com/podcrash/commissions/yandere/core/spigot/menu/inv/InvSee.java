@@ -66,8 +66,6 @@ public class InvSee extends InventoryMenu {
             return;
         }
         if (e.getSlot() == 27 || e.getSlot() == 28 || e.getSlot() == 29 || e.getSlot() == 31){
-            
-            
             if (e.getSlot() == 31){
                 p.closeInventory();
                 TpManager.teleportToPlayer(p, target.getName());
@@ -102,20 +100,18 @@ public class InvSee extends InventoryMenu {
                 Main.getInstance().getInvManager().removeItem(target, slot);
             } else if (!item.getType().equals(Material.AIR) && !cursor.getType().equals(Material.AIR)){
                 // player swap item in inventory
-                if (item.getItemMeta().equals(cursor.getItemMeta())){
+                if (item.getType().equals(cursor.getType()) && item.getItemMeta().equals(cursor.getItemMeta())){
                     /*
                     TODO ARREGLAR ESTE SISTEMA - El actual duplica o triplica los items, por lo tanto se deshabilita
                     item.setAmount( item.getAmount( ) + cursor.getAmount( ) );
                     int finalSlot = slot;
-                    Bukkit.getScheduler( ).scheduleSyncDelayedTask( Core.getInstance( ) , ( ) -> InvManager.setItem( p , target , finalSlot , item ) , 5L );*/
-                    e.getWhoClicked().sendMessage("Esta opción está en desarrollo, intenta mover los items de otra manera");
+                    Bukkit.getScheduler( ).scheduleSyncDelayedTask( Core.getInstance( ) , ( ) -> InvManager.setItem( p , target , finalSlot , item ) , 5L );**/
+                    e.getWhoClicked().sendMessage(Utils.format("&cEsta opción está en desarrollo, por lo tanto está deshabilitada."));
                     e.setCancelled(true);
                 } else {
                     Main.getInstance().getInvManager().removeItem(target, slot);
                     Main.getInstance().getInvManager().setItem(p, target, slot);
                 }
-                //InvManager.removeItem( p , target , slot , item );
-                //InvManager.setItem( p , target , slot );
             }
         } catch (NullPointerException ignored) {
             //InvManager.updateTargetInventory( p, target );
@@ -182,7 +178,7 @@ public class InvSee extends InventoryMenu {
         for ( int b = 0; b < inv.size(); b++ ){
             inventory.setItem(b, inv.get(b));
         }
-        inventory.setItem(27, Items.GREEN_PANEL);
+        inventory.setItem(27, Items.GREEN_PANEL.clone());
         inventory.setItem(28, Items.potions(target));
         inventory.setItem(29, Items.food(target));
         if (target.getInventory().getItemInHand() != null){
@@ -201,7 +197,6 @@ public class InvSee extends InventoryMenu {
         if (target.getInventory().getBoots() != null){
             inventory.setItem(35, target.getInventory().getBoots());
         }
-        Utils.playSound(getOwner(), "CHEST_OPEN");
     }
     
     

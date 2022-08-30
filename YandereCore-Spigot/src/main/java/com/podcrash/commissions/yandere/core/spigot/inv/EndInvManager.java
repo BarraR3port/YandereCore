@@ -1,7 +1,8 @@
-package com.podcrash.commissions.yandere.core.spigot.menu.inv;
+package com.podcrash.commissions.yandere.core.spigot.inv;
 
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
+import com.podcrash.commissions.yandere.core.spigot.menu.inv.EnderSee;
 import net.lymarket.lyapi.spigot.LyApi;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

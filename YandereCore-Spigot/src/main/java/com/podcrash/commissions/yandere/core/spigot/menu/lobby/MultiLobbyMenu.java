@@ -71,7 +71,7 @@ public class MultiLobbyMenu extends UpdatableMenu {
                             .addLoreLine(isSameLobby ? "&cYa estás en este servidor!" : isOnline ? "&7&lClick para entrar!" : null)
                             .addLoreLine("")
                             .setFireWorkColor(color)
-                            .addTag("allowed", isSameLobby ? "false" : "true")
+                            .addTag("allowed", String.valueOf(!isSameLobby))
                             .addTag("server", serverName)
                             .build()
             );
@@ -84,14 +84,17 @@ public class MultiLobbyMenu extends UpdatableMenu {
     public void handleMenu(InventoryClickEvent e){
         final ItemStack item = e.getCurrentItem();
         final NBTItem nbtItem = new NBTItem(item);
+    
         if (nbtItem.hasTag("allowed")){
-            if (nbtItem.getString("allowed").equals("true")){
-                Main.getInstance().getSocket().sendJoinServer(getOwner().getUniqueId(), nbtItem.getString("server"));
-            } else {
+            if (nbtItem.getTag("allowed").equalsIgnoreCase("false")){
                 getOwner().sendMessage(Utils.format("&cYa estás en este servidor!"));
+            } else if (nbtItem.getTag("allowed").equalsIgnoreCase("true")){
+                Main.getInstance().getSocket().sendJoinServer(getOwner().getUniqueId(), nbtItem.getString("server"));
             }
+            e.setCancelled(true);
         } else if (nbtItem.hasTag("ly-menu-close")){
             new LobbyMenu(playerMenuUtility).open();
         }
+    
     }
 }

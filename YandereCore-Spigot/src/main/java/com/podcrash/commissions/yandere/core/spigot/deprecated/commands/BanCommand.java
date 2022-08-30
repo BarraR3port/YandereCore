@@ -26,7 +26,7 @@ public class BanCommand implements ILyCommand {
             Player p = ( Player ) context.getSender( );
             if ( p.hasPermission( "yandere.staff.ban" ) ) {
                 if ( context.getArgs( ).length == 0 ) {
-                    p.sendMessage( Core.getApi( ).getUtils( ).prefix( ) + Core.getSMain( ).getUtils( ).format( "/ban <player> <tiempo> <-ip> <razón>" ) );
+                    p.sendMessage( Core.getApi( ).getUtils( ).prefix( ) + Core.getSMain( ).getUtils( ).format( "/ban <jugador> <tiempo> <-ip> <razón>" ) );
                 } else if ( context.getArgs( ).length == 1 ) {
                     new BanMenu( SMain.getPlayerMenuUtility( p ) , context.getArg( 0 ) ).open( );
                 } else {

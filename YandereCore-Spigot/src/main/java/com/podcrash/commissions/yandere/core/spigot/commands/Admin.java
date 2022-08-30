@@ -12,9 +12,9 @@ import net.lymarket.lyapi.spigot.LyApi;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 
 public class Admin implements ILyCommand {
     
@@ -53,19 +53,19 @@ public class Admin implements ILyCommand {
             Utils.sendMessage(p, " ");
             Utils.sendMessage(p, "&aCommands: ");
             Utils.sendMessage(p, " ");
-            Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessageSuggestCommand("&b/admin menu <usuario>", Collections.singletonList("&7Con este comando adminstras al jugador de"), "/admin menu "));
-            Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessageSuggestCommand("&b/admin worlds <usuario>", Arrays.asList("&7Con este comando ves los mundos de", "&7un usuario específico."), "/admin worlds "));
-            Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessageSuggestCommand("&b/admin homes <usuario>", Arrays.asList("&7Con este comando ves los homes de", "&7un usuario específico."), "/admin homes "));
-            Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessageSuggestCommand("&b/admin reload", Arrays.asList("&7Con este comando se recarga", "&7la información de la config."), "/admin reload"));
-            Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessageRunCommand("&b/admin debug", Arrays.asList("&7Con este comando activas o desactivas", "&7el modo debug."), "/admin debug"));
+            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin menu <usuario>", Collections.singletonList("&7Con este comando adminstras al jugador de"), "/admin menu "));
+            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin worlds <usuario>", Arrays.asList("&7Con este comando ves los mundos de", "&7un usuario específico."), "/admin worlds "));
+            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin homes <usuario>", Arrays.asList("&7Con este comando ves los homes de", "&7un usuario específico."), "/admin homes "));
+            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin reload", Arrays.asList("&7Con este comando se recarga", "&7la información de la config."), "/admin reload"));
+            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageRunCommand("&c/admin debug", Arrays.asList("&7Con este comando activas o desactivas", "&7el modo debug."), "/admin debug"));
             return new CommandResponse();
         }
         return new CommandResponse("yandere.admin");
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext context){
-        final ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext context){
+        final LinkedList<String> list = new LinkedList<>();
         if (context.getSender().hasPermission("yandere.admin")){
             if (context.getArgs().length == 1){
                 list.add("reload");

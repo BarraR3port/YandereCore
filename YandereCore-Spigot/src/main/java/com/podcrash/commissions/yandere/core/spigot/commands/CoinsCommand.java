@@ -9,8 +9,8 @@ import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -75,15 +75,15 @@ public class CoinsCommand implements ILyCommand {
             }
             
         }
-        Utils.sendMessage(context.getSender(), "&a| &eMoney Commands &a|");
+        Utils.sendMessage(context.getSender(), "&8| &eMoney Commands &8|");
         Utils.sendMessage(context.getSender(), " ");
-        Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/coins <add|get|remove|set> <player> <cantidad>");
+        Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/coins <add|get|remove|set> <jugador> <cantidad>");
         return new CommandResponse();
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext TabContext){
-        ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext TabContext){
+        LinkedList<String> list = new LinkedList<>();
         if (TabContext.getArgs().length == 1){
             list.add("add");
             list.add("remove");

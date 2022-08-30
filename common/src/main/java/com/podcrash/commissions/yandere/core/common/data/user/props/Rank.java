@@ -6,7 +6,7 @@ public enum Rank {
     ADMIN("admin", "§c§l「Admin⏌ §f", "§c§l「Admin⏌ §f", "§c§lAdmin"),
     DEV("dev", "§d「Dev⏌ §f", "§d「Dev⏌ §f", "§d§lDeveloper"),
     MOD("mod", "§9「Mod⏌ §f", "§9「Mod⏌ §f", "§9Mod"),
-    AFILIADO("afiliado", "§4「Af⏌ §f", "§4「Afiliado⏌ §f", "§9Afiliado"),
+    AFILIADO("afiliado", "§4「Af⏌ §f", "§4「Afiliado⏌ §f", "§4Afiliado"),
     DIAMANTE("diamante", "§b§l「D⏌ §f", "§b§l「Diamante⏌ §f", "§b§lDiamante"),
     ORO("oro", "§e「O⏌ §f", "§e「Oro⏌ §f", "§eOro"),
     HIERRO("hierro", "§7「H⏌ §7", "§7「Hierro⏌ §7", "§7Hierro"),

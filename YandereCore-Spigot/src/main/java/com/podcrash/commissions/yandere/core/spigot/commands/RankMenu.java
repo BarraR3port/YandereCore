@@ -10,8 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Locale;
 
 public class RankMenu implements ILyCommand {
@@ -27,7 +27,7 @@ public class RankMenu implements ILyCommand {
                 Player p = (Player) context.getSender();
                 p.spigot().sendMessage(Utils.formatTC("&7Establece el rango a un jugador con este "), Utils.hoverOverMessageSuggestCommand("&ccomando", Collections.singletonList("&e/rank set <jugador> <rango>"), "/rank set "));
             } else {
-                context.getSender().sendMessage("§e- §dEstablece el rango a un jugador §e- §d/rank set (jugador) (rango)");
+                context.getSender().sendMessage("§e- §dEstablece el rango a un jugador §e- §d/rank set <jugador> (rango)");
             }
             context.getSender().sendMessage("§b§m----------------------------------------------------");
             return new CommandResponse();
@@ -45,7 +45,7 @@ public class RankMenu implements ILyCommand {
                     Main.getLang().sendErrorMsg(context.getSender(), "player.not-fund", "player", target);
                 }
             } else {
-                Main.getLang().sendErrorMsg(context.getSender(), "wrong-command", "command", "/rank set (jugador) (rango)");
+                Main.getLang().sendErrorMsg(context.getSender(), "wrong-command", "command", "/rank set <jugador> (rango)");
             }
             return new CommandResponse();
         }
@@ -54,8 +54,8 @@ public class RankMenu implements ILyCommand {
     
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext context){
-        ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext context){
+        LinkedList<String> list = new LinkedList<>();
         if (context.getSender().hasPermission("yandere.rank")){
             if (context.getArgs().length == 1){
                 list.add("set");

@@ -1,71 +1,54 @@
-/*
 package com.podcrash.commissions.yandere.core.spigot.commands;
 
+import com.podcrash.commissions.yandere.core.spigot.Main;
 import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.lydark.core.spigot.Core;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 public class Fly implements ILyCommand {
     
     @Command(name = "fly", permission = "yandere.fly")
     public CommandResponse command(CommandContext context){
         if (!(context.getSender() instanceof Player)){
-            Bukkit.getConsoleSender().sendMessage(Core.getApi().getUtils().prefix() + " §cNo puedes ejecutar comandos desde la consola");
+            Main.getLang().sendErrorMsg(context.getSender(), "only-players-can-use-this-command");
             return new CommandResponse();
         }
         Player p = (Player) context.getSender();
-        
         if (context.getArgs().length == 0){
-            if (!p.getAllowFlight()){
-                p.setAllowFlight(true);
-                p.setFlying(true);
-                
-                p.sendMessage(Core.getApi().getUtils().prefix() + " [lang]Lydark_Core.FlyCommand.1[/lang]");
-            } else {
-                p.setAllowFlight(false);
-                p.setFlying(false);
-                
-                p.sendMessage(Core.getApi().getUtils().prefix() + " [lang]Lydark_Core.FlyCommand.2[/lang]");
-            }
-            return new CommandResponse();
+            boolean fly = p.getAllowFlight();
+            p.setAllowFlight(!fly);
+            p.setFlying(!fly);
+            Main.getLang().sendMsg(p, "fly.chang", "fly", p.getAllowFlight() ? "&aActivado" : "&cDesactivado");
         } else {
+            if (!p.hasPermission("yandere.fly.others")) return new CommandResponse("yandere.fly.others");
             Player target = Bukkit.getPlayer(context.getArg(0));
-            
-            if (!p.hasPermission("yandere.fly.others")) return false;
-            
-            if (target != null && target.getType().equals(EntityType.PLAYER) && target.isOnline()){
-                if (!target.getAllowFlight()){
-                    target.setAllowFlight(true);
-                    target.setFlying(true);
-                    
-                    target.sendMessage(Core.getApi().getUtils().prefix() + " [lang]Lydark_Core.FlyCommand.1[/lang]");
-                    
-                    p.sendMessage(Core.getApi().getUtils().prefix() + " [lang]Lydark_Core.FlyCommand.4[/lang] §3" + target.getName() + " [lang]Lydark_Core.FlyCommand.5[/lang]");
-                } else {
-                    target.setAllowFlight(false);
-                    target.setFlying(false);
-                    
-                    target.sendMessage(Core.getApi().getUtils().prefix() + " [lang]Lydark_Core.FlyCommand.6[/lang]");
-                    
-                    p.sendMessage(Core.getApi().getUtils().prefix() + " [lang]Lydark_Core.FlyCommand.4[/lang] §3" + target.getName() + " [lang]Lydark_Core.FlyCommand.7[/lang]");
-                }
-                return new CommandResponse();
+            if (target != null){
+                boolean fly = target.getAllowFlight();
+                target.setAllowFlight(!fly);
+                target.setFlying(!fly);
+                Main.getLang().sendMsg(target, "fly.change", "fly", target.getAllowFlight() ? "&aActivado" : "&cDesactivado");
+                HashMap<String, String> replacements = new HashMap<>();
+                replacements.put("fly", target.getAllowFlight() ? "&aActivado" : "&cDesactivado");
+                replacements.put("player", target.getName());
+                Main.getLang().sendMsg(target, "fly.change.other", replacements);
             } else {
-                p.sendMessage(Core.getApi().getUtils().prefix() + " [lang]Lydark_Core.PlayerHasNotBeenFound[/lang]");
-                return false;
+                Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
             }
         }
-        
+        return new CommandResponse();
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext TabContext){
-        return new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext context){
+        LinkedList<String> list = new LinkedList<>();
+        if (context.getArgs().length == 1){
+            list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(p -> !context.getSender().getName().equals(p)).collect(Collectors.toList()));
+        }
+        return list;
     }
 }
-*/

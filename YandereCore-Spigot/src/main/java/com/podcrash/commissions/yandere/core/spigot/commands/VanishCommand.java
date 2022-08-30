@@ -7,9 +7,9 @@ import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 public class VanishCommand implements ILyCommand {
     
@@ -45,7 +45,7 @@ public class VanishCommand implements ILyCommand {
                         Main.getLang().getMSG(
                                 "error.wrong-command",
                                 "command",
-                                "vanish | vanish <player>"),
+                                "vanish | vanish <jugador>"),
                         Collections.singletonList("&7Click aquí"),
                         "vanish "));
             }
@@ -55,14 +55,10 @@ public class VanishCommand implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext TabContext){
-        ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext TabContext){
+        LinkedList<String> list = new LinkedList<>();
         if (TabContext.getArgs().length == 1){
-            for ( Player p : Bukkit.getOnlinePlayers() ){
-                if (Objects.equals(p.getName(), TabContext.getSender().getName()))
-                    continue;
-                list.add(p.getName());
-            }
+            list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(p -> !TabContext.getSender().getName().equals(p)).collect(Collectors.toList()));
         }
         return list;
     }

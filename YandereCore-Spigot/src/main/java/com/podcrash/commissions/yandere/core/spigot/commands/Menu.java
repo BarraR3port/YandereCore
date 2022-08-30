@@ -9,7 +9,7 @@ import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.LyApi;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public final class Menu implements ILyCommand {
     
@@ -40,12 +40,12 @@ public final class Menu implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext context){
-        final ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext context){
+        final LinkedList<String> list = new LinkedList<>();
         
         if (context.getSender().hasPermission("yandere.admin")){
             if (context.getArgs().length == 1){
-                return Main.getInstance().getPlayers().getPlayersName();
+                list.addAll(Main.getInstance().getPlayers().getPlayersName());
             }
         }
         

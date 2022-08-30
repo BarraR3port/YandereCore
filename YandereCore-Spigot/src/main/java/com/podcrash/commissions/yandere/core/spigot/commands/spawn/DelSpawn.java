@@ -5,7 +5,7 @@ import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public final class DelSpawn implements ILyCommand {
     
@@ -33,7 +33,7 @@ public final class DelSpawn implements ILyCommand {
     
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext context){
-        return new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext context){
+        return new LinkedList<>();
     }
 }

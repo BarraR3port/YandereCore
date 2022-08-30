@@ -275,7 +275,7 @@
         <dependency>
             <groupId>net.lymarket.lyapi</groupId>
             <artifactId>lyapi-velocity</artifactId>
-            <version>1.2.12</version>
+            <version>1.2.13</version>
             <scope>compile</scope>
         </dependency>
 

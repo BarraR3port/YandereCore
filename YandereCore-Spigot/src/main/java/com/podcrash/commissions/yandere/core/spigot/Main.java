@@ -14,6 +14,10 @@ import com.podcrash.commissions.yandere.core.common.log.ILogRepository;
 import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import com.podcrash.commissions.yandere.core.common.socket.OfflineSocketClient;
 import com.podcrash.commissions.yandere.core.spigot.commands.*;
+import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMACommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMCCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSPCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.punish.EnderSeeCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.punish.InvSeeCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.spawn.DelSpawn;
@@ -24,20 +28,21 @@ import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpAll;
 import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpHere;
 import com.podcrash.commissions.yandere.core.spigot.config.YandereConfig;
 import com.podcrash.commissions.yandere.core.spigot.cooldowns.CoolDownManager;
+import com.podcrash.commissions.yandere.core.spigot.inv.EndInvManager;
+import com.podcrash.commissions.yandere.core.spigot.inv.InvManager;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.lang.ESLang;
+import com.podcrash.commissions.yandere.core.spigot.libs.lymarket.lyapi.spigot.utils.Utils;
 import com.podcrash.commissions.yandere.core.spigot.listener.DefaultEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.BWPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.lobby.LBWPlayerEvents;
-import com.podcrash.commissions.yandere.core.spigot.listener.lobby.LobbyPlayerEvents;
+import com.podcrash.commissions.yandere.core.spigot.listener.lobby.MainLobbyPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.plugin.PluginMessage;
 import com.podcrash.commissions.yandere.core.spigot.listener.practice.PracticeGameEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.practice.PracticePlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.skywars.SWGameEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.skywars.SWPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.log.LogRepository;
-import com.podcrash.commissions.yandere.core.spigot.menu.inv.EndInvManager;
-import com.podcrash.commissions.yandere.core.spigot.menu.inv.InvManager;
 import com.podcrash.commissions.yandere.core.spigot.papi.Placeholders;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.commissions.yandere.core.spigot.socket.SpigotSocketClient;
@@ -53,6 +58,7 @@ import net.lymarket.lyapi.common.lang.ILang;
 import net.lymarket.lyapi.spigot.LyApi;
 import net.lymarket.lyapi.spigot.config.Config;
 import net.lymarket.lyapi.spigot.menu.IUpdatableMenu;
+import net.lymarket.lyapi.spigot.menu.InventoryMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -96,6 +102,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     public static Main getInstance(){
         return instance;
     }
+    
     public static void debug(String message){
         if (Settings.DEBUG){
             instance.getLogger().info(ChatColor.RED + "[DEBUG] " + ChatColor.LIGHT_PURPLE + message);
@@ -168,7 +175,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         }
         switch(Settings.SERVER_TYPE){
             case LOBBY:{
-                getServer().getPluginManager().registerEvents(new LobbyPlayerEvents(), this);
+                getServer().getPluginManager().registerEvents(new MainLobbyPlayerEvents(), this);
                 api.getCommandService().registerCommands(new Build());
                 break;
             }
@@ -216,9 +223,17 @@ public final class Main extends JavaPlugin implements YandereApi {
                 }
             }
         }, 0L, 60L);
+        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+            for ( Player p : Bukkit.getOnlinePlayers() ){
+                if (p.getOpenInventory().getTopInventory().getHolder() instanceof InventoryMenu){
+                    ((InventoryMenu) p.getOpenInventory().getTopInventory().getHolder()).reOpen();
+                }
+            }
+        }, 0L, 10L);
     
         getServer().getPluginManager().callEvent(new PluginEnableEvent(this));
         //new PacketManager( this );
+        overrideSpigotDefaultMessages();
     
     }
     
@@ -300,6 +315,13 @@ public final class Main extends JavaPlugin implements YandereApi {
         api.getCommandService().registerCommands(new Speed());
         api.getCommandService().registerCommands(new VanishCommand());
         api.getCommandService().registerCommands(new XPCommand());
+        api.getCommandService().registerCommands(new GamemodeCommand());
+        api.getCommandService().registerCommands(new GMSCommand());
+        api.getCommandService().registerCommands(new GMCCommand());
+        api.getCommandService().registerCommands(new GMACommand());
+        api.getCommandService().registerCommands(new GMSPCommand());
+        api.getCommandService().registerCommands(new Fly());
+        api.getCommandService().registerCommands(new Heal());
     }
     
     public void reconnectToProxy(){
@@ -373,4 +395,10 @@ public final class Main extends JavaPlugin implements YandereApi {
     public boolean isHookedIntoBedWars(){
         return hockedIntoBedWars;
     }
+    
+    public void overrideSpigotDefaultMessages(){
+        org.spigotmc.SpigotConfig.unknownCommandMessage = Utils.format("  &8&l▸ &cComando no encontrado, usa &e/ayuda &cpa ver los comandos disponibles.");
+    }
+    
+    
 }

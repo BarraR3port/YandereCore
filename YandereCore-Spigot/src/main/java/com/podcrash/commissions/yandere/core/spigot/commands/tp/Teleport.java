@@ -11,8 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 public class Teleport implements ILyCommand {
@@ -57,14 +57,14 @@ public class Teleport implements ILyCommand {
                     
                 }
                 default:{
-                    Utils.sendMessage(p, "&a| &eComandos de TP &a|");
+                    Utils.sendMessage(p, "&8| &eComandos de TP &8|");
                     Utils.sendMessage(p, " ");
-                    Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessageSuggestCommand("&b/tp &e<player>", Arrays.asList("&7Con este comando ", "&7teleport to a friend."), "/tp "));
-                    Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessageRunCommand("&b/tp &ex y z", Arrays.asList("&7Con este comando ", "&7teleport an specific location."), "/tp "));
-                   /* Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessageRunCommand("&b/tpa <player>", Arrays.asList("&7Con este comando ", "&7send a TP request to a friend."), "/tpa "));
-                    Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessage("&b/tpacept <id>", Arrays.asList("&7Con este comando ", "&7accept a Tpa request.")));
-                    Utils.sendMessage(p, Utils.formatTC("&e> "), Utils.hoverOverMessage("&b/tpadeny <id>", Arrays.asList("&7Con este comando ", "&7deny a Tpa request.")));
-                    *///Utils.sendMessage( p , Utils.formatTC( "&e> " ) , Utils.hoverOverMessageSuggestCommand( "&b/tp <player> <player>" , Arrays.asList( "&7Con este comando " , "&7remove a friend from your FriendList." ) , "/friends remove " ) );
+                    Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/tp &e<jugador>", Arrays.asList("&7Con este comando ", "&7teleport to a friend."), "/tp "));
+                    Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageRunCommand("&c/tp &ex y z", Arrays.asList("&7Con este comando ", "&7teleport an specific location."), "/tp "));
+                   /* Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageRunCommand("&c/tpa <jugador>", Arrays.asList("&7Con este comando ", "&7send a TP request to a friend."), "/tpa "));
+                    Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessage("&c/tpacept <id>", Arrays.asList("&7Con este comando ", "&7accept a Tpa request.")));
+                    Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessage("&c/tpadeny <id>", Arrays.asList("&7Con este comando ", "&7deny a Tpa request.")));
+                    *///Utils.sendMessage( p , Utils.formatTC( "  &8&l▸ " ) , Utils.hoverOverMessageSuggestCommand( "&c/tp <jugador> <jugador>" , Arrays.asList( "&7Con este comando " , "&7remove a friend from your FriendList." ) , "/friends remove " ) );
                     return new CommandResponse();
                 }
             }
@@ -76,12 +76,12 @@ public class Teleport implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext context){
-        final ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext context){
+        final LinkedList<String> list = new LinkedList<>();
         switch(context.getArgs().length){
             case 1:
             case 2:{
-                return Bukkit.getOnlinePlayers().stream().map(Player::getName).distinct().collect(Collectors.toCollection(ArrayList::new));
+                list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(p -> !context.getSender().getName().equals(p)).collect(Collectors.toList()));
             }
         }
         return list;

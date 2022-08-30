@@ -7,14 +7,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class DeOpCommand implements ILyCommand {
     
     @Command(name = "deop", permission = "yandere.deop")
     public CommandResponse command(CommandContext context){
         if (context.getArgs().length == 0){
-            Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/deop <player>");
+            Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/deop <jugador>");
             return new CommandResponse();
         }
         
@@ -39,8 +39,8 @@ public class DeOpCommand implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext TabContext){
-        ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext TabContext){
+        LinkedList<String> list = new LinkedList<>();
         if (TabContext.getArgs().length == 1){
             Bukkit.getOperators().stream().filter(player -> !list.contains(player.getName())).forEachOrdered(player -> list.add(player.getName()));
             

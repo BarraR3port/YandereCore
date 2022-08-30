@@ -198,7 +198,7 @@ public final class Items {
                 .setDisplayName("&a" + target.getName() + "'s &7Health Stats:")
                 .addLoreLine("&a► &aVida: &c" + (int) target.getHealth() + "&l" + "\u2764")
                 .addLoreLine("&a► &aComida: &6" + target.getFoodLevel())
-                .build();
+                .build().clone();
     }
     
     public static ItemStack potions(Player target){
@@ -219,7 +219,7 @@ public final class Items {
             itemMeta.setLore(Collections.singletonList(Utils.format("&a► &cSin Pociones")));
             item.setItemMeta(itemMeta);
         }
-        return item;
+        return item.clone();
     }
     
     public static ItemStack head(Player owner){
@@ -238,7 +238,7 @@ public final class Items {
                 .addLoreLine("&a► &7Vanished " + (Main.getInstance().getVanishManager().isVanished(owner) ? "&aOn" : "&cOff"))
                 .addTag("head", "head")
                 .addTag("name", owner.getName())
-                .build();
+                .build().clone();
     }
     
     public static void setLobbyItems(Player p){

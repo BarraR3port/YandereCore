@@ -7,7 +7,7 @@ import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public final class SetSpawn implements ILyCommand {
     
@@ -38,7 +38,7 @@ public final class SetSpawn implements ILyCommand {
     
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext context){
-        return new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext context){
+        return new LinkedList<>();
     }
 }

@@ -9,8 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class EconomyCommand implements ILyCommand {
     
@@ -19,7 +19,7 @@ public class EconomyCommand implements ILyCommand {
         
         if (context.getArgs().length == 0){
             if (!(context.getSender() instanceof Player)){
-                Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/money <player>");
+                Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/money <jugador>");
                 return new CommandResponse();
             }
     
@@ -54,8 +54,8 @@ public class EconomyCommand implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext TabContext){
-        return new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext TabContext){
+        return new LinkedList<>();
     }
     
 }

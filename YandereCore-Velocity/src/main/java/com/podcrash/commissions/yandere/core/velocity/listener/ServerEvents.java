@@ -6,9 +6,7 @@ import com.podcrash.commissions.yandere.core.velocity.utils.Utils;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
-import com.velocitypowered.api.proxy.server.ServerPing;
-
-import java.util.concurrent.CompletableFuture;
+import net.lymarket.lyapi.common.Api;
 
 public class ServerEvents {
     
@@ -16,41 +14,36 @@ public class ServerEvents {
     public void onPlayerJoin(KickedFromServerEvent e){
         final String serverName = e.getServer().getServerInfo().getName();
         final ServerType serverType = ServerType.match(serverName);
-        if (e.getServerKickReason().isEmpty()) return;
-        final String randomLobbyServer = VMain.getInstance().getServerManager().getRandomLobbyServer().getProxyName();
-        boolean connectToRandomLobby = false;
         if (serverType.equals(ServerType.BED_WARS)){
             final String bwLobby = VMain.getInstance().getServerManager().getRandomBedWarsLobbyServer().getProxyName();
             if (bwLobby.equalsIgnoreCase("EMPTY")){
                 e.getPlayer().sendMessage(Utils.format("&cNo hay Lobbies de BedWars disponibles!"));
-                connectToRandomLobby = true;
             } else {
-                e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(bwLobby).get()));
-                return;
+                if (VMain.getInstance().getProxy().getServer(bwLobby).isPresent()){
+                    e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(bwLobby).get()));
+                }
             }
-        }
-        if (serverType.equals(ServerType.SKY_WARS)){
+        } else if (serverType.equals(ServerType.SKY_WARS)){
             final String swLobby = VMain.getInstance().getServerManager().getRandomSkyWarsServer().getProxyName();
             if (swLobby.equalsIgnoreCase("EMPTY")){
                 e.getPlayer().sendMessage(Utils.format("&cNo hay Lobbies de SkyWars disponibles!"));
-                connectToRandomLobby = true;
             } else {
-                e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(swLobby).get()));
-                return;
+                if (VMain.getInstance().getProxy().getServer(swLobby).isPresent()){
+                    e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(swLobby).get()));
+                }
             }
-        }
-        if (connectToRandomLobby){
+        } else {
+            final String randomLobbyServer = VMain.getInstance().getServerManager().getRandomLobbyServer().getProxyName();
+            System.out.println("Server name: " + serverName);
+            System.out.println("Server type: " + serverType);
+            System.out.println("Random lobby: " + randomLobbyServer);
+            System.out.println("Servers: " + Api.getGson().toJson(VMain.getInstance().getServerManager().getServers()));
             if (VMain.getInstance().getProxy().getServer(randomLobbyServer).isPresent()){
+                System.out.println("Redirecting to: " + randomLobbyServer);
                 RegisteredServer server = VMain.getInstance().getProxy().getServer(randomLobbyServer).get();
-                CompletableFuture<ServerPing> ping = server.ping();
-                ping.whenCompleteAsync((ServerPing serverPing, Throwable throwable) -> {
-                    if (throwable != null){
-                        throwable.printStackTrace();
-                        e.setResult(KickedFromServerEvent.DisconnectPlayer.create(Utils.format("&cNo hay Lobbies disponibles!")));
-                        return;
-                    }
-                    e.setResult(KickedFromServerEvent.RedirectPlayer.create(server));
-                });
+                e.setResult(KickedFromServerEvent.RedirectPlayer.create(server));
+            } else {
+                e.setResult(KickedFromServerEvent.DisconnectPlayer.create(Utils.format("&cNo hay Lobbies disponibles!")));
             }
         }
     

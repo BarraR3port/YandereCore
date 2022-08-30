@@ -7,7 +7,7 @@ import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Back implements ILyCommand {
     
@@ -30,7 +30,7 @@ public class Back implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext TabContext){
-        return new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext TabContext){
+        return new LinkedList<>();
     }
 }

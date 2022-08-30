@@ -98,7 +98,7 @@ items:
       - ""
       - "&7Click para cambiar a &a&lEquipo."
     nbt:
-      - "lobby-player-join-arena:SOLO"
+      - "lobby-player-join-arena:SKYWARS"
       - "item-prop:no-move"
 
 
@@ -110,7 +110,7 @@ items:
       - ""
       - "&7Click para cambiar a &a&lRanked."
     nbt:
-      - "lobby-player-join-arena:TEAM"
+      - "lobby-player-join-arena:SKYWARS"
       - "item-prop:no-move"
 
   lobby-player-join-arena-skywars-ranked:
@@ -121,7 +121,7 @@ items:
       - ""
       - "&7Click para cambiar a &a&lAleatorio."
     nbt:
-      - "lobby-player-join-arena:RANKED"
+      - "lobby-player-join-arena:SKYWARS"
       - "item-prop:no-move"
 
   lobby-player-join-arena-skywars-random:
@@ -132,7 +132,7 @@ items:
       - ""
       - "&7Click para cambiar a &a&lSolo."
     nbt:
-      - "lobby-player-join-arena:RANDOM"
+      - "lobby-player-join-arena:SKYWARS"
       - "item-prop:no-move"
 
   lobby-player-join-arena-bedwars-solo:
@@ -141,7 +141,7 @@ items:
     slot: 1
     description:
     nbt:
-      - "lobby-player-join-arena:SOLO"
+      - "lobby-player-join-arena:BEDWARS"
       - "item-prop:no-move"
 
 
@@ -151,7 +151,7 @@ items:
     slot: 1
     description:
     nbt:
-      - "lobby-player-join-arena:DUO"
+      - "lobby-player-join-arena:BEDWARS"
       - "item-prop:no-move"
 
   lobby-player-join-arena-bedwars-3v3v3v3:
@@ -160,7 +160,7 @@ items:
     slot: 1
     description:
     nbt:
-      - "lobby-player-join-arena:_3V3V3V3"
+      - "lobby-player-join-arena:BEDWARS"
       - "item-prop:no-move"
 
   lobby-player-join-arena-bedwars-4v4v4v4:
@@ -169,7 +169,7 @@ items:
     slot: 1
     description:
     nbt:
-      - "lobby-player-join-arena:_4V4V4V4"
+      - "lobby-player-join-arena:BEDWARS"
       - "item-prop:no-move"
 
   lobby-player-join-arena-bedwars-random:
@@ -178,5 +178,5 @@ items:
     slot: 1
     description:
     nbt:
-      - "lobby-player-join-arena:RANDOM"
+      - "lobby-player-join-arena:BEDWARS"
       - "item-prop:no-move"

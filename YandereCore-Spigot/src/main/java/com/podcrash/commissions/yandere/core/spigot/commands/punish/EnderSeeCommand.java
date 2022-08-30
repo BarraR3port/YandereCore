@@ -5,16 +5,15 @@ import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 public class EnderSeeCommand implements ILyCommand {
     
-    @Command(name = "endersee", permission = "yandere.endersee", usage = "/endersee <player>")
+    @Command(name = "endersee", permission = "yandere.endersee", usage = "/endersee <jugador>")
     public CommandResponse command(CommandContext context){
         if (context.getSender() instanceof Player){
             Player p = (Player) context.getSender();
@@ -35,7 +34,7 @@ public class EnderSeeCommand implements ILyCommand {
                         Main.getLang().getMSG(
                                 "error.wrong-command",
                                 "command",
-                                "endersee <player>"),
+                                "endersee <jugador>"),
                         Collections.singletonList("&7Click aquí"),
                         "endersee "));
             }
@@ -45,10 +44,11 @@ public class EnderSeeCommand implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext TabContext){
-        ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext TabContext){
+        LinkedList<String> list = new LinkedList<>();
         if (TabContext.getArgs().length == 1){
-            list = Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toCollection(ArrayList::new));
+            list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(p -> !TabContext.getSender().getName().equals(p)).collect(Collectors.toList()));
+            
         }
         return list;
     }

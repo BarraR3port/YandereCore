@@ -137,9 +137,7 @@ public class Placeholders extends PlaceholderExpansion {
             case "location_server":{
                 return p.getLastLocation().getServer();
             }
-            case "location_server_type":{
-                return p.getLastLocation().getCurrentServerType().toString();
-            }
+            case "location_server_type":
             case "location_server_formatted":{
                 return p.getLastLocation().getCurrentServerTypeFormatted();
             }

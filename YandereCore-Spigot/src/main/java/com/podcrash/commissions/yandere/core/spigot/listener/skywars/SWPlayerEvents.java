@@ -13,6 +13,8 @@ import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.cooldowns.LobbyCoolDown;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.listener.MainEvents;
+import com.podcrash.commissions.yandere.core.spigot.menu.lobby.LobbyMenu;
+import com.podcrash.commissions.yandere.core.spigot.menu.lobby.MultiLobbyMenu;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import io.github.Leonardo0013YT.UltraSkyWars.UltraSkyWars;
 import io.github.Leonardo0013YT.UltraSkyWars.enums.GameType;
@@ -25,6 +27,7 @@ import io.github.Leonardo0013YT.UltraSkyWars.objects.Level;
 import io.github.Leonardo0013YT.UltraSkyWars.superclass.Game;
 import io.github.Leonardo0013YT.UltraSkyWars.team.Team;
 import io.github.Leonardo0013YT.ranks.ranks.EloRank;
+import net.lymarket.lyapi.spigot.LyApi;
 import net.lymarket.lyapi.spigot.utils.NBTItem;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -215,9 +218,9 @@ public final class SWPlayerEvents extends MainEvents {
                     p.setHealth(20);
                     p.setSaturation(20F);
                     p.setGameMode(GameMode.ADVENTURE);
-                
+    
                     PlayerVisibility visibility = user.getPlayerVisibility();
-                
+    
                     for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
                         if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
                         User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
@@ -238,7 +241,7 @@ public final class SWPlayerEvents extends MainEvents {
                                 p.hidePlayer(targetPlayer);
                                 break;
                         }
-                    
+        
                         switch(targetVisibility){
                             case ALL:{
                                 targetPlayer.showPlayer(p);
@@ -257,7 +260,7 @@ public final class SWPlayerEvents extends MainEvents {
                                 break;
                             }
                         }
-                    
+        
                     }
                 }
             }
@@ -344,7 +347,24 @@ public final class SWPlayerEvents extends MainEvents {
         if (item.getType() == Material.AIR) return;
         Player p = e.getPlayer();
         if (this.plugin.getCm().isMainLobby()){
-            if (NBTItem.hasTag(item, "lobby-player-join-arena")){
+            NBTItem nbtItem = new NBTItem(item);
+            if (nbtItem.hasTag("item-prop")){
+                String prop = nbtItem.getTag("item-prop");
+                switch(prop){
+                    case "lobby-menu":
+                    case "no-move":
+                    case "multi-lobby-menu":
+                        e.setCancelled(true);
+                }
+            }
+            if (nbtItem.hasTag("lobby-item")){
+                new LobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
+            } else if (nbtItem.hasTag("lobby-multi-lobby")){
+                new MultiLobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
+            } else if (nbtItem.hasTag("command")){
+                String command = nbtItem.getTag("command").replace("_", " ");
+                e.getPlayer().performCommand(command);
+            } else if (nbtItem.hasTag("lobby-player-join-arena")){
                 if (Main.getInstance().getCoolDownManager().hasCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE)){
                     CoolDown coolDown = Main.getInstance().getCoolDownManager().getCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
                     p.sendMessage(Utils.format(coolDown.getMessage()));

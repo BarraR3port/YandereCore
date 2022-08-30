@@ -511,7 +511,7 @@
             <artifactId>PodBedWars</artifactId>
             <version>1.0-BETA</version>
             <scope>system</scope>
-            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/bedwars-plugin-1.0-BETA.jar</systemPath>
+            <systemPath>/home/barra/Desktop/apis/bedwars-plugin-1.0-BETA.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -519,7 +519,13 @@
             <artifactId>PodBedWarsProxyPlugin</artifactId>
             <version>1.0-BETA</version>
             <scope>system</scope>
-            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/BedWarsProxy-Plugin-1.2.7.jar</systemPath>
+            <systemPath>/home/barra/Desktop/apis/BedWarsProxy-Plugin-1.2.7.jar</systemPath>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.lymarket.lyapi</groupId>
+                    <artifactId>*.*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -527,7 +533,7 @@
             <artifactId>UltraSkyWars</artifactId>
             <version>7.1.0</version>
             <scope>system</scope>
-            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/UltraSkyWars.jar</systemPath>
+            <systemPath>/home/barra/Desktop/apis/UltraSkyWars.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -535,7 +541,7 @@
             <artifactId>UltraSkyWars-EloRanks</artifactId>
             <version>7.1.0</version>
             <scope>system</scope>
-            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/UltraSkyWars-EloRanks.jar</systemPath>
+            <systemPath>/home/barra/Desktop/apis/UltraSkyWars-EloRanks.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -543,7 +549,7 @@
             <artifactId>UltraSkyWars-EloRanks</artifactId>
             <version>3.4.6</version>
             <scope>system</scope>
-            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/strikepractice-3.4.6.jar</systemPath>
+            <systemPath>/home/barra/Desktop/apis/strikepractice-3.4.6.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -551,8 +557,17 @@
             <artifactId>UltraSkyWars-Setup</artifactId>
             <version>3.4.6</version>
             <scope>system</scope>
-            <systemPath>C:/Users/barra/Desktop/Lydark Studios/APIS Y CORES/USW-Injections/UltraSkyWars-Setup.jar
+            <systemPath>/home/barra/Desktop/apis/USW-Injections/UltraSkyWars-Setup.jar
             </systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>be.isach.ultracosmetics</groupId>
+            <artifactId>UltraCosmetics</artifactId>
+            <version>2.9-DEV</version>
+            <scope>system</scope>
+            <systemPath>/home/barra/Desktop/apis/UltraCosmetics-2.9-DEV-b5.jar</systemPath>
+
         </dependency>
 
         <!--

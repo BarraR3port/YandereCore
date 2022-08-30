@@ -10,12 +10,11 @@ import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class XPCommand implements ILyCommand {
         }
         
         if (context.getArgs().length < 2){
-            Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/xp <add|get|set> <player> <cantidad>");
+            Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/xp <add|get|set> <jugador> <cantidad>");
             return new CommandResponse();
         }
         if (context.getSender().hasPermission("yandere.xp.get") || context.getSender().hasPermission("yandere.xp.add") || context.getSender().hasPermission("yandere.xp.set")){
@@ -107,15 +106,15 @@ public class XPCommand implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext TabContext){
-        ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext TabContext){
+        LinkedList<String> list = new LinkedList<>();
         if (TabContext.getArgs().length == 1){
             list.add("add");
             list.add("set");
             list.add("get");
         }
         if (TabContext.getArgs().length == 2){
-            list = Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toCollection(ArrayList::new));
+            list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(p -> !TabContext.getSender().getName().equals(p)).collect(Collectors.toList()));
         }
         return list;
     }

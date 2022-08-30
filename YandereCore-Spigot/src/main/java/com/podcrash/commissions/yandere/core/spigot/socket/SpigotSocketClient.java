@@ -10,6 +10,7 @@ import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import com.podcrash.commissions.yandere.core.common.socket.ISocketClient;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
+import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -36,6 +37,10 @@ public class SpigotSocketClient extends ISocket {
     
     @Override
     public void sendJoinServer(UUID owner, String serverTarget){
+        if (serverTarget.equals(Settings.SERVER_NAME)){
+            Bukkit.getPlayer(owner).sendMessage(Utils.format("&cYa estás conectado en el server " + serverTarget));
+            return;
+        }
         getPlayers().savePlayer(owner);
         final JsonObject js = new JsonObject();
         js.addProperty("type", "CONNECT_TO_SERVER");
@@ -48,6 +53,10 @@ public class SpigotSocketClient extends ISocket {
     
     @Override
     public void sendJoinServer(UUID owner, String serverTarget, String msg){
+        if (serverTarget.equals(Settings.SERVER_NAME)){
+            Bukkit.getPlayer(owner).sendMessage(Utils.format("&cYa estás conectado en el server " + serverTarget));
+            return;
+        }
         getPlayers().savePlayer(owner);
         final JsonObject js = new JsonObject();
         js.addProperty("type", "CONNECT_TO_SERVER");

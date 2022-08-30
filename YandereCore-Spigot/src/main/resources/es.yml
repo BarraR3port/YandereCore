@@ -24,7 +24,7 @@ alerts:
     join: "&7Tu amigo &a%player% ha entrado al servidor"
 
 reply:
-  bad-command: "&cComando incorrecto. Utiliza /reply <player> mensaje.."
+  bad-command: "&cComando incorrecto. Utiliza /reply <jugador> mensaje.."
   selected-msg:
     msg: "&7Has seleccionado un mensaje para responder de &e%player%&7."
     hover:
@@ -85,6 +85,7 @@ op:
 
 coins:
   amount:
+    other: "&7El jugador &e%player% &7tiene &e%amount% &7monedas."
     own: "&aTienes &e%amount% &e⛃&a."
   change:
     add: "&aLe diste &e%amount% &e⛃&a a &e%player%&a."
@@ -124,6 +125,9 @@ error:
     no-previous-location-found: "&cNo se ha encontrado la ubicación anterior."
     not-op: "&cEl jugador &e%player%&c no es &4OP."
     already-op: "&cEl jugador &e%player%&c ya es &4OP."
+    gamemode:
+      already-in-gamemode: "&cEl jugador &e%player%&c ya está en el modo de juego &e%gamemode%&c."
+      already-in-gamemode-own: "&cYa estás en el modo de juego &e%gamemode%&c."
     coins:
       remove:
         not-enough: "&cNo le puedes quitar más dinero a &e%player%&c."
@@ -139,6 +143,15 @@ error:
         not-enough: "&cNo le puedes quitar más XP a &e%player%&c."
       amount:
         invalid: "&cEl XP es inválido."
+fly:
+  change: "&7Vuelo %state%&7."
+  change-other: "&7Vuelo de &e%player% %state%&7."
+gamemode:
+  change: "&aHas cambiado tu modo de juego a &e%gamemode%&a."
+  change-other: "&aHas cambiado el modo de juego de &e%player%&a a &e%gamemode%&a."
+health:
+  set: "&aTe has curado al 100%."
+  set-other: "&aHas curado a &e%player%&a al 100%."
 menu:
   close: "&cCerrar"
   filler-glass-color-id: "15"
@@ -146,3 +159,4 @@ menu:
   next: "&aSiguiente"
   deny: "&cCancelar"
   accept: "&aAceptar"
+  go-back: "&aVolver"

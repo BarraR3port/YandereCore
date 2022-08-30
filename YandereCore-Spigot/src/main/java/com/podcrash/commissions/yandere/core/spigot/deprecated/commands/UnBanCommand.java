@@ -25,7 +25,7 @@ public class UnBanCommand implements ILyCommand {
             Player p = ( Player ) context.getSender( );
             if ( p.hasPermission( "yandere.staff.unban" ) ) {
                 if ( context.getArgs( ).length == 0 ) {
-                    p.sendMessage( Core.getApi( ).getUtils( ).prefix( ) + Core.getSMain( ).getUtils( ).format( "/unban <player>" ) );
+                    p.sendMessage( Core.getApi( ).getUtils( ).prefix( ) + Core.getSMain( ).getUtils( ).format( "/unban <jugador>" ) );
                 } else if ( context.getArgs( ).length == 1 ) {
                     LydarkPlayer lpTarget = Core.getSMain( ).getPlayers( ).getUpdatedPlayer( context.getArg( 0 ) );
                     for ( UUID uuid : lpTarget.getPunishments( ).keySet( ) ) {

@@ -1,5 +1,5 @@
 global:
-  prefix: "&eYandere&dCraft"
+  prefix: " &8&l» "
   server-type: "" #LOBBY, REGISTRO, SKY_WARS, LOBBY_BED_WARS, BED_WARS, TNT_TAG, PRACTICE, SURVIVAL
   proxy-server-name: ""
   debug: true
@@ -13,4 +13,4 @@ db:
   user: yandere
   password: JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK
   database: yandere
-  urli: "mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/"
+  urli: "mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere"

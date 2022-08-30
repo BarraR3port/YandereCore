@@ -71,37 +71,34 @@ public class EnderSee extends InventoryMenu {
         } else if (e.getSlot() == 35){
             slot = 36;
         }
-        
-        
+    
+    
         try {
             if (item.getType().equals(Material.AIR)){
                 // player put item to inventory
-                //Bukkit.getScheduler( ).scheduleSyncDelayedTask( main.plugin , ( ) ->OpenInvSee.updateTargetInventory( p, target ),6L);
+                //Bukkit.getScheduler( ).scheduleSyncDelayedTask( main.plugin , ( ) ->InvManager.updateTargetInventory( p, target ),6L);
                 Main.getInstance().getEndInvManager().setItem(p, target, slot);
             } else if (!item.getType().equals(Material.AIR) && cursor.getType().equals(Material.AIR)){
                 // player take item from inventory
-                //Bukkit.getScheduler( ).scheduleSyncDelayedTask( main.plugin , ( ) -> OpenInvSee.updateTargetInventory( p, target ) , 5L );
+                //Bukkit.getScheduler( ).scheduleSyncDelayedTask( main.plugin , ( ) -> invManager.updateTargetInventory( p, target ) , 5L );
                 Main.getInstance().getEndInvManager().removeItem(target, slot);
             } else if (!item.getType().equals(Material.AIR) && !cursor.getType().equals(Material.AIR)){
                 // player swap item in inventory
-                Main.getInstance().getEndInvManager().removeItem(target, slot);
-                Main.getInstance().getEndInvManager().setItem(p, target, slot);
-                //OpenInvSee.removeItem( p , target , slot , item );
-                //OpenInvSee.setItem( p , target , slot );
+                if (item.getType().equals(cursor.getType()) && item.getItemMeta().equals(cursor.getItemMeta())){
+                    /*
+                    TODO ARREGLAR ESTE SISTEMA - El actual duplica o triplica los items, por lo tanto se deshabilita
+                    item.setAmount( item.getAmount( ) + cursor.getAmount( ) );
+                    int finalSlot = slot;
+                    Bukkit.getScheduler( ).scheduleSyncDelayedTask( Core.getInstance( ) , ( ) -> InvManager.setItem( p , target , finalSlot , item ) , 5L );**/
+                    e.getWhoClicked().sendMessage(Utils.format("&cEsta opción está en desarrollo, por lo tanto está deshabilitada."));
+                    e.setCancelled(true);
+                } else {
+                    Main.getInstance().getEndInvManager().removeItem(target, slot);
+                    Main.getInstance().getEndInvManager().setItem(p, target, slot);
+                }
             }
-            /*if ( nbtItem.hasKey( "head" ) ) {
-                p.closeInventory( );
-                String targetName = nbtItem.getString( "name" );
-                
-                Player target = Bukkit.getPlayer( targetName );
-                p.sendMessage( Core.getApi( ).getUtils( ).prefix( ) + " [lang]Lydark_Core.TPCommand.2[/lang] §3" + target.getName( ) + "§a." );
-                
-                target.sendMessage( Core.getApi( ).getUtils( ).prefix( ) + " [lang]Lydark_Core.ElJugador[/lang] §3" + p.getName( ) + " [lang]Lydark_Core.TPCommand.4[/lang]" );
-                
-                p.teleport( target , PlayerTeleportEvent.TeleportCause.COMMAND );
-            }*/
         } catch (NullPointerException ignored) {
-            //OpenInvSee.updateTargetInventory( p, target );
+            //InvManager.updateTargetInventory( p, target );
             Main.getInstance().getEndInvManager().setItem(p, target, slot);
         }
         
@@ -181,7 +178,6 @@ public class EnderSee extends InventoryMenu {
         }
         if (target.getInventory().getBoots() != null){
             inventory.setItem(35, target.getInventory().getBoots());
-            Utils.playSound(getOwner(), "CHEST_OPEN");
         }
     }
     

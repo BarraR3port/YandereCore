@@ -6,7 +6,7 @@ import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 public class Build implements ILyCommand {
@@ -47,8 +47,8 @@ public class Build implements ILyCommand {
     }
     
     @Tab
-    public ArrayList<String> tabComplete(TabContext context){
-        final ArrayList<String> list = new ArrayList<>();
+    public LinkedList<String> tabComplete(TabContext context){
+        final LinkedList<String> list = new LinkedList<>();
         if (context.getArgLength() == 1){
             list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
         }

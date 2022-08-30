@@ -12,6 +12,7 @@ import com.podcrash.commissions.yandere.core.common.data.user.props.Reward;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Stats;
 import com.podcrash.commissions.yandere.core.common.skin.SkinManager;
 import net.lymarket.lyapi.common.Api;
+import net.lymarket.lyapi.spigot.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -248,17 +249,17 @@ public class User {
     public String getCoinsFormatted(){
         if (coins >= 1000000f){
             DecimalFormat df = new DecimalFormat("#.#");
-            return df.format(coins / 1000000f) + "&eM ⛃";
+            return Utils.format(df.format(coins / 1000000f) + "&eM⛃");
         }
         if (coins >= 10000f){
             DecimalFormat df = new DecimalFormat("#.#");
-            return df.format(coins / 1000f) + "&eK ⛃";
+            return Utils.format(df.format(coins / 1000f) + "&eK⛃");
         }
-        return coins + "&e ⛃";
+        return Utils.format(coins + "&e⛃");
     }
     
     public String getCoinsSemiFormatted(){
-        return new DecimalFormat("###,###,###").format(coins) + "&e ⛃";
+        return Utils.format(new DecimalFormat("###,###,###").format(coins) + "&e⛃");
     }
     
 }
