@@ -5,7 +5,6 @@ import com.podcrash.commissions.yandere.core.common.data.cooldown.CoolDown;
 import com.podcrash.commissions.yandere.core.common.data.cooldown.CoolDownType;
 import com.podcrash.commissions.yandere.core.common.data.lobby.PlayerVisibility;
 import com.podcrash.commissions.yandere.core.common.data.loc.Loc;
-import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
@@ -19,8 +18,10 @@ import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import net.lymarket.lyapi.spigot.LyApi;
 import net.lymarket.lyapi.spigot.utils.NBTItem;
 import net.lymarket.lyapi.spigot.utils.Utils;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -34,7 +35,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.UUID;
 
@@ -46,7 +46,6 @@ public abstract class LobbyPlayerEvents extends MainEvents {
     }
     
     public void subPlayerQuitEvent(PlayerQuitEvent e){
-        
     }
     
     @EventHandler(ignoreCancelled = true)
@@ -60,127 +59,6 @@ public abstract class LobbyPlayerEvents extends MainEvents {
             Main.getInstance().getPlayers().savePlayer(user);
         } catch (NullPointerException | UserNotFoundException ignored) {
         }
-    }
-    
-    public void subPlayerJoinEvent(PlayerJoinEvent e){
-        Player p = e.getPlayer();
-        p.setFoodLevel(20);
-        p.setFireTicks(0);
-        p.setExp(0);
-        p.setLevel(0);
-        try {
-            p.teleport(Settings.SPAWN_LOCATION);
-        } catch (NullPointerException | IllegalArgumentException ex) {
-            p.teleport(p.getWorld().getSpawnLocation());
-        }
-        Items.setLobbyItems(p);
-        p.setHealth(20);
-        p.setSaturation(20F);
-        p.setGameMode(GameMode.ADVENTURE);
-    
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
-        if (user.getRank() != Rank.USUARIO){
-            p.setAllowFlight(true);
-        }
-        PlayerVisibility visibility = user.getPlayerVisibility();
-        for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
-            if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
-            User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
-            PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
-            Rank targetRank = targetUser.getRank();
-            switch(visibility){
-                case ALL:
-                    p.showPlayer(targetPlayer);
-                    break;
-                case RANKS:
-                    if (targetRank != Rank.USUARIO){
-                        p.showPlayer(targetPlayer);
-                    } else {
-                        p.hidePlayer(targetPlayer);
-                    }
-                    break;
-                default:
-                    p.hidePlayer(targetPlayer);
-                    break;
-            }
-            switch(targetVisibility){
-                case ALL:{
-                    targetPlayer.showPlayer(p);
-                    break;
-                }
-                case RANKS:{
-                    if (user.getRank() != Rank.USUARIO){
-                        targetPlayer.showPlayer(p);
-                    } else {
-                        targetPlayer.hidePlayer(p);
-                    }
-                    break;
-                }
-                default:{
-                    targetPlayer.hidePlayer(p);
-                    break;
-                }
-            }
-        }
-    }
-    
-    @Override
-    public boolean subPlayerChatEvent(AsyncPlayerChatEvent event){
-        Player p = event.getPlayer();
-        String message = event.getMessage();
-        
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
-        if (p.hasPermission("yandere.chat.color")){
-            message = Utils.format(message);
-        }
-        
-        event.setCancelled(true);
-        
-        final String finalMessage = message;
-        
-        boolean isDefault = user.getRank() == Rank.USUARIO;
-        
-        final String prefix = user.getRank().getTabPrefix();
-        final String white_msg = p.hasPermission("yandere.chat.whitemessage") ? "&f" : "&7";
-        TextComponent level = Utils.hoverOverMessage(user.getLevel().getLevelName(),
-                Arrays.asList(
-                        "&7「&eNivel General&7⏌",
-                        "",
-                        "&7► Nivel: &c" + user.getLevel().getLevelName(),
-                        "&7► XP: &c" + user.getLevel().getFormattedCurrentXp(),
-                        "&7► XP Necesario: &c" + user.getLevel().getFormattedRequiredXp(),
-                        user.getLevel().getProgressBar()));
-        TextComponent name = Utils.hoverOverMessage(white_msg + p.getName(),
-                Arrays.asList(
-                        "&7「&eInformación del jugador&7⏌",
-                        "",
-                        "&7► Rango: " + prefix,
-                        "&7► Monedas: &c" + user.getCoinsFormatted(),
-                        "&7► Nivel: &c" + user.getLevel().getLevelName(),
-                        user.getLevel().getProgressBar()/* ,
-                            "&7Clan: &c" + clanTag*/));
-        TextComponent rank = Utils.hoverOverMessageURL(isDefault ? " " : prefix,
-                Arrays.asList("&7「&eYandere &5Rangos&7⏌",
-                        "",
-                        "&7► Este jugador tiene el rango " + prefix,
-                        "&7► Puedes comprar más rangos en nuestra página web.",
-                        "&7► Rangos disponibles: " + Rank.BRONCE.getTabPrefix() + " " + Rank.HIERRO.getTabPrefix() + " " + Rank.ORO.getTabPrefix() + " " + Rank.DIAMANTE.getTabPrefix(),
-                        ""),
-                "https://store.yanderecraft.com");
-        TextComponent msg = new TextComponent(level,
-                rank,
-                name,
-                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
-        
-        Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-            for ( Player player : Bukkit.getOnlinePlayers() ){
-                player.spigot().sendMessage(msg);
-            }
-        });
-    
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
-    
-        return true;
     }
     
     @EventHandler(priority = EventPriority.LOWEST)

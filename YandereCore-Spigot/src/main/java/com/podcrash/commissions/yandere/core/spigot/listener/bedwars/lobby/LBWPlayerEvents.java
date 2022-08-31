@@ -106,14 +106,10 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
         String message = event.getMessage();
         
         User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
-        if (p.hasPermission("yandere.chat.color")){
-            message = Utils.format(message);
-        }
+        boolean color = p.hasPermission("yandere.chat.color");
         
         event.setCancelled(true);
-        
-        final String finalMessage = message;
-        
+    
         boolean isDefault = user.getRank() == Rank.USUARIO;
         
         final String prefix = user.getRank().getTabPrefix();
@@ -147,15 +143,14 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
         TextComponent msg = new TextComponent(level,
                 rank,
                 name,
-                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(message) : Utils.stripColorsToTextComponent(message)));
     
     
         for ( Player player : Bukkit.getOnlinePlayers() ){
             player.spigot().sendMessage(msg);
         }
     
-    
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
+        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, message, p.getName());
     
         return true;
     }

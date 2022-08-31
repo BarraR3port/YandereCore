@@ -7,6 +7,7 @@ import net.lymarket.lyapi.common.db.MongoDBClient;
 import net.lymarket.lyapi.spigot.LyApi;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class SpigotSocketClientTest {
@@ -36,12 +37,18 @@ public class SpigotSocketClientTest {
     
     @Test
     public void test3(){
-        int initial = 2;
-        int amount = 10;
-        int midValue = initial - amount;
-        int finalValue = Math.max(midValue, 0);
+        String textToTranslate = "&c&l&Hola cómo estás=?";
+        ArrayList<String> toRemove = new ArrayList<>();
+        for ( int i = 0; i < textToTranslate.length(); i++ ){
+            if (textToTranslate.charAt(i) == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(textToTranslate.charAt(i + 1)) > -1){
+                toRemove.add(String.valueOf(textToTranslate.subSequence(i, i + 2)));
+            }
+        }
+        for ( String s : toRemove ){
+            textToTranslate = textToTranslate.replace(s, "");
+        }
     
-        System.out.println(finalValue);
+        System.out.println(textToTranslate);
     
     }
 }

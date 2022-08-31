@@ -70,9 +70,7 @@ public final class SWPlayerEvents extends MainEvents {
         Player p = event.getPlayer();
         String message = event.getMessage();
         User user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
-        if (p.hasPermission("yandere.chat.color")){
-            message = Utils.format(message);
-        }
+        boolean color = p.hasPermission("yandere.chat.color");
         
         event.setCancelled(true);
         event.getRecipients().clear();
@@ -119,19 +117,19 @@ public final class SWPlayerEvents extends MainEvents {
                 World w = p.getLocation().getWorld();
                 if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                     event.getRecipients().addAll(w.getPlayers());
-                    msg = new TextComponent(level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                    msg = new TextComponent(level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                 }
             }
         } else {
             if (game.getSpectators().contains(p)){
                 event.getRecipients().addAll(game.getSpectators());
-                msg = new TextComponent(Utils.formatTC("&7「ESPECTADOR⏌ "), level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                msg = new TextComponent(Utils.formatTC("&7「ESPECTADOR⏌ "), level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
             } else if (this.plugin.getCm().isChatSystem()){
                 if (!game.isState(State.WAITING) && !game.isState(State.STARTING)){
                     if (game.isState(State.PREGAME) || game.isState(State.GAME) || game.isState(State.FINISH) || game.isState(State.RESTARTING)){
                         if (game instanceof UltraGame){
                             event.getRecipients().addAll(game.getCached());
-                            msg = new TextComponent(level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                            msg = new TextComponent(level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                             
                         } else if (game instanceof UltraTeamGame){
                             Team team = game.getTeamPlayer(p);
@@ -147,11 +145,11 @@ public final class SWPlayerEvents extends MainEvents {
                                             "&7► Kills: &c" + team.getKills()));
                             if (message.startsWith("!")){
                                 event.getRecipients().addAll(game.getCached());
-                                msg = new TextComponent(Utils.formatTC("&7「GLOBAL⏌ "), level, rank, teamString, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                                msg = new TextComponent(Utils.formatTC("&7「GLOBAL⏌ "), level, rank, teamString, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                                 
                             } else {
                                 event.getRecipients().addAll(team.getMembers());
-                                msg = new TextComponent(level, rank, teamString, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                                msg = new TextComponent(level, rank, teamString, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                                 
                             }
                         } else {
@@ -164,7 +162,7 @@ public final class SWPlayerEvents extends MainEvents {
                                             "&7► Elo: " + eloRank.getColor() + eloRank.getName(),
                                             "&7► Máximo Elo: " + eloRank.getMax(),
                                             "&7► Mínimo Elo: &c" + eloRank.getMin()));
-                            msg = new TextComponent(level, rank, elo, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                            msg = new TextComponent(level, rank, elo, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                         }
                     }
                     
@@ -180,9 +178,9 @@ public final class SWPlayerEvents extends MainEvents {
                                         "&7► Elo: " + eloRank.getColor() + eloRank.getName(),
                                         "&7► Máximo Elo: " + eloRank.getMax(),
                                         "&7► Mínimo Elo: &c" + eloRank.getMin()));
-                        msg = new TextComponent(Utils.formatTC("&7「ESPECTADOR⏌ "), level, rank, elo, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                        msg = new TextComponent(Utils.formatTC("&7「ESPECTADOR⏌ "), level, rank, elo, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                     } else {
-                        msg = new TextComponent(level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                        msg = new TextComponent(level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                     }
                 }
             }

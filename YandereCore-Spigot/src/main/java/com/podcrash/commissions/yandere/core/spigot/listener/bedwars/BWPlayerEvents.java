@@ -67,9 +67,7 @@ public final class BWPlayerEvents extends MainEvents {
         String finalMessage = e.getMessage();
         User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
         final String white_msg = p.hasPermission("yandere.chat.whitemessage") ? "&f" : "&7";
-        if (p.hasPermission("yandere.chat.color")){
-            finalMessage = Utils.format(finalMessage);
-        }
+        boolean color = p.hasPermission("yandere.chat.color");
         e.setCancelled(true);
         
         
@@ -134,7 +132,8 @@ public final class BWPlayerEvents extends MainEvents {
                             rank,
                             Utils.formatTC((isDefault ? "&7" : white_msg)),
                             name,
-                            Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage3)));
+                            Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)),
+                            (color ? Utils.formatTC(finalMessage3) : Utils.stripColorsToTextComponent(finalMessage3))));
                 }
                 Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
             } else {
@@ -147,7 +146,8 @@ public final class BWPlayerEvents extends MainEvents {
                                 finalTeam,
                                 rank,
                                 name,
-                                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage3)));
+                                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)),
+                                (color ? Utils.formatTC(finalMessage3) : Utils.stripColorsToTextComponent(finalMessage3))));
                     }
                     Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
                     return true;
@@ -182,7 +182,8 @@ public final class BWPlayerEvents extends MainEvents {
                                 finalTeam,
                                 rank,
                                 name,
-                                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage1)));
+                                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)),
+                                (color ? Utils.formatTC(finalMessage1) : Utils.stripColorsToTextComponent(finalMessage1))));
                     }
                     Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
                 } else {
@@ -206,7 +207,8 @@ public final class BWPlayerEvents extends MainEvents {
                                 finalTeam,
                                 rank,
                                 name,
-                                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage2)));
+                                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)),
+                                (color ? Utils.formatTC(finalMessage2) : Utils.stripColorsToTextComponent(finalMessage2))));
                     }
                     Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
                     

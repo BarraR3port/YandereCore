@@ -62,15 +62,11 @@ public final class PracticePlayerEvents extends MainEvents {
         String message = event.getMessage();
     
         User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
-        if (p.hasPermission("yandere.chat.color")){
-            message = Utils.format(message);
-        }
+        boolean color = p.hasPermission("yandere.chat.color");
         event.setCancelled(true);
     
         PlayerStats stats = api.getPlayerStats(p);
-        
-        final String finalMessage = message;
-        
+    
         boolean isDefault = user.getRank() == Rank.USUARIO;
         
         final String prefix = user.getRank().getTabPrefix();
@@ -103,18 +99,18 @@ public final class PracticePlayerEvents extends MainEvents {
                         "&7Rangos disponibles: " + Rank.BRONCE.getTabPrefix() + " " + Rank.HIERRO.getTabPrefix() + " " + Rank.ORO.getTabPrefix() + " " + Rank.DIAMANTE.getTabPrefix(),
                         ""),
                 "https://store.yanderecraft.com");
-        
+    
         TextComponent msg = new TextComponent(level,
                 rank,
                 name,
-                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg) + finalMessage));
+                Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(message) : Utils.stripColorsToTextComponent(message)));
     
         Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             for ( Player player : Bukkit.getOnlinePlayers() ){
                 player.spigot().sendMessage(msg);
             }
         });
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
+        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, message, p.getName());
     
         return true;
     }
