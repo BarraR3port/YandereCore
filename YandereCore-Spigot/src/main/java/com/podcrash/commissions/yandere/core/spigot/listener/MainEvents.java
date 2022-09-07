@@ -124,8 +124,14 @@ public abstract class MainEvents implements Listener {
     
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent e){
-        Main.getInstance().getLogs().createLog(LogType.COMMAND, Settings.SERVER_NAME, e.getMessage(), e.getPlayer().getName());
-        
+        Main.getInstance().getLogs().createLog(LogType.COMMAND, Settings.PROXY_SERVER_NAME, e.getMessage(), e.getPlayer().getName());
+    }
+    
+    @EventHandler
+    public void onKick(PlayerKickEvent e){
+        if (!e.getReason().equals("disconnect.spam"))
+            return;
+        e.setCancelled(true);
     }
     
 }

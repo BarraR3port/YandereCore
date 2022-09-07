@@ -32,7 +32,7 @@ public class LobbyMenu extends UpdatableMenu {
     
     @Override
     public String getMenuName(){
-        return "&1► &8Menú de Modalidades";
+        return "&4• &8Menú de Modalidades";
     }
     
     @Override

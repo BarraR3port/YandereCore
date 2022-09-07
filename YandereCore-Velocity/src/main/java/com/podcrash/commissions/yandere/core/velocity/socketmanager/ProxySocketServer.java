@@ -139,8 +139,10 @@ public class ProxySocketServer implements Runnable {
                                 if (!json.has("server_name")) continue;
                                 if (json.get("server_name").getAsString() == null) continue;
                                 final String server_name = json.get("server_name").getAsString();
-                                
                                 VMain.getInstance().getServerManager().removeServer(server_name);
+                                if (VMain.getInstance().getProxy().getServer(server_name).isPresent()){
+                                    VMain.getInstance().getProxy().getServer(server_name).get().getPlayersConnected().forEach(player -> player.createConnectionRequest(VMain.getInstance().getProxy().getServer(VMain.getInstance().getServerManager().getRandomLobbyServer().getProxyName()).get()).connect());
+                                }
                             }
                             case "SEND_MSG_TO_PLAYER" -> {
                                 if (!json.has("target_uuid")) continue;

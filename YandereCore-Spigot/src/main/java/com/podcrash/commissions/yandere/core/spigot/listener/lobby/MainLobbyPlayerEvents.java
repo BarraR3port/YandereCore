@@ -7,7 +7,6 @@ import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
-import net.lymarket.lyapi.spigot.utils.NBTItem;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -75,13 +74,13 @@ public class MainLobbyPlayerEvents extends LobbyPlayerEvents {
             }
         });
         
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, message, p.getName());
+        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.PROXY_SERVER_NAME, message, p.getName());
         
         return true;
     }
     
     @Override
-    public boolean subPlayerClicks(PlayerInteractEvent e, NBTItem item){
+    public boolean subPlayerClicks(PlayerInteractEvent e){
         return false;
     }
     

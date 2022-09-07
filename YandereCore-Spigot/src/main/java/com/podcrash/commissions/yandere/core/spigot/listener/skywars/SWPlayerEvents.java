@@ -192,7 +192,7 @@ public final class SWPlayerEvents extends MainEvents {
                 player.spigot().sendMessage(finalText);
             }
         });
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
+        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.PROXY_SERVER_NAME, finalMessage, p.getName());
         return true;
     }
     

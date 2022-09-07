@@ -9,12 +9,9 @@ import net.lymarket.lyapi.common.db.MongoDBClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.UUID;
 
 public abstract class IPlayerRepository extends MongoDB<UUID, User> {
-    
-    protected final LinkedHashMap<UUID, User> list = new LinkedHashMap();
     
     public IPlayerRepository(MongoDBClient database, String TABLE_NAME){
         super(database, TABLE_NAME);

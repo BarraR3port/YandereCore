@@ -31,18 +31,18 @@ public class MultiLobbyMenu extends UpdatableMenu {
     public String getMenuName(){
         switch(serverType){
             case SKY_WARS:
-                return "&1► &8Lobbies de &eSky Wars";
+                return "&4• &8Lobbies de &eSky Wars";
             case BED_WARS:
-                return "&1► &8Lobbies de &eBed Wars";
+                return "&4• &8Lobbies de &eBed Wars";
             case PRACTICE:
-                return "&1► &8Lobbies de &ePractice";
+                return "&4• &8Lobbies de &ePractice";
             case TNT_TAG:
-                return "&1► &8Lobbies de &eTNT Tag";
+                return "&4• &8Lobbies de &eTNT Tag";
             case SURVIVAL:
-                return "&1► &8Lobbies de &eSurvival";
+                return "&4• &8Lobbies de &eSurvival";
             case LOBBY:
             default:
-                return "&1► &8Lobbies";
+                return "&4• &8Lobbies";
         }
     }
     
@@ -56,7 +56,7 @@ public class MultiLobbyMenu extends UpdatableMenu {
         for ( int i = 10; i < 17; i++ ){
             String current = String.valueOf((i - 9));
             String serverName = serverType.getPrefix() + current;
-            boolean isSameLobby = Settings.SERVER_NAME.equals(serverName);
+            boolean isSameLobby = Settings.PROXY_SERVER_NAME.equals(serverName);
             int playersOnline = Main.getInstance().getProxyStats().getTargetServerPlayers(serverName);
             boolean isOnline = Main.getInstance().getProxyStats().isTargetServerOnline(serverName);
             Color color = isSameLobby ? Color.ORANGE : (isOnline ? Color.LIME : Color.WHITE);

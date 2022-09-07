@@ -45,7 +45,7 @@ public final class PracticePlayerEvents extends MainEvents {
             final UUID playerUUID = e.getPlayer().getUniqueId();
             final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
             final Location loc = e.getTo();
-            user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
+            user.setLastLocation(new Loc(Settings.PROXY_SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
         } catch (NullPointerException | UserNotFoundException ignored) {
         }
@@ -110,7 +110,7 @@ public final class PracticePlayerEvents extends MainEvents {
                 player.spigot().sendMessage(msg);
             }
         });
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, message, p.getName());
+        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.PROXY_SERVER_NAME, message, p.getName());
     
         return true;
     }

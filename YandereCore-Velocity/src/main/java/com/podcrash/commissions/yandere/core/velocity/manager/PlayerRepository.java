@@ -87,6 +87,8 @@ public class PlayerRepository extends IPlayerRepository {
         user.setAddress(address);
         user.setOption("allow-pm", true);
         user.addProperty("lobby-player-visibility", "ALL");
+        user.addProperty("lobby-sw-join-type", "RANDOM");
+        user.addProperty("lobby-bw-join-type", "RANDOM");
         final net.luckperms.api.model.user.User luckPermsUser = LuckPermsProvider.get().getUserManager().getUser(uuid);
         if (luckPermsUser != null){
             user.setRank(Rank.fromString(luckPermsUser.getPrimaryGroup()));

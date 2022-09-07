@@ -38,6 +38,10 @@ public class Admin implements ILyCommand {
                 Main.getInstance().getConfig().saveData();
                 Utils.sendMessage(context.getSender(), "&c&lYandere &cDEBUG " + (Settings.DEBUG ? "&aEnabled" : "&cDisabled"));
                 return new CommandResponse();
+            } else if (context.getArg(0).equalsIgnoreCase("refresh-plugins")){
+                Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for plugin updates");
+                Main.getInstance().getServerRepository().checkForPluginsUpdates();
+                return new CommandResponse();
             }
         }
         if (context.getSender() instanceof Player){
@@ -69,11 +73,9 @@ public class Admin implements ILyCommand {
         if (context.getSender().hasPermission("yandere.admin")){
             if (context.getArgs().length == 1){
                 list.add("reload");
-                list.add("worlds");
-                list.add("homes");
-                list.add("worlds");
                 list.add("debug");
                 list.add("menu");
+                list.add("refresh-plugins");
                 return list;
             }
             if (context.getArgs().length == 2){

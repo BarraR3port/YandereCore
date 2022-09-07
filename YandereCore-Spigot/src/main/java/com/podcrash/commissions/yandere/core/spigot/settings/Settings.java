@@ -14,13 +14,16 @@ public class Settings {
     public static String SOCKET_IP = "localhost";
     public static int SOCKET_PORT = 5555;
     public static Location SPAWN_LOCATION;
-    public static String SERVER_NAME;
+    public static String PROXY_SERVER_NAME;
     public static boolean DEBUG;
     public static ArrayList<String> PERMS_WHEN_CREATING_WORLD = new ArrayList<>();
     public static ArrayList<String> PERMS_WHEN_JOINING_WORLD = new ArrayList<>();
     public static ServerType SERVER_TYPE;
     public static String VERSION;
     public static boolean IS_SERVER_LINKED = false;
+    public static String WEB_KEY;
+    public static String WEB_URL;
+    public static String WEB_UUID;
     
     public Settings(){
     
@@ -32,7 +35,12 @@ public class Settings {
             SPAWN_LOCATION = (Location) config.get("spawn.location", Location.class);
         } catch (NullPointerException | ClassCastException ignored) {
         }
-        SERVER_NAME = config.getString("global.proxy-server-name");
+        SOCKET_IP = config.getString("socket.ip");
+        SOCKET_PORT = config.getInt("socket.port");
+        PROXY_SERVER_NAME = config.getString("global.proxy-server-name");
+        WEB_KEY = config.getString("web.key");
+        WEB_URL = config.getString("web.url");
+        WEB_UUID = config.getString("web.uuid", null);
         DEBUG = config.getBoolean("global.debug");
         PERMS_WHEN_CREATING_WORLD = new ArrayList<>(config.getStringList("perms.when-creating-world"));
         PERMS_WHEN_JOINING_WORLD = new ArrayList<>(config.getStringList("perms.when-joining-world"));
@@ -41,7 +49,7 @@ public class Settings {
         } catch (NullPointerException | IllegalArgumentException e) {
             SERVER_TYPE = ServerType.EMPTY;
         }
-        IS_SERVER_LINKED = (SERVER_NAME != null || !SERVER_NAME.equals("")) && SERVER_TYPE != ServerType.EMPTY;
+        IS_SERVER_LINKED = (PROXY_SERVER_NAME != null || !PROXY_SERVER_NAME.equals("")) && SERVER_TYPE != ServerType.EMPTY;
         switch(Main.getInstance().getNMSVersion()){
             case "v1_8_R3":{
                 VERSION = "1.8";
@@ -64,7 +72,7 @@ public class Settings {
     
     
     public static String getServerNameFormatted(){
-        return "" + SERVER_TYPE.getName() + "&c#" + (SERVER_NAME.charAt(SERVER_NAME.length() - 1));
+        return "" + SERVER_TYPE.getName() + "&c#" + (PROXY_SERVER_NAME.charAt(PROXY_SERVER_NAME.length() - 1));
     }
     
 }

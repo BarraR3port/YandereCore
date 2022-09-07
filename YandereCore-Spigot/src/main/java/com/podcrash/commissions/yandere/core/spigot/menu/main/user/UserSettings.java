@@ -17,7 +17,7 @@ public class UserSettings extends UpdatableMenu {
     
     @Override
     public String getMenuName(){
-        return "Ajustes" + (getOwner().getUniqueId().equals(target_user) ? "" : " de " + getOwner().getName());
+        return "&4• &8Ajustes" + (getOwner().getUniqueId().equals(target_user) ? "" : " de " + getOwner().getName());
     }
     
     @Override

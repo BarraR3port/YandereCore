@@ -1,13 +1,5 @@
 global:
-  prefix: " &8&l» "
-  server-type: "" #LOBBY, REGISTRO, SKY_WARS, LOBBY_BED_WARS, BED_WARS, TNT_TAG, PRACTICE, SURVIVAL
-  proxy-server-name: ""
   debug: true
-spawn:
-  location:
-socket:
-  ip: 172.18.0.1
-  port: 5555
 web:
   uuid: null
   key: ASDJ209KASDHKADJ2KASDJGHASDK4KAHSKKDHGHJA8JA20LASDHGKALSKVMXJNASDOJG

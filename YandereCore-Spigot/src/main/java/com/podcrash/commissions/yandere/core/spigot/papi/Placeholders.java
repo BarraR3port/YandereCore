@@ -103,7 +103,7 @@ public class Placeholders extends PlaceholderExpansion {
         switch(identifier){
             case "server_name":
             case "server":{
-                return Settings.SERVER_NAME;
+                return Settings.PROXY_SERVER_NAME;
             }
             case "version":{
                 return plugin.getDescription().getVersion();
@@ -115,13 +115,13 @@ public class Placeholders extends PlaceholderExpansion {
                 return String.valueOf(Main.getInstance().getProxyStats().getAllPlayerSize());
             }
             case "server_size":{
-                return String.valueOf(Main.getInstance().getProxyStats().getTargetServerSize(Settings.SERVER_NAME));
+                return String.valueOf(Main.getInstance().getProxyStats().getTargetServerSize(Settings.PROXY_SERVER_NAME));
             }
             case "server_type_name_formatted":{
                 return Settings.SERVER_TYPE.getName();
             }
             case "server_name_number":{
-                return String.valueOf(Settings.SERVER_NAME.charAt(Settings.SERVER_NAME.length() - 1));
+                return String.valueOf(Settings.PROXY_SERVER_NAME.charAt(Settings.PROXY_SERVER_NAME.length() - 1));
             }
         
         }

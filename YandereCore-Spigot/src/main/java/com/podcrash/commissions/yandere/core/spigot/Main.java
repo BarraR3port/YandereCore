@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.podcrash.commissions.yandere.core.common.YandereApi;
 import com.podcrash.commissions.yandere.core.common.data.logs.OfflineLogRepository;
+import com.podcrash.commissions.yandere.core.common.data.server.IServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
@@ -44,6 +45,7 @@ import com.podcrash.commissions.yandere.core.spigot.listener.skywars.SWGameEvent
 import com.podcrash.commissions.yandere.core.spigot.listener.skywars.SWPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.log.LogRepository;
 import com.podcrash.commissions.yandere.core.spigot.papi.Placeholders;
+import com.podcrash.commissions.yandere.core.spigot.server.ServerRepository;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.commissions.yandere.core.spigot.socket.SpigotSocketClient;
 import com.podcrash.commissions.yandere.core.spigot.sounds.Sounds;
@@ -90,6 +92,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     private InvManager invManager;
     private EndInvManager endInvManager;
     private boolean hockedIntoBedWars = false;
+    private IServerRepository serverRepository;
     
     public static LyApi getApi(){
         return api;
@@ -119,7 +122,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         items = new YandereConfig(this, "items.yml");
         sounds = new YandereConfig(this, "sounds.yml");
         try {
-            api = new LyApi(this, "Yandere", "&c[&4ERROR&c] &cNo tienes el siguiente permiso:&e permission", new ESLang(new Config(this, "es.yml"), config.getString("global.prefix"), "&c[&4ERROR&c]"));
+            api = new LyApi(this, "Yandere", "&c[&4ERROR&c] &cNo tienes el siguiente permiso:&e permission", new ESLang(new Config(this, "es.yml"), config.getString("global.prefix"), "&c[&4ERROR&c]"), true);
         } catch (LyApiInitializationError e) {
             e.printStackTrace();
             getServer().shutdown();
@@ -153,6 +156,7 @@ public final class Main extends JavaPlugin implements YandereApi {
             final MongoDBClient mongo = new MongoDBClient(config.getString("db.urli"), config.getString("db.database"));
             players = new PlayerRepository(mongo, "players");
             logs = new LogRepository(mongo, "logs");
+            serverRepository = new ServerRepository(mongo, "servers");
             try {
                 socket = new SpigotSocketClient(players);
                 if (Settings.IS_SERVER_LINKED){
@@ -231,6 +235,8 @@ public final class Main extends JavaPlugin implements YandereApi {
             }
         }, 0L, 10L);
     
+        getLogger().log(Level.INFO, "[YandereUpdates] Checking Plugin Updates:");
+        Bukkit.getScheduler().runTaskTimer(this, () -> this.serverRepository.checkForPluginsUpdates(), 0L, 20L * 3600L);
         getServer().getPluginManager().callEvent(new PluginEnableEvent(this));
         //new PacketManager( this );
         overrideSpigotDefaultMessages();
@@ -287,7 +293,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     
     @Override
     public String getProxyServerName(){
-        return Settings.SERVER_NAME;
+        return Settings.PROXY_SERVER_NAME;
     }
     
     private void registerCommands(){
@@ -400,5 +406,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         org.spigotmc.SpigotConfig.unknownCommandMessage = Utils.format("  &8&l▸ &cComando no encontrado, usa &e/ayuda &cpa ver los comandos disponibles.");
     }
     
-    
+    public IServerRepository getServerRepository(){
+        return serverRepository;
+    }
 }

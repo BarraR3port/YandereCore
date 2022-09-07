@@ -37,14 +37,14 @@ public class SpigotSocketClient extends ISocket {
     
     @Override
     public void sendJoinServer(UUID owner, String serverTarget){
-        if (serverTarget.equals(Settings.SERVER_NAME)){
+        if (serverTarget.equals(Settings.PROXY_SERVER_NAME)){
             Bukkit.getPlayer(owner).sendMessage(Utils.format("&cYa estás conectado en el server " + serverTarget));
             return;
         }
         getPlayers().savePlayer(owner);
         final JsonObject js = new JsonObject();
         js.addProperty("type", "CONNECT_TO_SERVER");
-        js.addProperty("current_server", Settings.SERVER_NAME);
+        js.addProperty("current_server", Settings.PROXY_SERVER_NAME);
         js.addProperty("server_target", serverTarget);
         js.addProperty("owner_uuid", owner.toString());
         js.addProperty("msg", "EMPTY");
@@ -53,14 +53,14 @@ public class SpigotSocketClient extends ISocket {
     
     @Override
     public void sendJoinServer(UUID owner, String serverTarget, String msg){
-        if (serverTarget.equals(Settings.SERVER_NAME)){
+        if (serverTarget.equals(Settings.PROXY_SERVER_NAME)){
             Bukkit.getPlayer(owner).sendMessage(Utils.format("&cYa estás conectado en el server " + serverTarget));
             return;
         }
         getPlayers().savePlayer(owner);
         final JsonObject js = new JsonObject();
         js.addProperty("type", "CONNECT_TO_SERVER");
-        js.addProperty("current_server", Settings.SERVER_NAME);
+        js.addProperty("current_server", Settings.PROXY_SERVER_NAME);
         js.addProperty("server_target", serverTarget);
         js.addProperty("owner_uuid", owner.toString());
         js.addProperty("msg", msg);
@@ -71,7 +71,7 @@ public class SpigotSocketClient extends ISocket {
     public void sendMSGToPlayer(UUID target, String key){
         JsonObject js = new JsonObject();
         js.addProperty("type", "SEND_MSG_TO_PLAYER");
-        js.addProperty("current_server", Settings.SERVER_NAME);
+        js.addProperty("current_server", Settings.PROXY_SERVER_NAME);
         js.addProperty("target_uuid", target.toString());
         js.addProperty("key", key);
         js.addProperty("has-replacements", false);
@@ -82,7 +82,7 @@ public class SpigotSocketClient extends ISocket {
     public void sendMSGToPlayer(UUID target, String key, String word, String replacement){
         JsonObject js = new JsonObject();
         js.addProperty("type", "SEND_MSG_TO_PLAYER");
-        js.addProperty("current_server", Settings.SERVER_NAME);
+        js.addProperty("current_server", Settings.PROXY_SERVER_NAME);
         js.addProperty("target_uuid", target.toString());
         js.addProperty("key", key);
         js.addProperty("has-replacements", true);
@@ -96,7 +96,7 @@ public class SpigotSocketClient extends ISocket {
     public void sendMSGToPlayer(UUID target, String key, HashMap<String, String> replacementsMap){
         JsonObject js = new JsonObject();
         js.addProperty("type", "SEND_MSG_TO_PLAYER");
-        js.addProperty("current_server", Settings.SERVER_NAME);
+        js.addProperty("current_server", Settings.PROXY_SERVER_NAME);
         js.addProperty("target_uuid", target.toString());
         js.addProperty("key", key);
         js.addProperty("has-replacements", true);
@@ -112,7 +112,7 @@ public class SpigotSocketClient extends ISocket {
     public void sendUpdate(){
         JsonObject js = new JsonObject();
         js.addProperty("type", "UPDATE");
-        js.addProperty("server_name", Settings.SERVER_NAME);
+        js.addProperty("server_name", Settings.PROXY_SERVER_NAME);
         js.addProperty("online_players", Bukkit.getOnlinePlayers().size());
         sendMessage(js);
     }
@@ -121,7 +121,7 @@ public class SpigotSocketClient extends ISocket {
     public void sendDisconnectInfoToProxy(){
         JsonObject js = new JsonObject();
         js.addProperty("type", "DISCONNECT");
-        js.addProperty("server_name", Settings.SERVER_NAME);
+        js.addProperty("server_name", Settings.PROXY_SERVER_NAME);
         sendMessage(js);
     }
     
@@ -147,7 +147,7 @@ public class SpigotSocketClient extends ISocket {
                 mainSocket.socket.close();
             }
             Socket socket = new Socket(Settings.SOCKET_IP, Settings.SOCKET_PORT);
-            mainSocket = new ProxySocket(socket, Settings.SERVER_NAME);
+            mainSocket = new ProxySocket(socket, Settings.PROXY_SERVER_NAME);
         }
         return this;
     }
@@ -159,7 +159,7 @@ public class SpigotSocketClient extends ISocket {
             if (mainSocket == null){
                 try {
                     Socket socket = new Socket(Settings.SOCKET_IP, Settings.SOCKET_PORT);
-                    mainSocket = new ProxySocket(socket, Settings.SERVER_NAME);
+                    mainSocket = new ProxySocket(socket, Settings.PROXY_SERVER_NAME);
                     mainSocket.sendMessage(message);
                     reconnecting = false;
                 } catch (IOException err) {

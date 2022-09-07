@@ -22,7 +22,7 @@ public class PluginMessage implements PluginMessageListener {
             String subChannel = in.readUTF();
             if ("YourServerName".equals(subChannel)){
                 String servername = in.readUTF();
-                Settings.SERVER_NAME = servername;
+                Settings.PROXY_SERVER_NAME = servername;
                 Settings.SERVER_TYPE = ServerType.match(servername);
                 Main.getInstance().getConfig().set("global.proxy-server-name", servername);
                 Main.getInstance().getConfig().set("global.server-type", Settings.SERVER_TYPE.toString());

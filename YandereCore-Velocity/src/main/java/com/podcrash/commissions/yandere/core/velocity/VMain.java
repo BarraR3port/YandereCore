@@ -3,17 +3,19 @@ package com.podcrash.commissions.yandere.core.velocity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
+import com.podcrash.commissions.yandere.core.common.data.server.IServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.log.Slf4jPluginLogger;
 import com.podcrash.commissions.yandere.core.velocity.commands.Lobby;
 import com.podcrash.commissions.yandere.core.velocity.commands.Ping;
 import com.podcrash.commissions.yandere.core.velocity.commands.Stream;
 import com.podcrash.commissions.yandere.core.velocity.commands.VAdmin;
-import com.podcrash.commissions.yandere.core.velocity.config.Config;
+import com.podcrash.commissions.yandere.core.velocity.config.VConfig;
 import com.podcrash.commissions.yandere.core.velocity.listener.PlayerEvents;
 import com.podcrash.commissions.yandere.core.velocity.listener.ServerEvents;
 import com.podcrash.commissions.yandere.core.velocity.manager.PlayerRepository;
 import com.podcrash.commissions.yandere.core.velocity.manager.ServerSocketManager;
+import com.podcrash.commissions.yandere.core.velocity.server.ServerRepository;
 import com.podcrash.commissions.yandere.core.velocity.socketmanager.ProxySocketServer;
 import com.podcrash.commissions.yandere.core.velocity.socketmanager.ServerSocketTask;
 import com.podcrash.commissions.yandere.core.velocity.utils.ChatColor;
@@ -26,6 +28,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import com.velocitypowered.api.scheduler.ScheduledTask;
+import de.leonhard.storage.Config;
 import net.lymarket.lyapi.common.db.MongoDBClient;
 import net.lymarket.lyapi.velocity.LyApiVelocity;
 import org.jetbrains.annotations.ApiStatus.Internal;
@@ -38,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "yandere",
         name = "Yandere",
-        version = "1.0-ALPHA",
+        version = "1.0.7-ALPHA",
         authors = {"BarraR3port"},
         url = "https://podcrash.com/",
         dependencies = {@Dependency(id = "luckperms")})
@@ -46,7 +49,7 @@ public final class VMain extends LyApiVelocity {
     
     public final static Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private static VMain instance;
-    private static Config config;
+    private static final Config config = new Config("config", "plugins/YandereCore");
     private final ServerSocketManager serverSocketManager = new ServerSocketManager();
     private final ProxyStats serverManager;
     private final ProxyServer proxy;
@@ -54,6 +57,7 @@ public final class VMain extends LyApiVelocity {
     private final Path path;
     private final HashMap<UUID, ScheduledTask> streams = new HashMap<>();
     private PlayerRepository playersRepository;
+    private IServerRepository serverRepository;
     
     /**
      * Constructor for ChatRegulator Plugin
@@ -79,7 +83,7 @@ public final class VMain extends LyApiVelocity {
     
     @Internal
     public static void debug(String msg){
-        if (config.getConfig().isDebug()){
+        if (config.getBoolean("global.debug")){
             instance.getLogger().info(ChatColor.RED + "[DEBUG] " + ChatColor.LIGHT_PURPLE + msg);
         }
     }
@@ -94,16 +98,17 @@ public final class VMain extends LyApiVelocity {
     public void onProxyInitialize(ProxyInitializeEvent event){
         // Plugin startup logic
         instance = this;
-        config = new Config(path);
+        VConfig.defaultConfig();
         proxy.getChannelRegistrar().register(new LegacyChannelIdentifier("podcrash:yandere"));
         proxy.getEventManager().register(this, new PlayerEvents());
         proxy.getEventManager().register(this, new ServerEvents());
         if (ServerSocketTask.init()){
             debug("ServerSocketTask started");
         }
-        String url = config.getConfig().getDb_urli(); /*config.getDb_urli( ).equals( "" ) ? "mongodb://" + config.getDb_username( ) + ":" + config.getDb_password( ) + "@" + config.getDb_host( ) + ":" + config.getDb_port( ) :*/
-        final MongoDBClient mongo = new MongoDBClient(url, config.getConfig().getDb_database());
+        String url = config.getString("db.urli");/*config.getDb_urli( ).equals( "" ) ? "mongodb://" + config.getDb_username( ) + ":" + config.getDb_password( ) + "@" + config.getDb_host( ) + ":" + config.getDb_port( ) :*/
+        final MongoDBClient mongo = new MongoDBClient(url, config.getString("db.database"));
         playersRepository = new PlayerRepository(mongo, "players");
+        serverRepository = new ServerRepository(mongo, "servers");
     
         VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), this::sendInfo).repeat(5, TimeUnit.SECONDS).schedule();
     
@@ -111,6 +116,7 @@ public final class VMain extends LyApiVelocity {
         new VAdmin(proxy.getCommandManager());
         new Stream(proxy.getCommandManager());
         new Ping(proxy.getCommandManager());
+        serverRepository.checkForPluginsUpdates();
     
     }
     

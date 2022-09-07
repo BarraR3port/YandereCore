@@ -27,7 +27,7 @@ public class EnderSee extends InventoryMenu {
     
     @Override
     public String getMenuName(){
-        return "&8► &5Ender Inventario de: &c" + target.getName();
+        return "&4• &8Ender Inventario de: &c" + target.getName();
     }
     
     @Override

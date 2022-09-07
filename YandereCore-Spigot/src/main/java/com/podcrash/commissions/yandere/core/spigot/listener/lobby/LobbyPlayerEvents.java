@@ -55,7 +55,7 @@ public abstract class LobbyPlayerEvents extends MainEvents {
             final UUID playerUUID = e.getPlayer().getUniqueId();
             final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
             final Location loc = e.getTo();
-            user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
+            user.setLastLocation(new Loc(Settings.PROXY_SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
         } catch (NullPointerException | UserNotFoundException ignored) {
         }
@@ -125,14 +125,14 @@ public abstract class LobbyPlayerEvents extends MainEvents {
                     p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_ALL.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_ALL.getItem());
                     break;
             }
-            Main.getInstance().getCoolDownManager().addCoolDown(new LobbyCoolDown(p.getUniqueId(), 3));
+            Main.getInstance().getCoolDownManager().addCoolDown(new LobbyCoolDown(p.getUniqueId(), 1));
             p.updateInventory();
         } else if (nbtItem.hasTag("lobby-player-join-arena")){
-            e.setCancelled(subPlayerClicks(e, nbtItem));
+            e.setCancelled(subPlayerClicks(e));
         }
     }
     
-    public abstract boolean subPlayerClicks(PlayerInteractEvent e, NBTItem item);
+    public abstract boolean subPlayerClicks(PlayerInteractEvent e);
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerBreakBlocks(BlockBreakEvent e){

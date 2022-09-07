@@ -14,7 +14,6 @@ import com.podcrash.commissions.yandere.core.spigot.cooldowns.LobbyCoolDown;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.listener.lobby.LobbyPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
-import net.lymarket.lyapi.spigot.utils.NBTItem;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -150,13 +149,13 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
             player.spigot().sendMessage(msg);
         }
     
-        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, message, p.getName());
+        Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.PROXY_SERVER_NAME, message, p.getName());
     
         return true;
     }
     
     @Override
-    public boolean subPlayerClicks(PlayerInteractEvent e, NBTItem item){
+    public boolean subPlayerClicks(PlayerInteractEvent e){
         Player p = e.getPlayer();
         if (Main.getInstance().getCoolDownManager().hasCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE)){
             CoolDown coolDown = Main.getInstance().getCoolDownManager().getCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
@@ -203,7 +202,7 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
                 p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_SOLO.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_SOLO.getItem());
                 break;
         }
-        Main.getInstance().getCoolDownManager().addCoolDown(new LobbyCoolDown(p.getUniqueId(), 3));
+        Main.getInstance().getCoolDownManager().addCoolDown(new LobbyCoolDown(p.getUniqueId(), 1));
         p.updateInventory();
         return true;
     }

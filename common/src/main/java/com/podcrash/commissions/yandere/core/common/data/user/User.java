@@ -222,12 +222,13 @@ public class User {
         switch(serverType){
             case SKY_WARS:{
                 JoinSkyWarsArenaType type = JoinSkyWarsArenaType.valueOf(properties.get("lobby-sw-join-type")).getNext();
-                properties.put("lobby-sw-join-type", type.toString());
+                properties.replace("lobby-sw-join-type", type.toString());
                 break;
             }
+            case LOBBY_BED_WARS:
             case BED_WARS:{
                 JoinBedWarsArenaType type = JoinBedWarsArenaType.valueOf(properties.get("lobby-bw-join-type")).getNext();
-                properties.put("lobby-bw-join-type", type.toString());
+                properties.replace("lobby-bw-join-type", type.toString());
                 break;
             }
             
@@ -255,7 +256,7 @@ public class User {
             DecimalFormat df = new DecimalFormat("#.#");
             return Utils.format(df.format(coins / 1000f) + "&eK⛃");
         }
-        return Utils.format(coins + "&e⛃");
+        return Utils.format(coins + "&e⛂");
     }
     
     public String getCoinsSemiFormatted(){

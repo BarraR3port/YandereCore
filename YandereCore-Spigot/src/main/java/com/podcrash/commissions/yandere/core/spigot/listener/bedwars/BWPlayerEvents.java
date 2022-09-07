@@ -51,7 +51,7 @@ public final class BWPlayerEvents extends MainEvents {
             final UUID playerUUID = e.getPlayer().getUniqueId();
             final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
             final Location loc = e.getTo();
-            user.setLastLocation(new Loc(Settings.SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
+            user.setLastLocation(new Loc(Settings.PROXY_SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
         } catch (NullPointerException | UserNotFoundException ignored) {
         }
@@ -135,7 +135,7 @@ public final class BWPlayerEvents extends MainEvents {
                             Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)),
                             (color ? Utils.formatTC(finalMessage3) : Utils.stripColorsToTextComponent(finalMessage3))));
                 }
-                Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
+                Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.PROXY_SERVER_NAME, finalMessage, p.getName());
             } else {
                 if (a.getStatus() == GameState.waiting || a.getStatus() == GameState.starting){
                     e.getRecipients().clear();
@@ -149,7 +149,7 @@ public final class BWPlayerEvents extends MainEvents {
                                 Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)),
                                 (color ? Utils.formatTC(finalMessage3) : Utils.stripColorsToTextComponent(finalMessage3))));
                     }
-                    Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
+                    Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.PROXY_SERVER_NAME, finalMessage, p.getName());
                     return true;
                 }
                 if (finalMessage.startsWith("!") || finalMessage.startsWith("shout") || finalMessage.startsWith("SHOUT") || finalMessage.startsWith(getMsg(p, Messages.MEANING_SHOUT))){
@@ -185,7 +185,7 @@ public final class BWPlayerEvents extends MainEvents {
                                 Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)),
                                 (color ? Utils.formatTC(finalMessage1) : Utils.stripColorsToTextComponent(finalMessage1))));
                     }
-                    Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
+                    Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.PROXY_SERVER_NAME, finalMessage, p.getName());
                 } else {
                     final String finalMessage2 = finalMessage;
                     e.getRecipients().clear();
@@ -210,7 +210,7 @@ public final class BWPlayerEvents extends MainEvents {
                                 Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)),
                                 (color ? Utils.formatTC(finalMessage2) : Utils.stripColorsToTextComponent(finalMessage2))));
                     }
-                    Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.SERVER_NAME, finalMessage, p.getName());
+                    Main.getInstance().getLogs().createLog(LogType.CHAT, Settings.PROXY_SERVER_NAME, finalMessage, p.getName());
                     
                 }
             }

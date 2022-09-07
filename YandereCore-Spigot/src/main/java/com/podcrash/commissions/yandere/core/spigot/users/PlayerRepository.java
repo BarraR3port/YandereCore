@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 public final class PlayerRepository extends IPlayerRepository {
     
-    
     public PlayerRepository(MongoDBClient database, String tableName){
         super(database, tableName);
     }
@@ -93,6 +92,8 @@ public final class PlayerRepository extends IPlayerRepository {
         user.setAddress(address);
         user.setOption("allow-pm", true);
         user.addProperty("lobby-player-visibility", "ALL");
+        user.addProperty("lobby-sw-join-type", "RANDOM");
+        user.addProperty("lobby-bw-join-type", "RANDOM");
         final net.luckperms.api.model.user.User luckPermsUser = LuckPermsProvider.get().getUserManager().getUser(uuid);
         if (luckPermsUser != null){
             user.setRank(Rank.fromString(luckPermsUser.getPrimaryGroup()));
@@ -104,7 +105,7 @@ public final class PlayerRepository extends IPlayerRepository {
     @Override
     public User savePlayer(User user){
         if (database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", user.getUUID().toString()), user)){
-            list.put(user.getUUID(), user);
+            list.replace(user.getUUID(), user);
         } else {
             if (database.insertOne(TABLE_NAME, user)){
                 list.put(user.getUUID(), user);
