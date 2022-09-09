@@ -229,9 +229,7 @@ public class SpigotSocketClient extends ISocket {
                                 }
                                 case "UPDATE_SERVER_STATS":{
                                     if (!json.has("stats")) continue;
-                                    Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-                                        Main.getInstance().setProxyStats(GSON.fromJson(json.getAsJsonObject("stats"), ProxyStats.class));
-                                    });
+                                    Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> Main.getInstance().setProxyStats(GSON.fromJson(json.getAsJsonObject("stats"), ProxyStats.class)));
                                     continue;
                                 }
                                 case "SEND_MSG_TO_PLAYER_POST":{

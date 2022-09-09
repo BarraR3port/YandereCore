@@ -8,7 +8,7 @@
     <groupId>com.podcrash.commissions.yandere.core</groupId>
     <artifactId>YandereCore</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.6-ALPHA</version>
+    <version>1.0.8-ALPHA</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -93,25 +93,6 @@
                 <version>2.8.2</version>
                 <configuration>
                     <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.5.1</version>
-                <executions>
-                    <execution>
-                        <id>default-deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <serverId>lydark-central</serverId>
-                    <nexusUrl>https://repo.lydark.org/repository/lydark-central/</nexusUrl>
-                    <skipStaging>true</skipStaging>
                 </configuration>
             </plugin>
         </plugins>

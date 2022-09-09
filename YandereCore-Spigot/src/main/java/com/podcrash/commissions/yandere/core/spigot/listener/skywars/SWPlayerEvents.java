@@ -17,16 +17,15 @@ import com.podcrash.commissions.yandere.core.spigot.menu.lobby.LobbyMenu;
 import com.podcrash.commissions.yandere.core.spigot.menu.lobby.MultiLobbyMenu;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import io.github.Leonardo0013YT.UltraSkyWars.UltraSkyWars;
-import io.github.Leonardo0013YT.UltraSkyWars.enums.GameType;
+import io.github.Leonardo0013YT.UltraSkyWars.data.SWPlayer;
 import io.github.Leonardo0013YT.UltraSkyWars.enums.State;
 import io.github.Leonardo0013YT.UltraSkyWars.game.UltraGame;
 import io.github.Leonardo0013YT.UltraSkyWars.game.UltraRankedGame;
 import io.github.Leonardo0013YT.UltraSkyWars.game.UltraTeamGame;
-import io.github.Leonardo0013YT.UltraSkyWars.interfaces.SWPlayer;
+import io.github.Leonardo0013YT.UltraSkyWars.modules.ranks.ranks.EloRank;
 import io.github.Leonardo0013YT.UltraSkyWars.objects.Level;
 import io.github.Leonardo0013YT.UltraSkyWars.superclass.Game;
 import io.github.Leonardo0013YT.UltraSkyWars.team.Team;
-import io.github.Leonardo0013YT.ranks.ranks.EloRank;
 import net.lymarket.lyapi.spigot.LyApi;
 import net.lymarket.lyapi.spigot.utils.NBTItem;
 import net.lymarket.lyapi.spigot.utils.Utils;
@@ -56,17 +55,17 @@ public final class SWPlayerEvents extends MainEvents {
     public static LinkedList<UUID> builders = new LinkedList<>();
     private final UltraSkyWars plugin;
     
-    public SWPlayerEvents(){
+    public SWPlayerEvents() {
         this.plugin = UltraSkyWars.get();
     }
     
-    public void subPlayerQuitEvent(PlayerQuitEvent e){
+    public void subPlayerQuitEvent(PlayerQuitEvent e) {
         
     }
     
     
     @EventHandler()
-    public boolean subPlayerChatEvent(AsyncPlayerChatEvent event){
+    public boolean subPlayerChatEvent(AsyncPlayerChatEvent event) {
         Player p = event.getPlayer();
         String message = event.getMessage();
         User user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
@@ -84,7 +83,7 @@ public final class SWPlayerEvents extends MainEvents {
         final SWPlayer sw = this.plugin.getDb().getSWPlayer(p);
         final Level playerLevel = this.plugin.getLvl().getLevel(p);
         
-        TextComponent level = sw.isShowLevel() ? Utils.hoverOverMessage("&7[Lvl " + playerLevel.getPrefix() + "&7] ",
+        TextComponent level = sw.isShowLevel() ? Utils.hoverOverMessage("&7[" + playerLevel.getPrefix() + "&7] ",
                 Arrays.asList(
                         "&7「&eNivel de SkyWars&7⏌",
                         "",
@@ -112,29 +111,29 @@ public final class SWPlayerEvents extends MainEvents {
         
         Game game = this.plugin.getGm().getGameByPlayer(p);
         TextComponent msg = new TextComponent();
-        if (game == null){
-            if (this.plugin.getCm().isMainLobby()){
+        if(game == null){
+            if(this.plugin.getCm().isMainLobby()){
                 World w = p.getLocation().getWorld();
-                if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                     event.getRecipients().addAll(w.getPlayers());
                     msg = new TextComponent(level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                 }
             }
         } else {
-            if (game.getSpectators().contains(p)){
+            if(game.getSpectators().contains(p)){
                 event.getRecipients().addAll(game.getSpectators());
                 msg = new TextComponent(Utils.formatTC("&7「ESPECTADOR⏌ "), level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
-            } else if (this.plugin.getCm().isChatSystem()){
-                if (!game.isState(State.WAITING) && !game.isState(State.STARTING)){
-                    if (game.isState(State.PREGAME) || game.isState(State.GAME) || game.isState(State.FINISH) || game.isState(State.RESTARTING)){
-                        if (game instanceof UltraGame){
+            } else if(this.plugin.getCm().isChatSystem()){
+                if(!game.isState(State.WAITING) && !game.isState(State.STARTING)){
+                    if(game.isState(State.PREGAME) || game.isState(State.GAME) || game.isState(State.FINISH) || game.isState(State.RESTARTING)){
+                        if(game instanceof UltraGame){
                             event.getRecipients().addAll(game.getCached());
                             msg = new TextComponent(level, rank, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                             
-                        } else if (game instanceof UltraTeamGame){
+                        } else if(game instanceof UltraTeamGame){
                             Team team = game.getTeamPlayer(p);
                             TextComponent teamString = Utils.formatTC("");
-                            if (team == null) return false;
+                            if(team == null) return false;
                             String teamName = this.plugin.getLang().get(p, "team").replaceAll("<#>", String.valueOf(team.getId() + 1));
                             teamString = Utils.hoverOverMessage(teamName,
                                     Arrays.asList(
@@ -143,7 +142,7 @@ public final class SWPlayerEvents extends MainEvents {
                                             "&7► Equipo: " + teamName,
                                             "&7► Miembros: &c" + team.getTeamSize(),
                                             "&7► Kills: &c" + team.getKills()));
-                            if (message.startsWith("!")){
+                            if(message.startsWith("!")){
                                 event.getRecipients().addAll(game.getCached());
                                 msg = new TextComponent(Utils.formatTC("&7「GLOBAL⏌ "), level, rank, teamString, name, Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(finalMessage) : Utils.stripColorsToTextComponent(finalMessage)));
                                 
@@ -169,7 +168,7 @@ public final class SWPlayerEvents extends MainEvents {
                 } else {
                     event.getRecipients().addAll(game.getCached());
                     
-                    if (game instanceof UltraRankedGame){
+                    if(game instanceof UltraRankedGame){
                         EloRank eloRank = this.plugin.getIjm().getEloRank().getErm().getEloRank(p);
                         TextComponent elo = Utils.hoverOverMessage(eloRank.getColor() + eloRank.getCorto(),
                                 Arrays.asList(
@@ -198,14 +197,14 @@ public final class SWPlayerEvents extends MainEvents {
     
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerTeleport(PlayerTeleportEvent e){
+    public void onPlayerTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
         try {
-            if (this.plugin.getCm().isMainLobby()){
+            if(this.plugin.getCm().isMainLobby()){
                 World w = p.getLocation().getWorld();
-                if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                     User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
-                    if (user.getRank() != Rank.USUARIO){
+                    if(user.getRank() != Rank.USUARIO){
                         p.setAllowFlight(true);
                     }
                     p.setFoodLevel(20);
@@ -216,20 +215,20 @@ public final class SWPlayerEvents extends MainEvents {
                     p.setHealth(20);
                     p.setSaturation(20F);
                     p.setGameMode(GameMode.ADVENTURE);
-    
+                    
                     PlayerVisibility visibility = user.getPlayerVisibility();
-    
+                    
                     for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
-                        if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
+                        if(targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
                         User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
                         PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
                         Rank targetRank = targetUser.getRank();
-                        switch(visibility){
+                        switch(visibility) {
                             case ALL:
                                 p.showPlayer(targetPlayer);
                                 break;
                             case RANKS:
-                                if (targetRank != Rank.USUARIO){
+                                if(targetRank != Rank.USUARIO){
                                     p.showPlayer(targetPlayer);
                                 } else {
                                     p.hidePlayer(targetPlayer);
@@ -239,41 +238,41 @@ public final class SWPlayerEvents extends MainEvents {
                                 p.hidePlayer(targetPlayer);
                                 break;
                         }
-        
-                        switch(targetVisibility){
-                            case ALL:{
+                        
+                        switch(targetVisibility) {
+                            case ALL: {
                                 targetPlayer.showPlayer(p);
                                 break;
                             }
-                            case RANKS:{
-                                if (targetRank != Rank.USUARIO){
+                            case RANKS: {
+                                if(targetRank != Rank.USUARIO){
                                     targetPlayer.showPlayer(p);
                                 } else {
                                     targetPlayer.hidePlayer(p);
                                 }
                                 break;
                             }
-                            default:{
+                            default: {
                                 targetPlayer.hidePlayer(p);
                                 break;
                             }
                         }
-        
+                        
                     }
                 }
             }
-        } catch (UserNotFoundException ignored) {
+        } catch(UserNotFoundException ignored) {
         }
     }
     
-    public void subPlayerJoinEvent(PlayerJoinEvent e){
+    public void subPlayerJoinEvent(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
+        if(this.plugin.getCm().isMainLobby()){
             World w = p.getLocation().getWorld();
             try {
-                if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                     User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
-                    if (user.getRank() != Rank.USUARIO){
+                    if(user.getRank() != Rank.USUARIO){
                         p.setAllowFlight(true);
                     }
                     
@@ -290,16 +289,16 @@ public final class SWPlayerEvents extends MainEvents {
                     PlayerVisibility visibility = user.getPlayerVisibility();
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                         for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
-                            if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
+                            if(targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
                             User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
                             PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
                             Rank targetRank = targetUser.getRank();
-                            switch(visibility){
+                            switch(visibility) {
                                 case ALL:
                                     p.showPlayer(targetPlayer);
                                     break;
                                 case RANKS:
-                                    if (targetRank != Rank.USUARIO){
+                                    if(targetRank != Rank.USUARIO){
                                         p.showPlayer(targetPlayer);
                                     } else {
                                         p.hidePlayer(targetPlayer);
@@ -309,61 +308,61 @@ public final class SWPlayerEvents extends MainEvents {
                                     p.hidePlayer(targetPlayer);
                                     break;
                             }
-                            
-                            switch(targetVisibility){
-                                case ALL:{
+    
+                            switch(targetVisibility) {
+                                case ALL: {
                                     targetPlayer.showPlayer(p);
                                     break;
                                 }
-                                case RANKS:{
-                                    if (user.getRank() != Rank.USUARIO){
+                                case RANKS: {
+                                    if(user.getRank() != Rank.USUARIO){
                                         targetPlayer.showPlayer(p);
                                     } else {
                                         targetPlayer.hidePlayer(p);
                                     }
                                     break;
                                 }
-                                default:{
+                                default: {
                                     targetPlayer.hidePlayer(p);
                                     break;
                                 }
                             }
-                            
+    
                         }
-                        
+    
                     }, 1L);
                 }
-            } catch (UserNotFoundException ignored) {
+            } catch(UserNotFoundException ignored) {
             }
         }
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerInteractEvent(PlayerInteractEvent e){
+    public void onPlayerInteractEvent(PlayerInteractEvent e) {
         ItemStack item = e.getItem();
-        if (item == null) return;
-        if (item.getType() == Material.AIR) return;
+        if(item == null) return;
+        if(item.getType() == Material.AIR) return;
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
+        if(this.plugin.getCm().isMainLobby()){
             NBTItem nbtItem = new NBTItem(item);
-            if (nbtItem.hasTag("item-prop")){
+            if(nbtItem.hasTag("item-prop")){
                 String prop = nbtItem.getTag("item-prop");
-                switch(prop){
+                switch(prop) {
                     case "lobby-menu":
                     case "no-move":
                     case "multi-lobby-menu":
                         e.setCancelled(true);
                 }
             }
-            if (nbtItem.hasTag("lobby-item")){
+            if(nbtItem.hasTag("lobby-item")){
                 new LobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
-            } else if (nbtItem.hasTag("lobby-multi-lobby")){
+            } else if(nbtItem.hasTag("lobby-multi-lobby")){
                 new MultiLobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
-            } else if (nbtItem.hasTag("command")){
+            } else if(nbtItem.hasTag("command")){
                 String command = nbtItem.getTag("command").replace("_", " ");
                 e.getPlayer().performCommand(command);
-            } else if (nbtItem.hasTag("lobby-player-join-arena")){
-                if (Main.getInstance().getCoolDownManager().hasCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE)){
+            } else if(nbtItem.hasTag("lobby-player-join-arena")){
+                if(Main.getInstance().getCoolDownManager().hasCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE)){
                     CoolDown coolDown = Main.getInstance().getCoolDownManager().getCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
                     p.sendMessage(Utils.format(coolDown.getMessage()));
                     e.setCancelled(true);
@@ -374,35 +373,35 @@ public final class SWPlayerEvents extends MainEvents {
                 User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
                 JoinSkyWarsArenaType currentJoinArenaType = user.getJoinSkyWarsArenaType();
                 
-                if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)){
+                if(action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)){
                     
-                    switch(currentJoinArenaType){
-                        case SOLO:{
+                    switch(currentJoinArenaType) {
+                        case SOLO: {
                             LinkedHashMap<Integer, Game> games = new LinkedHashMap<>(this.plugin.getGm().getGames());
-                            Game soloGame = games.values().stream().filter(game -> game.getGameType().equals(GameType.SOLO)).findAny().orElse(null);
-                            if (soloGame == null){
+                            Game soloGame = games.values().stream().filter(game -> game.getGameType().equals("SOLO")).findAny().orElse(null);
+                            if(soloGame == null){
                                 p.sendMessage(Utils.format("&cNo se ha encontrado una partida de SkyWars en modo &eSolitario."));
                                 return;
                             }
                             this.plugin.getGm().addPlayerGame(p, soloGame.getId());
                             break;
                         }
-                        case TEAM:{
-                            if (!this.plugin.getGm().addRandomGame(p, GameType.TEAM)){
+                        case TEAM: {
+                            if(!this.plugin.getGm().addRandomGame(p, "TEAM")){
                                 p.sendMessage(Utils.format("&cNo se ha encontrado una partida de SkyWars en modo &eEquipo."));
                             }
                             break;
                         }
-                        case RANKED:{
-                            if (!this.plugin.getGm().addRandomGame(p, GameType.RANKED)){
+                        case RANKED: {
+                            if(!this.plugin.getGm().addRandomGame(p, "RANKED")){
                                 p.sendMessage(Utils.format("&cNo se ha encontrado una partida de SkyWars en modo &eRanked."));
                             }
                             break;
                         }
-                        case RANDOM:{
+                        case RANDOM: {
                             Map<Integer, Game> games = this.plugin.getGm().getGames();
                             Game game = games.get(new Random().nextInt(games.size()));
-                            if (game == null){
+                            if(game == null){
                                 p.sendMessage(Utils.format("&cNo se ha encontrado una partida de SkyWars."));
                                 return;
                             }
@@ -417,7 +416,7 @@ public final class SWPlayerEvents extends MainEvents {
                 
                 user.nextJoinArenaType(Settings.SERVER_TYPE);
                 Main.getInstance().getPlayers().savePlayer(user);
-                switch(currentJoinArenaType){
+                switch(currentJoinArenaType) {
                     case SOLO:
                         p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_TEAM.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_TEAM.getItem());
                         break;
@@ -438,61 +437,36 @@ public final class SWPlayerEvents extends MainEvents {
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerBreakBlocks(BlockBreakEvent e){
+    public void onPlayerBreakBlocks(BlockBreakEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
             World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerPlaceBlocks(BlockPlaceEvent e){
+    public void onPlayerPlaceBlocks(BlockPlaceEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
             World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerBedEnterEvent(PlayerBedEnterEvent e){
+    public void onPlayerBedEnterEvent(PlayerBedEnterEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
             World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
-                e.setCancelled(true);
-            }
-        }
-        
-    }
-    
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerBucketFillEvent(PlayerBucketFillEvent e){
-        Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
-            World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
-                e.setCancelled(true);
-            }
-        }
-    }
-    
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent e){
-        Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
-            World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
@@ -500,12 +474,24 @@ public final class SWPlayerEvents extends MainEvents {
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerDropItemEvent(PlayerDropItemEvent e){
+    public void onPlayerBucketFillEvent(PlayerBucketFillEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
             World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                e.setCancelled(true);
+            }
+        }
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent e) {
+        Player p = e.getPlayer();
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
+            World w = p.getLocation().getWorld();
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
@@ -513,59 +499,72 @@ public final class SWPlayerEvents extends MainEvents {
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent e){
+    public void onPlayerDropItemEvent(PlayerDropItemEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
             World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                e.setCancelled(true);
+            }
+        }
+        
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent e) {
+        Player p = e.getPlayer();
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
+            World w = p.getLocation().getWorld();
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerPortalEvent(PlayerPortalEvent e){
+    public void onPlayerPortalEvent(PlayerPortalEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
             World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld()))
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld()))
                 e.setCancelled(true);
             User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
             JoinSkyWarsArenaType currentJoinArenaType = user.getJoinSkyWarsArenaType();
-            switch(currentJoinArenaType){
-                case SOLO:{
+            switch(currentJoinArenaType) {
+                case SOLO: {
                     LinkedHashMap<Integer, Game> games = new LinkedHashMap<>(this.plugin.getGm().getGames());
-                    Game soloGame = games.values().stream().filter(game -> game.getGameType().equals(GameType.SOLO)).findAny().orElse(null);
-                    if (soloGame == null){
+                    Game soloGame = games.values().stream().filter(game -> game.getGameType().equals("SOLO")).findAny().orElse(null);
+                    if(soloGame == null){
                         p.sendMessage(Utils.format("&cNo se ha encontrado una partida de SkyWars en modo &eSolitario."));
-                        p.teleport(this.plugin.getCm().getPlugin().getMainLobby());
+                        p.teleport(this.plugin.getMainLobby());
                         return;
                     }
                     this.plugin.getGm().addPlayerGame(p, soloGame.getId());
                     break;
                 }
-                case TEAM:{
-                    if (!this.plugin.getGm().addRandomGame(p, GameType.TEAM)){
+                case TEAM: {
+                    if(!this.plugin.getGm().addRandomGame(p, "TEAM")){
                         p.sendMessage(Utils.format("&cNo se ha encontrado una partida de SkyWars en modo &eEquipo."));
-                        p.teleport(this.plugin.getCm().getPlugin().getMainLobby());
+                        p.teleport(this.plugin.getMainLobby());
                     }
                     break;
                 }
-                case RANKED:{
-                    if (!this.plugin.getGm().addRandomGame(p, GameType.RANKED)){
+                case RANKED: {
+                    if(!this.plugin.getGm().addRandomGame(p, "RANKED")){
                         p.sendMessage(Utils.format("&cNo se ha encontrado una partida de SkyWars en modo &eRanked."));
-                        p.teleport(this.plugin.getCm().getPlugin().getMainLobby());
+                        p.teleport(this.plugin.getMainLobby());
                     }
                     break;
                 }
-                case RANDOM:{
+                case RANDOM: {
                     Map<Integer, Game> games = this.plugin.getGm().getGames();
                     Game game = games.get(new Random().nextInt(games.size()));
-                    if (game == null){
+                    if(game == null){
                         p.sendMessage(Utils.format("&cNo se ha encontrado una partida de SkyWars."));
-                        p.teleport(this.plugin.getCm().getPlugin().getMainLobby());
+                        p.teleport(this.plugin.getMainLobby());
                         return;
                     }
                     this.plugin.getGm().removePlayerAllGame(p);
@@ -573,141 +572,141 @@ public final class SWPlayerEvents extends MainEvents {
                     break;
                 }
             }
-    
+            
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerItemDamageEvent(PlayerItemDamageEvent e){
+    public void onPlayerItemDamageEvent(PlayerItemDamageEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
             World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerShearEntityEvent(PlayerShearEntityEvent e){
+    public void onPlayerShearEntityEvent(PlayerShearEntityEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
             World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerFishEvent(PlayerFishEvent e){
+    public void onPlayerFishEvent(PlayerFishEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(p.getUniqueId())) return;
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(p.getUniqueId())) return;
             World w = p.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onExplosionPrimeEvent(ExplosionPrimeEvent e){
-        if (this.plugin.getCm().isMainLobby()){
+    public void onExplosionPrimeEvent(ExplosionPrimeEvent e) {
+        if(this.plugin.getCm().isMainLobby()){
             World w = e.getEntity().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onEntityExplodeEvent(EntityExplodeEvent e){
-        if (this.plugin.getCm().isMainLobby()){
-            if (builders.contains(e.getEntity().getUniqueId())) return;
+    public void onEntityExplodeEvent(EntityExplodeEvent e) {
+        if(this.plugin.getCm().isMainLobby()){
+            if(builders.contains(e.getEntity().getUniqueId())) return;
             World w = e.getLocation().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e){
-        if (this.plugin.getCm().isMainLobby()){
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent e) {
+        if(this.plugin.getCm().isMainLobby()){
             World w = e.getDamager().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onEntityDamageByBlockEvent(EntityDamageByBlockEvent e){
-        if (this.plugin.getCm().isMainLobby()){
+    public void onEntityDamageByBlockEvent(EntityDamageByBlockEvent e) {
+        if(this.plugin.getCm().isMainLobby()){
             World w = e.getDamager().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onEntityBreakDoorEvent(EntityBreakDoorEvent e){
-        if (this.plugin.getCm().isMainLobby()){
+    public void onEntityBreakDoorEvent(EntityBreakDoorEvent e) {
+        if(this.plugin.getCm().isMainLobby()){
             World w = e.getEntity().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onEntityCreatePortalEvent(EntityCreatePortalEvent e){
-        if (this.plugin.getCm().isMainLobby()){
+    public void onEntityCreatePortalEvent(EntityCreatePortalEvent e) {
+        if(this.plugin.getCm().isMainLobby()){
             World w = e.getEntity().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onEntitySpawnEvent(EntitySpawnEvent e){
-        if (e.getEntity() instanceof Player) return;
-        if (e.getEntity() instanceof ArmorStand) return;
-    
-        if (this.plugin.getCm().isMainLobby()){
+    public void onEntitySpawnEvent(EntitySpawnEvent e) {
+        if(e.getEntity() instanceof Player) return;
+        if(e.getEntity() instanceof ArmorStand) return;
+        
+        if(this.plugin.getCm().isMainLobby()){
             World w = e.getEntity().getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 e.setCancelled(true);
             }
         }
-    
+        
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerRespawnEvent(PlayerRespawnEvent e){
+    public void onPlayerRespawnEvent(PlayerRespawnEvent e) {
         Player p = e.getPlayer();
-        if (this.plugin.getCm().isMainLobby()){
+        if(this.plugin.getCm().isMainLobby()){
             World w = p.getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                 Items.setSkyWarsLobbyItems(e.getPlayer());
             }
         }
     }
     
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerDamage(EntityDamageEvent e){
-        if (e.getEntity() instanceof Player) return;
-        if (e.getEntity() instanceof ArmorStand) return;
-    
-        if (e.getEntityType().equals(EntityType.PLAYER)){
-            if (this.plugin.getCm().isMainLobby()){
+    public void onPlayerDamage(EntityDamageEvent e) {
+        if(e.getEntity() instanceof Player) return;
+        if(e.getEntity() instanceof ArmorStand) return;
+        
+        if(e.getEntityType().equals(EntityType.PLAYER)){
+            if(this.plugin.getCm().isMainLobby()){
                 World w = e.getEntity().getWorld();
-                if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                     e.setCancelled(true);
                 }
             }
@@ -715,11 +714,11 @@ public final class SWPlayerEvents extends MainEvents {
     }
     
     @EventHandler
-    public void onPlayerFoodLevelChange(FoodLevelChangeEvent e){
-        if (e.getEntityType().equals(EntityType.PLAYER)){
-            if (this.plugin.getCm().isMainLobby()){
+    public void onPlayerFoodLevelChange(FoodLevelChangeEvent e) {
+        if(e.getEntityType().equals(EntityType.PLAYER)){
+            if(this.plugin.getCm().isMainLobby()){
                 World w = e.getEntity().getWorld();
-                if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
                     e.setCancelled(true);
                 }
             }
@@ -727,17 +726,17 @@ public final class SWPlayerEvents extends MainEvents {
     }
     
     @EventHandler
-    public void blockRedstoneEvent(BlockRedstoneEvent e){
+    public void blockRedstoneEvent(BlockRedstoneEvent e) {
         e.getBlock().setType(XMaterial.VOID_AIR.parseMaterial());
     }
     
     
     @EventHandler
-    public void onWeatherChangeEvent(WeatherChangeEvent e){
-        if (this.plugin.getCm().isMainLobby()){
+    public void onWeatherChangeEvent(WeatherChangeEvent e) {
+        if(this.plugin.getCm().isMainLobby()){
             World w = e.getWorld();
-            if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
-                if (e.toWeatherState()){
+            if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                if(e.toWeatherState()){
                     e.setCancelled(true);
                 }
             }

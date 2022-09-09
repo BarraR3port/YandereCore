@@ -42,9 +42,11 @@ public class ServerRepository extends IServerRepository {
                 Main.getInstance().getConfig().set("web.uuid", server.getUuid().toString());
                 Main.getInstance().saveConfig();
             } else {
-                Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", Settings.WEB_UUID));
+                Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", serverID));
                 if (doc != null){
                     server = Api.getGson().fromJson(doc.toJson(), Server.class);
+                    Main.getInstance().getConfig().set("web.uuid", server.getUuid().toString());
+                    Main.getInstance().saveConfig();
                 } else {
                     Server server = new Server(Settings.PROXY_SERVER_NAME, Bukkit.getOnlinePlayers().size(), Settings.SERVER_TYPE);
                     database.insertOne(TABLE_NAME, server);
@@ -206,8 +208,11 @@ public class ServerRepository extends IServerRepository {
         }
     }
     
-    public void saveServer(){
+    public void saveServer() {
         database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", server.getUuid().toString()), server);
+        Main.getInstance().getConfig().set("web.uuid", server.getUuid().toString());
+        Main.getInstance().getConfig().set("web.plugins", server.getPluginsFormatted());
+        Main.getInstance().saveConfig();
     }
     
     public void updatePlugin(LyPlugin plugin, OutdatedPlugin outdatedPlugin){

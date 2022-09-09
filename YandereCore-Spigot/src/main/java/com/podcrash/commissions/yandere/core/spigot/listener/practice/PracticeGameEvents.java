@@ -7,7 +7,6 @@ import ga.strikepractice.events.DuelEndEvent;
 import ga.strikepractice.events.FightEndEvent;
 import ga.strikepractice.events.PartyFFAEndEvent;
 import ga.strikepractice.events.PartyVsPartyEndEvent;
-import io.github.Leonardo0013YT.UltraSkyWars.api.events.PlayerGameKillEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,13 +48,6 @@ public class PracticeGameEvents implements Listener {
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(looser, 7, Level.GainSource.GAME_WIN), 65L);
         });
         
-    }
-    
-    @EventHandler
-    public void onPlayerKill(PlayerGameKillEvent event){
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(event.getPlayer().getUniqueId());
-        Main.getInstance().getPlayers().addCoins(user, 1);
-        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(user, 7, Level.GainSource.PER_KILL), 65L);
     }
     
     

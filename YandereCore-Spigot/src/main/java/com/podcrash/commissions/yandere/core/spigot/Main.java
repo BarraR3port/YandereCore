@@ -92,6 +92,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     private InvManager invManager;
     private EndInvManager endInvManager;
     private boolean hockedIntoBedWars = false;
+    private boolean hockedIntoSkyWars = false;
     private IServerRepository serverRepository;
     
     public static LyApi getApi(){
@@ -178,26 +179,20 @@ public final class Main extends JavaPlugin implements YandereApi {
             socket = new OfflineSocketClient();
         }
         switch(Settings.SERVER_TYPE){
-            case LOBBY:{
+            case LOBBY: {
                 getServer().getPluginManager().registerEvents(new MainLobbyPlayerEvents(), this);
                 api.getCommandService().registerCommands(new Build());
+                getLogger().info("\n------------------------");
+                getLogger().info("[YandereCore] Hooked into Lobby");
+                getLogger().info("------------------------\n");
                 break;
             }
-            case LOBBY_BED_WARS:{
+            case LOBBY_BED_WARS: {
                 getServer().getPluginManager().registerEvents(new LBWPlayerEvents(), this);
                 api.getCommandService().registerCommands(new Build());
-                break;
-            }
-            case SKY_WARS:{
-                if (Bukkit.getPluginManager().getPlugin("UltraSkyWars") != null){
-                    getServer().getPluginManager().registerEvents(new SWGameEvents(), this);
-                    getServer().getPluginManager().registerEvents(new SWPlayerEvents(), this);
-                    api.getCommandService().registerCommands(new Build());
-                } else {
-                    getLogger().log(Level.SEVERE, "Disabled due to no UltraSkyWars dependency found!");
-                    getServer().getPluginManager().disablePlugin(this);
-                    getServer().shutdown();
-                }
+                getLogger().info("\n------------------------");
+                getLogger().info("[YandereCore] Hooked into Lobby BedWars");
+                getLogger().info("------------------------\n");
                 break;
             }
             case PRACTICE:{
@@ -205,6 +200,9 @@ public final class Main extends JavaPlugin implements YandereApi {
                     api.getCommandService().registerCommands(new Build());
                     getServer().getPluginManager().registerEvents(new PracticeGameEvents(), this);
                     getServer().getPluginManager().registerEvents(new PracticePlayerEvents(), this);
+                    getLogger().info("\n------------------------");
+                    getLogger().info("[YandereCore] Hooked into Practice");
+                    getLogger().info("------------------------\n");
                 } else {
                     getLogger().log(Level.SEVERE, "Disabled due to no StrikePractice dependency found!");
                     getServer().getPluginManager().disablePlugin(this);
@@ -229,17 +227,22 @@ public final class Main extends JavaPlugin implements YandereApi {
         }, 0L, 60L);
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
             for ( Player p : Bukkit.getOnlinePlayers() ){
-                if (p.getOpenInventory().getTopInventory().getHolder() instanceof InventoryMenu){
+                if(p.getOpenInventory().getTopInventory().getHolder() instanceof InventoryMenu){
                     ((InventoryMenu) p.getOpenInventory().getTopInventory().getHolder()).reOpen();
                 }
             }
         }, 0L, 10L);
     
-        getLogger().log(Level.INFO, "[YandereUpdates] Checking Plugin Updates:");
-        Bukkit.getScheduler().runTaskTimer(this, () -> this.serverRepository.checkForPluginsUpdates(), 0L, 20L * 3600L);
-        getServer().getPluginManager().callEvent(new PluginEnableEvent(this));
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            getLogger().info("\n------------------------");
+            getLogger().info("[YandereUpdates] Checking Plugin Updates...");
+            this.serverRepository.checkForPluginsUpdates();
+            getLogger().info("[YandereUpdates] Done.");
+            getLogger().info("------------------------\n");
+        }, 0L, 20L * 3600L * 24L);
         //new PacketManager( this );
         overrideSpigotDefaultMessages();
+        getServer().getPluginManager().callEvent(new PluginEnableEvent(this));
     
     }
     
@@ -339,7 +342,6 @@ public final class Main extends JavaPlugin implements YandereApi {
         }
         socket.sendUpdate();
         getServer().getScheduler().runTaskTimer(this, () -> {
-            
             for ( Player p : Bukkit.getOnlinePlayers() ){
                 if (p.getOpenInventory().getTopInventory().getHolder() instanceof IUpdatableMenu){
                     ((IUpdatableMenu) p.getOpenInventory().getTopInventory().getHolder()).reOpen();
@@ -383,30 +385,57 @@ public final class Main extends JavaPlugin implements YandereApi {
         return coolDownManager;
     }
     
-    public boolean hookPodBedWars(){
+    public boolean hookPodBedWars() {
         try {
-            if (!hockedIntoBedWars){
-                System.out.println("[YandereCore] BedWars detected, enabling BedWars events");
+            if(!hockedIntoBedWars){
+                getLogger().info("\n------------------------");
+                getLogger().info("[YandereCore] Loading BedWars Events...");
                 Bukkit.getPluginManager().registerEvents(new BWPlayerEvents(), Main.getInstance());
                 hockedIntoBedWars = true;
+                getLogger().info("[YandereCore] Done!");
+                getLogger().info("------------------------\n");
                 return true;
             } else {
                 return false;
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             return false;
         }
     }
     
-    public boolean isHookedIntoBedWars(){
+    public boolean hookSkyWars() {
+        try {
+            if(!hockedIntoSkyWars){
+                getLogger().info("\n------------------------");
+                getLogger().info("[YandereCore] Loading SkyWars Events...");
+                getServer().getPluginManager().registerEvents(new SWGameEvents(), this);
+                getServer().getPluginManager().registerEvents(new SWPlayerEvents(), this);
+                api.getCommandService().registerCommands(new Build());
+                hockedIntoSkyWars = true;
+                getLogger().info("[YandereCore] Done!");
+                getLogger().info("------------------------\n");
+                return true;
+            } else {
+                return false;
+            }
+        } catch(Exception e) {
+            return false;
+        }
+    }
+    
+    public boolean isHookedIntoBedWars() {
         return hockedIntoBedWars;
     }
     
-    public void overrideSpigotDefaultMessages(){
+    public boolean isHookedIntoSkyWars() {
+        return hockedIntoSkyWars;
+    }
+    
+    public void overrideSpigotDefaultMessages() {
         org.spigotmc.SpigotConfig.unknownCommandMessage = Utils.format("  &8&l▸ &cComando no encontrado, usa &e/ayuda &cpa ver los comandos disponibles.");
     }
     
-    public IServerRepository getServerRepository(){
+    public IServerRepository getServerRepository() {
         return serverRepository;
     }
 }

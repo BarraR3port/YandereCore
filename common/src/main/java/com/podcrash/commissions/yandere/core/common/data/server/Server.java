@@ -1,7 +1,9 @@
 package com.podcrash.commissions.yandere.core.common.data.server;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Server {
     private final String proxyName;
@@ -26,21 +28,25 @@ public class Server {
         return onlinePlayers;
     }
     
-    public ServerType getServerType(){
+    public ServerType getServerType() {
         return serverType;
     }
     
-    public ArrayList<UUID> getPlugins(){
+    public ArrayList<UUID> getPlugins() {
         return plugins;
     }
     
-    public void addPlugin(UUID plugin){
-        if (!plugins.contains(plugin)){
+    public LinkedList<String> getPluginsFormatted() {
+        return plugins.stream().map(UUID::toString).collect(Collectors.toCollection(LinkedList::new));
+    }
+    
+    public void addPlugin(UUID plugin) {
+        if(!plugins.contains(plugin)){
             plugins.add(plugin);
         }
     }
     
-    public void removePlugin(UUID plugin){
+    public void removePlugin(UUID plugin) {
         plugins.remove(plugin);
     }
     

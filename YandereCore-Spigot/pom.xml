@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.podcrash.commissions.yandere.core</groupId>
         <artifactId>YandereCore</artifactId>
-        <version>1.0.6-ALPHA</version>
+        <version>1.0.8-ALPHA</version>
     </parent>
 
     <artifactId>YandereCore-Spigot</artifactId>
@@ -22,7 +22,6 @@
 
     <build>
         <plugins>
-            <!--compile in a specific directory-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -31,7 +30,6 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
-
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -528,28 +526,26 @@
             </exclusions>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>io.github.Leonardo0013YT.UltraSkyWars.UltraSkyWars</groupId>
             <artifactId>UltraSkyWars</artifactId>
             <version>7.1.0</version>
             <scope>system</scope>
             <systemPath>/home/barra/Desktop/apis/UltraSkyWars.jar</systemPath>
+        </dependency>-->
+        <dependency>
+            <groupId>com.podcrash.commissions.skywars</groupId>
+            <artifactId>UltraSkyWars-Spigot</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>io.github.Leonardo0013YT.UltraSkyWars.UltraSkyWars</groupId>
             <artifactId>UltraSkyWars-EloRanks</artifactId>
             <version>7.1.0</version>
             <scope>system</scope>
             <systemPath>/home/barra/Desktop/apis/UltraSkyWars-EloRanks.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>ga.strikepractice</groupId>
-            <artifactId>UltraSkyWars-EloRanks</artifactId>
-            <version>3.4.6</version>
-            <scope>system</scope>
-            <systemPath>/home/barra/Desktop/apis/strikepractice-3.4.6.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -559,6 +555,14 @@
             <scope>system</scope>
             <systemPath>/home/barra/Desktop/apis/USW-Injections/UltraSkyWars-Setup.jar
             </systemPath>
+        </dependency>-->
+
+        <dependency>
+            <groupId>ga.strikepractice</groupId>
+            <artifactId>StrikePractice</artifactId>
+            <version>3.4.6</version>
+            <scope>system</scope>
+            <systemPath>/home/barra/Desktop/apis/strikepractice-3.4.6.jar</systemPath>
         </dependency>
 
         <dependency>
