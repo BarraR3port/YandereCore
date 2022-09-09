@@ -10,14 +10,16 @@ public class LyPlugin {
     private final String version;
     private final String fileExtension;
     private final String fileName;
+    private final String hash;
     
-    public LyPlugin(String name, String bukkitName, String version, String fileExtension){
+    public LyPlugin(String name, String bukkitName, String version, String fileExtension, String hash) {
         this.name = name;
         this.bukkitName = bukkitName;
         this.version = version;
         this.uuid = UUID.randomUUID();
         this.fileExtension = fileExtension;
         this.fileName = name + "-" + version + fileExtension;
+        this.hash = hash;
     }
     
     public UUID getUuid(){
@@ -36,11 +38,15 @@ public class LyPlugin {
         return fileExtension;
     }
     
-    public String getFileName(){
+    public String getFileName() {
         return fileName;
     }
     
-    public String getBukkitName(){
+    public String getBukkitName() {
         return bukkitName;
+    }
+    
+    public String getHash() {
+        return hash;
     }
 }

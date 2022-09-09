@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "yandere",
         name = "Yandere",
-        version = "1.0.8-ALPHA",
+        version = "1.0.9-ALPHA",
         authors = {"BarraR3port"},
         url = "https://podcrash.com/",
         dependencies = {@Dependency(id = "luckperms")})

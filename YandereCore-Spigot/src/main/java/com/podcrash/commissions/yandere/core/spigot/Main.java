@@ -235,9 +235,9 @@ public final class Main extends JavaPlugin implements YandereApi {
     
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             getLogger().info("\n------------------------");
-            getLogger().info("[YandereUpdates] Checking Plugin Updates...");
+            getLogger().info("[UPDATE MACHINE] Checking Plugin Updates...");
             this.serverRepository.checkForPluginsUpdates();
-            getLogger().info("[YandereUpdates] Done.");
+            getLogger().info("[UPDATE MACHINE] Done.");
             getLogger().info("------------------------\n");
         }, 0L, 20L * 3600L * 24L);
         //new PacketManager( this );

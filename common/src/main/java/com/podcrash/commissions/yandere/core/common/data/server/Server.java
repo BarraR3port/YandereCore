@@ -12,19 +12,27 @@ public class Server {
     private final UUID uuid;
     private final ArrayList<UUID> plugins;
     
-    public Server(String proxyName, int onlinePlayers, ServerType serverType){
+    public Server(String proxyName, int onlinePlayers, ServerType serverType) {
+        this.uuid = UUID.randomUUID();
         this.proxyName = proxyName;
         this.onlinePlayers = onlinePlayers;
         this.serverType = serverType;
-        this.uuid = UUID.randomUUID();
         this.plugins = new ArrayList<>();
     }
     
-    public String getProxyName(){
+    public Server(UUID uuid, String proxyName, int onlinePlayers, ServerType serverType) {
+        this.uuid = uuid;
+        this.proxyName = proxyName;
+        this.onlinePlayers = onlinePlayers;
+        this.serverType = serverType;
+        this.plugins = new ArrayList<>();
+    }
+    
+    public String getProxyName() {
         return proxyName;
     }
     
-    public int getOnlinePlayers(){
+    public int getOnlinePlayers() {
         return onlinePlayers;
     }
     
@@ -50,7 +58,11 @@ public class Server {
         plugins.remove(plugin);
     }
     
-    public UUID getUuid(){
+    public UUID getUuid() {
         return uuid;
+    }
+    
+    public void clearPlugins() {
+        plugins.clear();
     }
 }

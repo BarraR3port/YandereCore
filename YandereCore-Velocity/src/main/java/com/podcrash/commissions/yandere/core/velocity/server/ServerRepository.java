@@ -52,7 +52,7 @@ public class ServerRepository extends IServerRepository {
     public void checkForPluginsUpdates(){
         try {
             pluginFilesGarbageCollector();
-            VMain.getInstance().getLogger().info("[YandereUpdates] Initializing the ~Updating Machine~ ...");
+            VMain.getInstance().getLogger().info("[UPDATE MACHINE] Initializing the ~Updating Machine~ ...");
             
             StringBuilder resultado = new StringBuilder();
             URL url = new URL(VMain.getConfig().get("web.url") + "/api/lydark/server/checkPlugins");
@@ -62,7 +62,7 @@ public class ServerRepository extends IServerRepository {
             
             Gson gson = new GsonBuilder().serializeNulls().create();
             String json = gson.toJson(plugins);
-            VMain.getInstance().getLogger().info("[YandereUpdates] Sending the following plugins to the server: " + json);
+            VMain.getInstance().getLogger().info("[UPDATE MACHINE] Sending the following plugins to the server: " + json);
             connexion.setRequestMethod("GET");
             connexion.setRequestProperty("Web-Api-Key", VMain.getConfig().getString("web.key"));
             connexion.setDoOutput(true);
@@ -84,16 +84,16 @@ public class ServerRepository extends IServerRepository {
             if (res.getType().equals("plugins")){
                 ArrayList<LyPlugin> pluginsSaved = res.getPlugins(); // estos son los plugins que están en el servidor y a la vez en el mongo
                 HashMap<LyPlugin, PluginContainer> pluginsToUpdate = new HashMap<>();
-                VMain.getInstance().getLogger().info("[YandereUpdates] I have found " + pluginsSaved.size() + " plugins matches with the DB\n");
-                VMain.getInstance().getLogger().info("[YandereUpdates] Checking if there is something to update...");
+                VMain.getInstance().getLogger().info("[UPDATE MACHINE] I have found " + pluginsSaved.size() + " plugins matches with the DB\n");
+                VMain.getInstance().getLogger().info("[UPDATE MACHINE] Checking if there is something to update...");
                 for ( LyPlugin plugin : pluginsSaved ){
                     for ( PluginContainer pluginBukkit : loadedPlugins ){
                         String bukkitPluginName = pluginBukkit.getDescription().getName().get();
-                        if (plugin.getName().contains(bukkitPluginName) ||
+                        if(plugin.getName().contains(bukkitPluginName) ||
                                 bukkitPluginName.contains(plugin.getName()) ||
                                 bukkitPluginName.equalsIgnoreCase(plugin.getName())){
-                            if (!pluginBukkit.getDescription().getVersion().get().equals(plugin.getVersion())){
-                                VMain.getInstance().getLogger().warn("[YandereUpdates] There is a new version for the plugin " + plugin.getName() + " (" + plugin.getVersion() + ")");
+                            if(!pluginBukkit.getDescription().getVersion().get().equals(plugin.getVersion())){
+                                VMain.getInstance().getLogger().warn("[UPDATE MACHINE] There is a new version for the plugin " + plugin.getName() + " (" + plugin.getVersion() + ")");
                                 pluginsToUpdate.put(plugin, pluginBukkit);
                             }
                         }
@@ -101,31 +101,32 @@ public class ServerRepository extends IServerRepository {
                     
                 }
                 if (pluginsToUpdate.size() > 0){
-                    VMain.getInstance().getLogger().warn("[YandereUpdates] I have found " + pluginsToUpdate.size() + " plugins to update");
-                    VMain.getInstance().getLogger().info("[YandereUpdates] Starting the update process...");
-                    
+                    VMain.getInstance().getLogger().warn("[UPDATE MACHINE] I have found " + pluginsToUpdate.size() + " plugins to update");
+                    VMain.getInstance().getLogger().info("[UPDATE MACHINE] Starting the update process...");
+    
                     pluginsToUpdate.forEach((plugin, pluginBukkit) -> {
                         try {
                             updatePlugin(plugin, pluginBukkit);
-                        } catch (IOException e) {
+                        } catch(IOException e) {
                             e.printStackTrace();
-                            VMain.getInstance().getLogger().warn("[YandereUpdates] An error has occurred when trying to update");
+                            VMain.getInstance().getLogger().warn("[UPDATE MACHINE] An error has occurred when trying to update");
                         }
                     });
-                    VMain.getInstance().getLogger().info("[YandereUpdates] Every Plugin has successfully updated!");
-                    VMain.getInstance().getLogger().warn("[YandereUpdates] Restarting...");
+                    VMain.getInstance().getLogger().info("[UPDATE MACHINE] Every Plugin has successfully updated!");
+                    VMain.getInstance().getLogger().warn("[UPDATE MACHINE] Restarting...");
                     VMain.getInstance().getProxy().shutdown();
-                    
+    
                 } else {
-                    VMain.getInstance().getLogger().info("[YandereUpdates] You are up to date!");
+                    VMain.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
                 }
                 /*VMain.getInstance( ).getConfig( ).getBoolean( "web.pluginsConfigured" );*/
             } else if (res.getType().equals("success")){
-                VMain.getInstance().getLogger().info("[YandereUpdates] You are up to date!");
+                VMain.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
             } else {
-                VMain.getInstance().getLogger().warn("[YandereUpdates] There is something wrong with the server, please contact the AL TIO BARRAAAAAAAAAAAAAAAAAA");
+                VMain.getInstance().getLogger().warn("[UPDATE MACHINE] There is something wrong with the server, please contact the AL TIO BARRAAAAAAAAAAAAAAAAAA");
             }
         } catch (IOException | NullPointerException | ConcurrentModificationException ignored) {
+            ignored.printStackTrace();
         }
         
     }
@@ -133,14 +134,14 @@ public class ServerRepository extends IServerRepository {
     public void pluginFilesGarbageCollector(){
         List<String> pluginsToDelete = VMain.getConfig().getStringList("web.pluginsToDelete");
         if (pluginsToDelete.size() > 0){
-            VMain.getInstance().getLogger().info("[YandereUpdates] Found " + pluginsToDelete.size() + " old plugins files pending to be deleted!");
+            VMain.getInstance().getLogger().info("[UPDATE MACHINE] Found " + pluginsToDelete.size() + " old plugins files pending to be deleted!");
             for ( String path : pluginsToDelete ){
                 String plugin = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
-                VMain.getInstance().getLogger().info("[YandereUpdates] Deleting Plugin: " + plugin);
+                VMain.getInstance().getLogger().info("[UPDATE MACHINE] Deleting Plugin: " + plugin);
                 try {
                     FileUtils.forceDeleteOnExit(FileUtils.getFile(path));
                 } catch (IOException e) {
-                    VMain.getInstance().getLogger().severe("[YandereUpdates] ERROR The plugin" + plugin + " couldn't be deleted!");
+                    VMain.getInstance().getLogger().severe("[UPDATE MACHINE] ERROR The plugin" + plugin + " couldn't be deleted!");
                 }
             }
             VMain.getConfig().set("web.pluginsToDelete", null);
@@ -149,9 +150,9 @@ public class ServerRepository extends IServerRepository {
     
     
     public void updatePlugin(LyPlugin plugin, PluginContainer outdatedPlugin) throws IOException{
-        VMain.getInstance().getLogger().info("[YandereUpdates] Updating " + plugin.getName() + " to --> V: " + plugin.getVersion() + " ...");
-        
-        VMain.getInstance().getLogger().info("[YandereUpdates] STEP 1/5 -> Downloading the Plugin");
+        VMain.getInstance().getLogger().info("[UPDATE MACHINE] Updating " + plugin.getName() + " to --> V: " + plugin.getVersion() + " ...");
+    
+        VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 1/5 -> Downloading the Plugin");
         URL url = new URL(VMain.getConfig().get("web.url") + "/api/lydark/plugins/downloads/" + plugin.getUuid());
         HttpURLConnection connexion = (HttpURLConnection) url.openConnection();
         connexion.setRequestMethod("GET");
@@ -161,13 +162,13 @@ public class ServerRepository extends IServerRepository {
         Path pluginsPath = Paths.get("plugins");
         String pathTarget = new File(pluginsPath.toAbsolutePath() + "/" + plugin.getName() + "-" + plugin.getVersion() + ".jar").getAbsolutePath();
         try (InputStream in = connexion.getInputStream()) {
-            VMain.getInstance().getLogger().info("[YandereUpdates] STEP 2/5 -> Installing the Plugin");
+            VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 2/5 -> Installing the Plugin");
             Files.copy(in, Paths.get(pathTarget), StandardCopyOption.REPLACE_EXISTING);
         }
-        VMain.getInstance().getLogger().info("[YandereUpdates] STEP 3/5 -> Finding the old plugin file path");
+        VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 3/5 -> Finding the old plugin file path");
         String path = new File(pluginsPath.toAbsolutePath() + "\\" + outdatedPlugin.getDescription().getName().get() + "-" + outdatedPlugin.getDescription().getVersion().get() + ".jar").getAbsolutePath();
-        
-        VMain.getInstance().getLogger().info("[YandereUpdates] STEP 4/5 -> Deleting the file");
+    
+        VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 4/5 -> Deleting the file");
         try {
             String plugin_to_delete = outdatedPlugin.getDescription().getName().get() + "-" + outdatedPlugin.getDescription().getVersion().get() + ".jar";
             
@@ -186,25 +187,25 @@ public class ServerRepository extends IServerRepository {
             try (okhttp3.Response response = httpClient.newCall(request).execute()) {
                 
                 if (!response.isSuccessful()){
-                    VMain.getInstance().getLogger().severe("[YandereUpdates] STEP 5/5 -> Failed to delete the old plugin file: " + response);
-                    VMain.getInstance().getLogger().severe("[YandereUpdates] STEP 5/5 -> Failed to delete the old plugin file: " + plugin_to_delete);
-                    
+                    VMain.getInstance().getLogger().severe("[UPDATE MACHINE] STEP 5/5 -> Failed to delete the old plugin file: " + response);
+                    VMain.getInstance().getLogger().severe("[UPDATE MACHINE] STEP 5/5 -> Failed to delete the old plugin file: " + plugin_to_delete);
+    
                 }
                 System.out.println(response.body().string());
-                VMain.getInstance().getLogger().info("[YandereUpdates] STEP 5/5 -> Successfully deleted the old plugin file: " + plugin_to_delete);
+                VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 5/5 -> Successfully deleted the old plugin file: " + plugin_to_delete);
                 
                 // Get response body
             }
             
         } catch (IOException e) {
-            VMain.getInstance().getLogger().warn("[YandereUpdates] ERROR -> Couldn't delete the file, don't worry, it will be deleted when the server restarts!");
+            VMain.getInstance().getLogger().warn("[UPDATE MACHINE] ERROR -> Couldn't delete the file, don't worry, it will be deleted when the server restarts!");
             List<String> pluginsToDelete = VMain.getConfig().getStringList("web.pluginsToDelete");
             pluginsToDelete.add(path);
             VMain.getConfig().set("web.pluginsToDelete", pluginsToDelete);
             e.printStackTrace();
         }
         //FileUtils.forceDelete( file );
-        VMain.getInstance().getLogger().info("[YandereUpdates] The plugin " + plugin.getName() + " has been updated to V: " + plugin.getVersion());
+        VMain.getInstance().getLogger().info("[UPDATE MACHINE] The plugin " + plugin.getName() + " has been updated to V: " + plugin.getVersion());
         
         
     }

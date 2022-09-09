@@ -1,5 +1,7 @@
 package com.podcrash.commissions.yandere.core.spigot.server;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mongodb.client.model.Filters;
 import com.podcrash.commissions.yandere.core.common.data.plugin.LyPlugin;
 import com.podcrash.commissions.yandere.core.common.data.server.IServerRepository;
@@ -8,17 +10,22 @@ import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import net.lymarket.lyapi.common.Api;
 import net.lymarket.lyapi.common.db.MongoDBClient;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -26,24 +33,26 @@ import java.util.stream.Collectors;
 public class ServerRepository extends IServerRepository {
     private Server server;
     
-    public ServerRepository(MongoDBClient database, String tableName){
+    private final OkHttpClient httpClient = new OkHttpClient();
+    
+    public ServerRepository(MongoDBClient database, String tableName) {
         super(database, tableName);
         this.server = initializeServer();
     }
     
     @Override
-    public Server initializeServer(){
-        if (server == null){
+    public Server initializeServer() {
+        if(server == null){
             String serverID = Settings.WEB_UUID;
-            if (serverID == null){
-                Server server = new Server(Settings.PROXY_SERVER_NAME, Bukkit.getOnlinePlayers().size(), Settings.SERVER_TYPE);
+            if(serverID == null && Main.getInstance().getConfig().getConfigVersion() < 1.1){
+                Server server = new Server(getUUIDFromPterodactyl(), Settings.PROXY_SERVER_NAME, Bukkit.getOnlinePlayers().size(), Settings.SERVER_TYPE);
                 database.insertOne(TABLE_NAME, server);
                 this.server = server;
                 Main.getInstance().getConfig().set("web.uuid", server.getUuid().toString());
                 Main.getInstance().saveConfig();
             } else {
                 Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", serverID));
-                if (doc != null){
+                if(doc != null){
                     server = Api.getGson().fromJson(doc.toJson(), Server.class);
                     Main.getInstance().getConfig().set("web.uuid", server.getUuid().toString());
                     Main.getInstance().saveConfig();
@@ -59,41 +68,43 @@ public class ServerRepository extends IServerRepository {
     }
     
     @Override
-    public Server getServer(){
+    public Server getServer() {
         return server;
     }
     
     @Override
-    public boolean isServerRegistered(){
-        /*if ( server == null ) {
-            Server server = new Server( ServerType.getTypeFromServerName( Main.getInstance( ).getUtils( ).getServer( ) ) , Main.getInstance( ).getUtils( ).getServer( ) , )
-            database.insertOne( TABLE_NAME , server );
-            
-        }*/
-        
+    public boolean isServerRegistered() {
         return false;
     }
     
     @Override
-    public void checkForPluginsUpdates(){
+    public void checkForPluginsUpdates() {
         pluginFilesGarbageCollector();
         try {
-            Main.getInstance().getLogger().info("[YandereUpdates] Initializing the ~Updating Machine~ ...");
+            Main.getInstance().getLogger().info("[UPDATE MACHINE] Initializing the ~Updating Machine~ ...");
             
             StringBuilder resultado = new StringBuilder();
-            ArrayList<OutPlugin> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(plugin -> new OutPlugin(plugin.getName())).collect(Collectors.toCollection(ArrayList::new));
-            
+            //ArrayList<OutPlugin> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(plugin -> new OutPlugin(plugin.getName())).collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<OutPlugin> plugins = new ArrayList<>();
             Iterator<File> it = FileUtils.iterateFiles(new File(Main.getInstance().getDataFolder().getAbsolutePath().substring(0, Main.getInstance().getDataFolder().getAbsolutePath().length() - 11)), null, false);
+            ArrayList<LoadedPlugin> loadedPlugins = new ArrayList<>(); // estos son los plugins que están en el server.
             while (it.hasNext()) {
-                String pl = it.next().getName();
-                if (pl.endsWith(".jar")){
-                    plugins.add(new OutPlugin(pl.replace(".jar", "")));
+                File file = it.next();
+                String pl = file.getName();
+                if(pl.endsWith(".jar")){
+                    String pluginName = pl.replace(".jar", "").split("-")[0];
+                    Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+                    if(plugin != null){
+                        String hash = String.format(Locale.ROOT, "%032x", new BigInteger(1, MessageDigest.getInstance("MD5").digest(Files.readAllBytes(file.toPath()))));
+                        plugins.add(new OutPlugin(plugin.getName(), plugin.getName(), hash));
+                        loadedPlugins.add(new LoadedPlugin(plugin.getName(), plugin.getName(), hash, plugin.getDescription().getVersion()));
+                    } else {
+                        plugins.add(new OutPlugin(pluginName));
+                    }
                 }
             }
-            
+            System.out.println(loadedPlugins.stream().map(LoadedPlugin::getName).collect(Collectors.joining(", ")));
             String json = Api.getGson().toJson(plugins);
-            
-            OkHttpClient httpClient = new OkHttpClient();
             Request request = new Request.Builder()
                     .url(Settings.WEB_URL + "/api/lydark/server/checkPlugins")
                     .addHeader("User-Agent", "OkHttp Bot")
@@ -104,106 +115,105 @@ public class ServerRepository extends IServerRepository {
                     .build();
             
             try (okhttp3.Response rs = httpClient.newCall(request).execute()) {
-                if (!rs.isSuccessful()){
-                    Main.getInstance().getLogger().log(Level.SEVERE, "[YandereUpdates] ERROR -> Failed to Check the plugins.");
-                    Main.getInstance().getLogger().log(Level.SEVERE, "[YandereUpdates] ERROR MSG: " + rs);
+                if(!rs.isSuccessful()){
+                    Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Failed to Check the plugins.");
+                    Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR MSG: " + rs);
                     return;
                 }
-                
+    
                 BufferedReader rd = new BufferedReader(new InputStreamReader(rs.body().byteStream()));
                 String linea;
                 while ((linea = rd.readLine()) != null) {
                     resultado.append(linea);
                 }
                 rd.close();
-                
+    
                 String response = resultado.toString();
-                
+    
                 /*JsonElement jElement = new JsonParser( ).parse( resultado.toString( ) );*/
                 Response res = Api.getGson().fromJson(response, Response.class);
-                if (res.getType().equals("plugins")){
-                    ArrayList<LyPlugin> pluginsSaved = res.getPlugins(); // estos son los plugins que están en el servidor y a la vez en el mongo
-                    ArrayList<Plugin> loadedPlugins = new ArrayList<>(Arrays.asList(Bukkit.getPluginManager().getPlugins())); // estos son los plugins que están en el server.
-                    ArrayList<OutdatedPlugin> outdatedPlugins = loadedPlugins.stream().map(plugin -> new OutdatedPlugin(plugin.getName(), plugin.getDescription().getVersion())).collect(Collectors.toCollection(ArrayList::new));
-                    Iterator<File> it2 = FileUtils.iterateFiles(new File(Main.getInstance().getDataFolder().getAbsolutePath().substring(0, Main.getInstance().getDataFolder().getAbsolutePath().length() - 11)), null, false);
-                    while (it2.hasNext()) {
-                        String pl = it2.next().getName();
-                        if (pl.endsWith(".jar")){
-                            pluginsSaved.forEach(plugin -> {
-                                if (pl.contains(plugin.getName())){
-                                    outdatedPlugins.add(new OutdatedPlugin(plugin.getName(), plugin.getVersion()));
-                                    Main.getInstance().getLogger().info("[YandereUpdates] Found the plugin " + plugin.getName() + " V=" + plugin.getVersion() + " which matches with the DB, and locally stored as: " + pl);
+                if(res.getType().equals("plugins")){
+                    ArrayList<LyPlugin> pluginsFounded = res.getPlugins(); // estos son los plugins que están en el servidor y a la vez en el mongo
+                    HashMap<LyPlugin, LoadedPlugin> pluginsToUpdate = new HashMap<>();
+                    Main.getInstance().getLogger().warning("[UPDATE MACHINE] I have found " + pluginsFounded.size() + " plugins matches with the DB");
+                    Main.getInstance().getLogger().warning("[UPDATE MACHINE] Checking if there is something to update...");
+                    server.clearPlugins();
+                    try {
+                        for ( LyPlugin plugin : pluginsFounded ){
+                            server.addPlugin(plugin.getUuid());
+                            try {
+                                for ( LoadedPlugin pluginLoaded : loadedPlugins ){
+                                    if(plugin.getBukkitName().equalsIgnoreCase(pluginLoaded.getBukkitName())){
+                                        System.out.println("Comparando " + plugin.getBukkitName() + " hash " + pluginLoaded.getBukkitName());
+                                        System.out.println("---------- " + plugin.getHash() + " ------> " + pluginLoaded.getHash());
+                                        if(!plugin.getHash().equals(pluginLoaded.getHash()) || !plugin.getVersion().equals(pluginLoaded.getVersion())){
+                                            Main.getInstance().getLogger().log(Level.WARNING, "[UPDATE MACHINE] There is a new version of the plugin " + plugin.getBukkitName() + " (" + plugin.getVersion() + "#" + plugin.getHash());
+                                            pluginsToUpdate.put(plugin, pluginLoaded);
+                                        }
+                                    }
                                 }
-                            });
-                        }
-                    }
                     
-                    HashMap<LyPlugin, OutdatedPlugin> pluginsToUpdate = new HashMap<>();
-                    Main.getInstance().getLogger().warning("[YandereUpdates] I have found " + pluginsSaved.size() + " plugins matches with the DB");
-                    Main.getInstance().getLogger().warning("[YandereUpdates] Checking if there is something to update...");
-                    for ( LyPlugin plugin : pluginsSaved ){
-                        server.addPlugin(plugin.getUuid());
-                        for ( OutdatedPlugin pluginBukkit : outdatedPlugins ){
-                            if (plugin.getName().contains(pluginBukkit.getName()) ||
-                                    plugin.getBukkitName().contains(pluginBukkit.getName()) ||
-                                    plugin.getName().equalsIgnoreCase(pluginBukkit.getName())){
-                                if (!plugin.getVersion().equals(pluginBukkit.getVersion())){
-                                    Main.getInstance().getLogger().log(Level.WARNING, "[YandereUpdates] There is a new version for the plugin " + plugin.getName() + " (" + plugin.getVersion() + ")");
-                                    pluginsToUpdate.put(plugin, pluginBukkit);
-                                }
+                            } catch(Exception e) {
+                                e.printStackTrace();
                             }
+                
                         }
-                        
+                    } catch(Exception e) {
+                        e.printStackTrace();
                     }
                     saveServer();
-                    if (pluginsToUpdate.size() > 0){
-                        Main.getInstance().getLogger().warning("[YandereUpdates] I have found " + pluginsToUpdate.size() + " plugins to update");
-                        Main.getInstance().getLogger().warning("[YandereUpdates] Starting the update process...");
+                    if(pluginsToUpdate.size() > 0){
+                        Main.getInstance().getLogger().warning("[UPDATE MACHINE] I have found " + pluginsToUpdate.size() + " plugins to update");
+                        Main.getInstance().getLogger().warning("[UPDATE MACHINE] Starting the update process...");
                         pluginsToUpdate.forEach(this::updatePlugin);
-                        Main.getInstance().getLogger().warning("[YandereUpdates] Every Plugin has successfully updated!");
-                        Main.getInstance().getLogger().severe("[YandereUpdates] Restarting.");
-                        Main.getInstance().getLogger().severe("[YandereUpdates] Restarting..");
-                        Main.getInstance().getLogger().severe("[YandereUpdates] Restarting...");
-                        Main.getInstance().getLogger().severe("[YandereUpdates] Restarting....");
-                        Main.getInstance().getLogger().severe("[YandereUpdates] Restarting.....");
+                        Main.getInstance().getLogger().warning("[UPDATE MACHINE] Every Plugin has successfully updated!");
+                        Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting.");
+                        Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting..");
+                        Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting...");
+                        Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting....");
+                        Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting.....");
                         Bukkit.shutdown();
-                        
+            
                     } else {
-                        Main.getInstance().getLogger().info("[YandereUpdates] You are up to date!");
+                        Main.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
                     }
-                } else if (res.getType().equals("success")){
-                    Main.getInstance().getLogger().info("[YandereUpdates] You are up to date!");
+                } else if(res.getType().equals("success")){
+                    Main.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
                 } else {
-                    Main.getInstance().getLogger().severe("[YandereUpdates] There is something wrong with the server, please contact the AL TIO BARRAAAAAAAAAAAAAAAAAA");
+                    Main.getInstance().getLogger().severe("[UPDATE MACHINE] There is something wrong with the server, please contact the AL TIO BARRAAAAAAAAAAAAAAAAAA");
                 }
             }
-        } catch (IOException | NullPointerException | ConcurrentModificationException ignored) {
+        } catch(IOException ignored) {
+            ignored.printStackTrace();
+        } catch(NullPointerException ignored) {
+            ignored.printStackTrace();
+        } catch(ConcurrentModificationException ignored) {
+            ignored.printStackTrace();
+        } catch(NoSuchAlgorithmException ignored) {
+            ignored.printStackTrace();
         }
         
     }
     
-    public void pluginFilesGarbageCollector(){
+    public void pluginFilesGarbageCollector() {
         List<String> pluginsToDelete = Main.getInstance().getConfig().getStringList("web.pluginsToDelete");
-        if (pluginsToDelete.size() > 0){
-            Main.getInstance().getLogger().info("[YandereUpdates] Found " + pluginsToDelete.size() + " old plugins files pending to be deleted!");
+        if(pluginsToDelete.size() > 0){
+            Main.getInstance().getLogger().info("[UPDATE MACHINE] Found " + pluginsToDelete.size() + " old plugins files pending to be deleted!");
             for ( String path : pluginsToDelete ){
                 String plugin = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
-                Main.getInstance().getLogger().info("[YandereUpdates] Deleting Plugin: " + plugin);
+                Main.getInstance().getLogger().info("[UPDATE MACHINE] Deleting Plugin: " + plugin);
                 try {
                     FileUtils.forceDelete(FileUtils.getFile(path));
-                } catch (IOException ignored) {
-                    if (path.contains("LyBedWars")){
+                } catch(IOException ignored) {
+                    if(path.contains("LyBedWars")){
                         try {
                             FileUtils.forceDelete(FileUtils.getFile(path));
-                        } catch (IOException ignored1) {
+                        } catch(IOException ignored1) {
                         }
                     }
                 }
             }
             Main.getInstance().getConfig().set("web.pluginsToDelete", null);
-            Main.getInstance().saveConfig();
-        } else {
-            Main.getInstance().getConfig().set("web.pluginsToDelete", new ArrayList<String>());
             Main.getInstance().saveConfig();
         }
     }
@@ -215,9 +225,10 @@ public class ServerRepository extends IServerRepository {
         Main.getInstance().saveConfig();
     }
     
-    public void updatePlugin(LyPlugin plugin, OutdatedPlugin outdatedPlugin){
-        Main.getInstance().getLogger().info("[YandereUpdates] Updating " + plugin.getName() + " to -> V: " + plugin.getVersion() + " ...");
-        Main.getInstance().getLogger().info("[YandereUpdates] STEP 1/5 -> Downloading the Plugin");
+    public void updatePlugin(LyPlugin plugin, LoadedPlugin outdatedPlugin) {
+        boolean isMainPlugin = plugin.getBukkitName().equals("YandereCore");
+        Main.getInstance().getLogger().info("[UPDATE MACHINE] Updating " + plugin.getBukkitName() + "V:" + outdatedPlugin.getVersion() + " -> " + plugin.getVersion());
+        Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 1/5 -> Downloading the Plugin");
         try {
             OkHttpClient httpClient = new OkHttpClient();
             Request request = new Request.Builder()
@@ -229,97 +240,163 @@ public class ServerRepository extends IServerRepository {
                     .build();
             
             try (okhttp3.Response rs = httpClient.newCall(request).execute()) {
-                if (!rs.isSuccessful()){
-                    Main.getInstance().getLogger().log(Level.SEVERE, "[YandereUpdates] ERROR -> Failed to Download the plugin: " + plugin.getName() + " !");
-                    Main.getInstance().getLogger().log(Level.SEVERE, "[YandereUpdates] ERROR MSG: " + rs);
+                if(!rs.isSuccessful()){
+                    Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Failed to Download the plugin: " + plugin.getName() + " !");
+                    Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR MSG: " + rs);
                     return;
                 }
-                
-                String pathTarget = Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/" + plugin.getName() + "-" + plugin.getVersion() + ".jar";
-                try (InputStream in = rs.body().byteStream()) {
-                    Main.getInstance().getLogger().info("[YandereUpdates] STEP 2/5 -> Installing the Plugin");
-                    Files.copy(in, Paths.get(pathTarget), StandardCopyOption.REPLACE_EXISTING);
+                if(!isMainPlugin){
+                    Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 2/5 -> Disabling the Plugin " + outdatedPlugin.getBukkitName());
+                    Bukkit.getPluginManager().disablePlugin(Bukkit.getPluginManager().getPlugin(outdatedPlugin.getBukkitName()));
+                } else {
+                    Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 2/5 -> Main Plugin Update Found" + outdatedPlugin.getBukkitName());
+                    Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 2/5 -> Waiting to update all the plugins to update this one.");
                 }
+    
                 String path;
+                String plugin_to_delete = outdatedPlugin.getName() + "-" + outdatedPlugin.getVersion() + ".jar";
                 try {
                     path = Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/" + new File(Bukkit.getPluginManager().getPlugin(outdatedPlugin.getName()).getClass().getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
-                } catch (Exception e) {
-                    path = Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/" + outdatedPlugin.getName() + "-" + outdatedPlugin.getVersion() + ".jar";
+                } catch(Exception e) {
+                    path = Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/" + plugin_to_delete;
                 }
-                Main.getInstance().getLogger().info("[YandereUpdates] STEP 4/5 -> Disabling the plugin");
                 try {
-                    Bukkit.getPluginManager().getPlugin(plugin.getName()).getPluginLoader().disablePlugin(Bukkit.getPluginManager().getPlugin(plugin.getName()));
-                } catch (NullPointerException ignored) {
-                }
-                Main.getInstance().getLogger().info("[YandereUpdates] STEP 5/5 -> Deleting the file");
-                try {
-                    FileUtils.forceDelete(FileUtils.getFile(path));
-                } catch (IOException e) {
-                    Main.getInstance().getLogger().log(Level.SEVERE, "[YandereUpdates] ERROR -> Couldn't delete the file, don't worry, it will be deleted when the server restarts!");
-                    ArrayList<String> pluginsToDelete = (ArrayList<String>) Main.getInstance().getConfig().getStringList("web.pluginsToDelete");
-                    if (outdatedPlugin.getName().contains("bedwars-plugin") || outdatedPlugin.getName().contains("LyBedwars")){
-                        pluginsToDelete.add(Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/bedwars-plugin-" + outdatedPlugin.getVersion() + ".jar");
-                        pluginsToDelete.add(Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/bedwars-plugin-" + outdatedPlugin.getVersion() + ".jara");
-                        pluginsToDelete.add(Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/bedwars-plugin-" + outdatedPlugin.getVersion() + ".jarA");
+                    if(!isMainPlugin){
+                        Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 3/5 -> Deleting the file");
+                        FileUtils.forceDelete(FileUtils.getFile(path));
+                    } else {
+                        throw new IOException();
                     }
-                    pluginsToDelete.add(path);
-                    Main.getInstance().getConfig().set("web.pluginsToDelete", pluginsToDelete);
-                    Main.getInstance().saveConfig();
+                } catch(IOException e) {
+                    Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Couldn't delete the file with the normal way, trying with the panel api!");
+        
+                    RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "{\"root\":\"/plugins\",\"files\":[\"" + plugin_to_delete + "\"]}");
+                    //RequestBody formBody = new FormBody.Builder().add("root", "/plugins").add( "files" , "["+plugin_to_delete+"]" ).build();
+                    Request requestToDelete = new Request.Builder()
+                            .url("https://control.yanderecraft.com/api/client/servers/beff672a/files/delete")
+                            .addHeader("User-Agent", "OkHttp Bot")
+                            .addHeader("Accept", "application/json")
+                            .addHeader("Content-Type", "application/json; utf-8")
+                            .addHeader("Authorization", "Bearer ptlc_MW0HtBp99Ln1khIgRevctUK50pOGPwBWo4mAZysUelS")
+                            .post(body)
+                            .build();
+                    try (okhttp3.Response response = httpClient.newCall(requestToDelete).execute()) {
+                        if(response.isSuccessful()){
+                            Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 3/5 -> Successfully deleted the old plugin file: " + plugin_to_delete);
+                        } else {
+                            Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Couldn't delete the file, don't worry, it will be deleted when the server restarts!");
+                            ArrayList<String> pluginsToDelete = (ArrayList<String>) Main.getInstance().getConfig().getStringList("web.pluginsToDelete");
+                            pluginsToDelete.add(path);
+                            Main.getInstance().getConfig().set("web.pluginsToDelete", pluginsToDelete);
+                            Main.getInstance().saveConfig();
+                            FileUtils.forceDeleteOnExit(FileUtils.getFile(path));
+                        }
+                    }
                 }
-                //FileUtils.forceDelete( file );
-                Main.getInstance().getLogger().info("[YandereUpdates] The plugin " + plugin.getName() + " has been updated to V: " + plugin.getVersion());
-                /*} catch ( Exception e ) {
-                    Main.getInstance( ).getLogger( ).log( Level.SEVERE , "[YandereUpdates] ERROR -> Failed to find the old plugin file path!" );
-                    Main.getInstance( ).getLogger( ).log( Level.SEVERE , "[YandereUpdates] STEP 1/2 --> Moving the file to the /update folder " );
-                    FileUtils.moveFile( new File( pathTarget ) , Bukkit.getUpdateFolderFile( ));
-                    Main.getInstance( ).getLogger( ).log( Level.SEVERE , "[YandereUpdates] STEP 2/2 SUCCESS --> File Moved " );
-                    
-                }*/
+    
+                String pathTarget = Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/" + plugin.getName() + "-" + plugin.getVersion() + ".jar";
+                try (InputStream in = rs.body().byteStream()) {
+                    Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 4/5 -> Installing the Plugin");
+                    Files.copy(in, Paths.get(pathTarget), StandardCopyOption.REPLACE_EXISTING);
+                }
+                Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 5/5 The plugin " + plugin.getName() + " has been updated to V: " + plugin.getVersion());
+    
             }
             
-        } catch (IOException e) {
-            Main.getInstance().getLogger().log(Level.WARNING, "[YandereUpdates] ERROR -> Couldn't download the plugin");
+        } catch(IOException e) {
+            Main.getInstance().getLogger().log(Level.WARNING, "[UPDATE MACHINE] ERROR -> Couldn't download the plugin");
         }
         
+    }
+    
+    public UUID getUUIDFromPterodactyl() {
+        try {
+            OkHttpClient httpClient = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("https://control.yanderecraft.com/api/application/servers/external/" + Settings.PROXY_SERVER_NAME)
+                    .addHeader("Accept", "application/json")
+                    .addHeader("Content-Type", "application/json; utf-8")
+                    .addHeader("Authorization", "Bearer ptlc_MW0HtBp99Ln1khIgRevctUK50pOGPwBWo4mAZysUelS")
+                    .build();
+            try (okhttp3.Response rs = httpClient.newCall(request).execute()) {
+                if(!rs.isSuccessful()){
+                    Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Failed to get the UUID.");
+                    Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR MSG: " + rs);
+                    throw new IOException("Unexpected code " + rs);
+                }
+                StringBuilder resultado = new StringBuilder();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(rs.body().byteStream()));
+                String linea;
+                while ((linea = rd.readLine()) != null) {
+                    resultado.append(linea);
+                }
+                rd.close();
+                String response = resultado.toString();
+                JsonObject jObject = new JsonParser().parse(response).getAsJsonObject();
+                return UUID.fromString(jObject.get("attributes").getAsJsonObject().get("uuid").getAsString());
+                
+            }
+        } catch(IOException | NullPointerException | ConcurrentModificationException ignored) {
+        }
+        return null;
     }
     
     private static class OutPlugin {
         private final String name;
         private final String bukkitName;
+        private final String hash;
         
-        public OutPlugin(String name, String bukkitName){
+        public OutPlugin(String name, String bukkitName, String hash) {
             this.name = name;
             this.bukkitName = bukkitName;
+            this.hash = hash;
         }
         
-        public OutPlugin(String name){
+        public OutPlugin(String name) {
             this.name = name;
             this.bukkitName = name;
+            this.hash = null;
         }
         
-        public String getName(){
+        public String getName() {
             return name;
         }
         
-        public String getBukkitName(){
+        public String getBukkitName() {
             return bukkitName;
+        }
+        
+        public String getHash() {
+            return hash;
         }
     }
     
-    private static class OutdatedPlugin {
+    private static class LoadedPlugin {
         private final String name;
+        private final String bukkitName;
+        private final String hash;
         private final String version;
         
-        public OutdatedPlugin(String name, String version){
+        public LoadedPlugin(String name, String bukkitName, String hash, String version) {
             this.name = name;
+            this.bukkitName = bukkitName;
+            this.hash = hash;
             this.version = version;
         }
         
-        public String getName(){
+        public String getName() {
             return name;
         }
         
-        public String getVersion(){
+        public String getBukkitName() {
+            return bukkitName;
+        }
+        
+        public String getHash() {
+            return hash;
+        }
+        
+        public String getVersion() {
             return version;
         }
     }
@@ -328,17 +405,17 @@ public class ServerRepository extends IServerRepository {
     private static class Response {
         private final String type;
         private final ArrayList<LyPlugin> registeredPlugins;
-        
-        public Response(String type, ArrayList<LyPlugin> registeredPlugins){
+    
+        public Response(String type, ArrayList<LyPlugin> registeredPlugins) {
             this.type = type;
             this.registeredPlugins = registeredPlugins;
         }
-        
-        public String getType(){
+    
+        public String getType() {
             return type;
         }
-        
-        public ArrayList<LyPlugin> getPlugins(){
+    
+        public ArrayList<LyPlugin> getPlugins() {
             return registeredPlugins;
         }
     }
