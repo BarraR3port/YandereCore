@@ -15,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,7 +27,7 @@ public abstract class MainEvents implements Listener {
     
     private final LinkedList<String> swearList = new LinkedList<>();
     
-    public MainEvents(){
+    public MainEvents() {
         Collections.addAll(swearList,
                 "puta", "maricon", "maricón", "puto", "pendejo",
                 "pendeja", "culiao", "qlo", "kuliao", "weon", "scw", "aweonao",
@@ -43,17 +45,16 @@ public abstract class MainEvents implements Listener {
     @EventHandler
     public abstract void onPlayerTeleport(PlayerTeleportEvent e);
     
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent e){
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent e) {
         Main.getInstance().getPlayers().getOrCreatePlayer(e.getName(), e.getUniqueId(), String.valueOf(e.getAddress()).replace("/", ""));
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerAsyncPlayerChatEvent(AsyncPlayerChatEvent e){
-        
-        if (!e.getPlayer().hasPermission("yandere.chat.swear.bypass")){
+    public void onPlayerAsyncPlayerChatEvent(AsyncPlayerChatEvent e) {
+        if(!e.getPlayer().hasPermission("yandere.chat.swear.bypass")){
             for ( String word : e.getMessage().split(" ") ){
-                if (swearList.contains(word.toLowerCase())){
+                if(swearList.contains(word.toLowerCase())){
                     Utils.sendMessage(e.getPlayer(), "&cHey! Cuida tu lenguaje!");
                     e.setCancelled(true);
                     return;
@@ -61,15 +62,15 @@ public abstract class MainEvents implements Listener {
             }
         }
         
-        if (!e.getPlayer().hasPermission("yandere.chat.fast")){
+        if(!e.getPlayer().hasPermission("yandere.chat.fast")){
             Log log = Main.getInstance().getLogs().getLastPlayerMessageLog(e.getPlayer().getName());
-            if (log != null){
-                if (Main.getInstance().getCoolDownManager().hasCoolDown(e.getPlayer().getUniqueId(), CoolDownType.MSG)){
+            if(log != null){
+                if(Main.getInstance().getCoolDownManager().hasCoolDown(e.getPlayer().getUniqueId(), CoolDownType.MSG)){
                     CoolDown coolDown = Main.getInstance().getCoolDownManager().getCoolDown(e.getPlayer().getUniqueId(), CoolDownType.MSG);
                     e.getPlayer().sendMessage(Utils.format(coolDown.getMessage()));
                     e.setCancelled(true);
                     return;
-                } else if (log.getMsg().equalsIgnoreCase(e.getMessage()) || log.getMsg().startsWith(e.getMessage()) || e.getMessage().startsWith(log.getMsg())){
+                } else if(log.getMsg().equalsIgnoreCase(e.getMessage()) || log.getMsg().startsWith(e.getMessage()) || e.getMessage().startsWith(log.getMsg())){
                     e.getPlayer().sendMessage(Utils.format("&cNo puedes repetir el mismo mensaje!"));
                     e.setCancelled(true);
                     return;
@@ -78,8 +79,8 @@ public abstract class MainEvents implements Listener {
             }
         }
         
-        if (subPlayerChatEvent(e)){
-            if (!e.getPlayer().hasPermission("yandere.chat.fast")){
+        if(subPlayerChatEvent(e)){
+            if(!e.getPlayer().hasPermission("yandere.chat.fast")){
                 Main.getInstance().getCoolDownManager().addCoolDown(new MsgCoolDown(e.getPlayer().getUniqueId(), 3));
             }
         } else {
@@ -89,8 +90,8 @@ public abstract class MainEvents implements Listener {
         
     }
     
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PlayerJoinEvent e){
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent e) {
         e.setJoinMessage("");
         e.getPlayer().getInventory().setHeldItemSlot(0);
         e.getPlayer().updateInventory();
@@ -98,40 +99,72 @@ public abstract class MainEvents implements Listener {
         subPlayerJoinEvent(e);
     }
     
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerQuitEvent(PlayerQuitEvent e){
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerQuitEvent(PlayerQuitEvent e) {
         e.setQuitMessage("");
         Main.getInstance().getPlayers().unloadPlayer(e.getPlayer().getUniqueId());
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getSocket().sendUpdate(), 20L);
     }
     
-    @EventHandler
-    public void onPlayerInteractInInventory(InventoryClickEvent e){
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerInteractInInventory(InventoryClickEvent e) {
         ItemStack item = e.getCurrentItem();
-        if (item == null) return;
-        if (item.getType().equals(Material.AIR)) return;
-        if (NBTItem.hasTag(item, "item-prop")){
+        if(item == null) return;
+        if(item.getType().equals(Material.AIR)) return;
+        if(NBTItem.hasTag(item, "item-prop")){
             String prop = NBTItem.getTag(item, "item-prop");
-            switch(prop){
+            switch(prop) {
                 case "lobby-menu":
                 case "no-move":
                 case "multi-lobby-menu":
                     e.setCancelled(true);
             }
         }
-    
     }
     
-    @EventHandler
-    public void onPlayerCommand(PlayerCommandPreprocessEvent e){
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerInteractInInventory(InventoryDragEvent e) {
+        ItemStack item = e.getCursor();
+        ItemStack itemOld = e.getOldCursor();
+        if(item == null) return;
+        if(itemOld == null) return;
+        if(NBTItem.hasTag(item, "item-prop") || NBTItem.hasTag(itemOld, "item-prop")){
+            String prop = NBTItem.getTag(item, "item-prop");
+            switch(prop) {
+                case "lobby-menu":
+                case "no-move":
+                case "multi-lobby-menu":
+                    e.setCancelled(true);
+            }
+        }
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
         Main.getInstance().getLogs().createLog(LogType.COMMAND, Settings.PROXY_SERVER_NAME, e.getMessage(), e.getPlayer().getName());
     }
     
-    @EventHandler
-    public void onKick(PlayerKickEvent e){
-        if (!e.getReason().equals("disconnect.spam"))
+    @EventHandler(ignoreCancelled = true)
+    public void onKick(PlayerKickEvent e) {
+        if(!e.getReason().equals("disconnect.spam"))
             return;
         e.setCancelled(true);
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerMoveItem(InventoryMoveItemEvent e) {
+        ItemStack item = e.getItem();
+        if(item == null) return;
+        if(item.getType().equals(Material.AIR)) return;
+        if(NBTItem.hasTag(item, "item-prop")){
+            String prop = NBTItem.getTag(item, "item-prop");
+            switch(prop) {
+                case "lobby-menu":
+                case "no-move":
+                case "multi-lobby-menu":
+                    e.setCancelled(true);
+            }
+        }
     }
     
 }

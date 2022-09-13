@@ -21,7 +21,7 @@ public class CoinsCommand implements ILyCommand {
         if (context.getArg(0).equalsIgnoreCase("add") || context.getArg(0).equalsIgnoreCase("remove") || context.getArg(0).equalsIgnoreCase("get") || context.getArg(0).equalsIgnoreCase("set")){
             
             try {
-                User user = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(1));
+                User user = Main.getInstance().getPlayers().getCachedPlayer(context.getArg(1));
                 
                 if (context.getArg(0).equalsIgnoreCase("get")){
                     final HashMap<String, String> replacements = new HashMap<>();

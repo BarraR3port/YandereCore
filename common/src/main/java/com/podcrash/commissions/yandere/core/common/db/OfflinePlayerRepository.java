@@ -17,9 +17,9 @@ public final class OfflinePlayerRepository extends IPlayerRepository {
     
     
     @Override
-    public User getLocalStoredPlayer(String name){
+    public User getCachedPlayer(String name) {
         for ( User user : list.values() ){
-            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+            if(user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
                 return user;
             }
         }
@@ -27,7 +27,7 @@ public final class OfflinePlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public User getLocalStoredPlayer(UUID uuid){
+    public User getCachedPlayer(UUID uuid) {
         return list.get(uuid);
     }
     
@@ -43,17 +43,17 @@ public final class OfflinePlayerRepository extends IPlayerRepository {
     
     @Override
     public User getPlayer(String name){
-        return getLocalStoredPlayer(name);
+        return getCachedPlayer(name);
     }
     
     @Override
     public User getPlayer(UUID uuid){
-        return getLocalStoredPlayer(uuid);
+        return getCachedPlayer(uuid);
     }
     
     @Override
     public User getPlayer(UUID uuid, String name){
-        return getLocalStoredPlayer(uuid);
+        return getCachedPlayer(uuid);
     }
     
     @Override
@@ -92,7 +92,7 @@ public final class OfflinePlayerRepository extends IPlayerRepository {
     
     @Override
     public HashMap<String, String> getProperties(User user){
-        return getLocalStoredPlayer(user.getUUID()).getProperties();
+        return getCachedPlayer(user.getUUID()).getProperties();
     }
     
     @Override

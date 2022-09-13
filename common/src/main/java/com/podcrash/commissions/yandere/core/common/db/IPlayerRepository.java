@@ -21,8 +21,8 @@ public abstract class IPlayerRepository extends MongoDB<UUID, User> {
     public void trashFinder(){
     }
     
-    public User getLocalStoredPlayer(UUID uuid){
-        if (list.containsKey(uuid)){
+    public User getCachedPlayer(UUID uuid) {
+        if(list.containsKey(uuid)){
             return list.get(uuid);
         } else {
             User user = getPlayer(uuid);
@@ -31,7 +31,7 @@ public abstract class IPlayerRepository extends MongoDB<UUID, User> {
         }
     }
     
-    public abstract User getLocalStoredPlayer(String name);
+    public abstract User getCachedPlayer(String name);
     
     public abstract UUID getUUIDByName(String name);
     
@@ -51,7 +51,7 @@ public abstract class IPlayerRepository extends MongoDB<UUID, User> {
     }
     
     public void unloadPlayer(UUID uuid){
-        User user = getLocalStoredPlayer(uuid);
+        User user = getCachedPlayer(uuid);
         database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()), user);
         list.remove(uuid);
     
@@ -66,7 +66,7 @@ public abstract class IPlayerRepository extends MongoDB<UUID, User> {
     }
     
     public User savePlayer(UUID uuid){
-        final User user = getLocalStoredPlayer(uuid);
+        final User user = getCachedPlayer(uuid);
         database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()), user);
         return user;
     }

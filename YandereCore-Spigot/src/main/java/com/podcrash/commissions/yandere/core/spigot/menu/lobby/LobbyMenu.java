@@ -70,9 +70,9 @@ public class LobbyMenu extends UpdatableMenu {
     @Override
     public void setMenuItems(){
     
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(targetUserUUID);
+        User user = Main.getInstance().getPlayers().getCachedPlayer(targetUserUUID);
         if (user == null){
-            user = Main.getInstance().getPlayers().getLocalStoredPlayer(getOwner().getName());
+            user = Main.getInstance().getPlayers().getCachedPlayer(getOwner().getName());
             user.setUUID(getOwner().getUniqueId());
             Main.getInstance().getPlayers().savePlayer(user);
         }

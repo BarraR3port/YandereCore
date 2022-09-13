@@ -526,13 +526,6 @@
             </exclusions>
         </dependency>
 
-        <!--<dependency>
-            <groupId>io.github.Leonardo0013YT.UltraSkyWars.UltraSkyWars</groupId>
-            <artifactId>UltraSkyWars</artifactId>
-            <version>7.1.0</version>
-            <scope>system</scope>
-            <systemPath>/home/barra/Desktop/apis/UltraSkyWars.jar</systemPath>
-        </dependency>-->
         <dependency>
             <groupId>com.podcrash.commissions.skywars</groupId>
             <artifactId>UltraSkyWars-Spigot</artifactId>
@@ -540,22 +533,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--<dependency>
-            <groupId>io.github.Leonardo0013YT.UltraSkyWars.UltraSkyWars</groupId>
-            <artifactId>UltraSkyWars-EloRanks</artifactId>
-            <version>7.1.0</version>
-            <scope>system</scope>
-            <systemPath>/home/barra/Desktop/apis/UltraSkyWars-EloRanks.jar</systemPath>
-        </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
-            <groupId>io.github.Leonardo0013YT.UltraSkyWars</groupId>
-            <artifactId>UltraSkyWars-Setup</artifactId>
-            <version>3.4.6</version>
-            <scope>system</scope>
-            <systemPath>/home/barra/Desktop/apis/USW-Injections/UltraSkyWars-Setup.jar
-            </systemPath>
-        </dependency>-->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>ga.strikepractice</groupId>
@@ -568,9 +551,15 @@
         <dependency>
             <groupId>be.isach.ultracosmetics</groupId>
             <artifactId>UltraCosmetics</artifactId>
-            <version>2.9-DEV</version>
+            <version>2.9-DEV-b7</version>
             <scope>system</scope>
-            <systemPath>/home/barra/Desktop/apis/UltraCosmetics-2.9-DEV-b5.jar</systemPath>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+            <systemPath>/home/barra/Desktop/apis/UltraCosmetics-2.9-DEV-b7.jar</systemPath>
 
         </dependency>
 

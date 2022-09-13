@@ -138,7 +138,7 @@ public class AdminMenu extends UpdatableMenu {
     
     @Override
     public void onReOpen(){
-        target = Main.getInstance().getPlayers().getLocalStoredPlayer(target.getUUID());
+        target = Main.getInstance().getPlayers().getCachedPlayer(target.getUUID());
     }
     
     

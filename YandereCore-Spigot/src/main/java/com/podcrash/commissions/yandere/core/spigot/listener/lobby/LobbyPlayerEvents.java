@@ -53,7 +53,7 @@ public abstract class LobbyPlayerEvents extends MainEvents {
         try {
             final World world = e.getTo().getWorld();
             final UUID playerUUID = e.getPlayer().getUniqueId();
-            final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
+            final User user = Main.getInstance().getPlayers().getCachedPlayer(playerUUID);
             final Location loc = e.getTo();
             user.setLastLocation(new Loc(Settings.PROXY_SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
@@ -92,8 +92,8 @@ public abstract class LobbyPlayerEvents extends MainEvents {
                 return;
             }
             Main.getInstance().getCoolDownManager().removeCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
-            
-            User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+    
+            User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
             PlayerVisibility currentPlayerVisibility = user.getPlayerVisibility();
             user.nextPlayerVisibility();
             Main.getInstance().getPlayers().savePlayer(user);
@@ -101,7 +101,7 @@ public abstract class LobbyPlayerEvents extends MainEvents {
                 if (player.getUniqueId().equals(p.getUniqueId())) continue;
                 switch(currentPlayerVisibility){
                     case ALL:
-                        final User spigotUser = Main.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
+                        final User spigotUser = Main.getInstance().getPlayers().getCachedPlayer(player.getUniqueId());
                         if (spigotUser.getRank() == Rank.USUARIO){
                             p.hidePlayer(player);
                         }

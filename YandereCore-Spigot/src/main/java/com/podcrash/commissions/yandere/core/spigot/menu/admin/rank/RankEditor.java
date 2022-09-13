@@ -68,7 +68,7 @@ public class RankEditor extends UpdatableMenu {
     
     @Override
     public void onReOpen(){
-        this.user = Main.getInstance().getPlayers().getLocalStoredPlayer(user.getUUID());
+        this.user = Main.getInstance().getPlayers().getCachedPlayer(user.getUUID());
     }
     
     @Override

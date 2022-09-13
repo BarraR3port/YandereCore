@@ -25,7 +25,7 @@ public final class Menu implements ILyCommand {
             if (context.getArgs().length == 1 && player.hasPermission("yandere.menu.other")){
                 final String userName = context.getArg(0);
                 try {
-                    final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(userName);
+                    final User user = Main.getInstance().getPlayers().getCachedPlayer(userName);
                     new LobbyMenu(LyApi.getPlayerMenuUtility(player), user.getUUID()).open();
                 } catch (UserNotFoundException e) {
                     Main.getLang().sendErrorMsg(player, "player.not-found", "player", userName);

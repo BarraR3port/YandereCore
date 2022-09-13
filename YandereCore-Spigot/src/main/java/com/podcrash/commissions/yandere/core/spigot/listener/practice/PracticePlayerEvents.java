@@ -43,7 +43,7 @@ public final class PracticePlayerEvents extends MainEvents {
         try {
             final World world = e.getTo().getWorld();
             final UUID playerUUID = e.getPlayer().getUniqueId();
-            final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(playerUUID);
+            final User user = Main.getInstance().getPlayers().getCachedPlayer(playerUUID);
             final Location loc = e.getTo();
             user.setLastLocation(new Loc(Settings.PROXY_SERVER_NAME, world.getName(), loc.getX(), loc.getY(), loc.getZ()));
             Main.getInstance().getPlayers().savePlayer(user);
@@ -61,7 +61,7 @@ public final class PracticePlayerEvents extends MainEvents {
         Player p = event.getPlayer();
         String message = event.getMessage();
     
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+        User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         boolean color = p.hasPermission("yandere.chat.color");
         event.setCancelled(true);
     

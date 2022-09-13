@@ -10,7 +10,6 @@ import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -29,7 +28,7 @@ public class MainLobbyPlayerEvents extends LobbyPlayerEvents {
         Player p = event.getPlayer();
         String message = event.getMessage();
         
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+        User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         boolean color = p.hasPermission("yandere.chat.color");
         
         event.setCancelled(true);
@@ -84,38 +83,39 @@ public class MainLobbyPlayerEvents extends LobbyPlayerEvents {
         return false;
     }
     
-    public void subPlayerJoinEvent(PlayerJoinEvent e){
+    public void subPlayerJoinEvent(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        p.setFoodLevel(20);
-        p.setFireTicks(0);
-        p.setExp(0);
-        p.setLevel(0);
         try {
             p.teleport(Settings.SPAWN_LOCATION);
-        } catch (NullPointerException | IllegalArgumentException ex) {
+        } catch(NullPointerException | IllegalArgumentException ex) {
             p.teleport(p.getWorld().getSpawnLocation());
         }
         Items.setLobbyItems(p);
-        p.setHealth(20);
-        p.setSaturation(20F);
-        p.setGameMode(GameMode.ADVENTURE);
-        
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
-        if (user.getRank() != Rank.USUARIO){
+        User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
+        boolean hasRank = user.getRank() != Rank.USUARIO;
+        String joinMsg = "";
+        if(hasRank){
             p.setAllowFlight(true);
+            joinMsg = " &8&l»" + user.getRank().getTabPrefix() + p.getName() + " &fse ha unido al servidor!";
         }
         PlayerVisibility visibility = user.getPlayerVisibility();
         for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
-            if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
-            User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
+            if(targetPlayer.getUniqueId().equals(p.getUniqueId())){
+                p.sendMessage(Utils.format(joinMsg));
+                continue;
+            }
+            User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
+            if(hasRank && targetUser.getOption("announcements-join-others")){
+                targetPlayer.sendMessage(Utils.format(joinMsg));
+            }
             PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
             Rank targetRank = targetUser.getRank();
-            switch(visibility){
+            switch(visibility) {
                 case ALL:
                     p.showPlayer(targetPlayer);
                     break;
                 case RANKS:
-                    if (targetRank != Rank.USUARIO){
+                    if(targetRank != Rank.USUARIO){
                         p.showPlayer(targetPlayer);
                     } else {
                         p.hidePlayer(targetPlayer);

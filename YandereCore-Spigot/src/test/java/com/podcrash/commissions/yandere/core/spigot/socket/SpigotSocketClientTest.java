@@ -7,13 +7,11 @@ import net.lymarket.lyapi.common.db.MongoDBClient;
 import net.lymarket.lyapi.spigot.LyApi;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
 
 public class SpigotSocketClientTest {
     
-    
-    public void test(){
+    public void test() {
         
         final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
         PlayerRepository players = new PlayerRepository(mongo, "players");
@@ -24,7 +22,7 @@ public class SpigotSocketClientTest {
     }
     
     
-    public void test2(){
+    public void test2() {
         final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
         PlayerRepository players = new PlayerRepository(mongo, "players");
         
@@ -36,19 +34,49 @@ public class SpigotSocketClientTest {
     }
     
     @Test
-    public void test3(){
+    public void test3() {
         String textToTranslate = "&c&l&Hola cómo estás=?";
         ArrayList<String> toRemove = new ArrayList<>();
         for ( int i = 0; i < textToTranslate.length(); i++ ){
-            if (textToTranslate.charAt(i) == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(textToTranslate.charAt(i + 1)) > -1){
+            if(textToTranslate.charAt(i) == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(textToTranslate.charAt(i + 1)) > -1){
                 toRemove.add(String.valueOf(textToTranslate.subSequence(i, i + 2)));
             }
         }
         for ( String s : toRemove ){
             textToTranslate = textToTranslate.replace(s, "");
         }
-    
+        
         System.out.println(textToTranslate);
-    
+        
     }
+    
+    @Test
+    public void test4() {
+        Randomizer random = new Randomizer();
+        List<Integer> list = Arrays.asList(random.getRandomizer());
+        Collections.shuffle(list);
+        System.out.println(list);
+        
+        
+    }
+    
+    private static class Hola {
+        private final ArrayList<String> list = new ArrayList<>();
+        
+        public Hola() {
+            list.add("test");
+            list.add("test2");
+            list.add("test3");
+        }
+        
+        public ArrayList<String> getList() {
+            return list;
+        }
+        
+        public void addToList(List<String> list) {
+            list.add("test4");
+        }
+    }
+    
+    
 }

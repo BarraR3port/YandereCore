@@ -31,7 +31,6 @@ import net.lymarket.lyapi.spigot.utils.NBTItem;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
@@ -64,7 +63,6 @@ public final class SWPlayerEvents extends MainEvents {
     }
     
     
-    @EventHandler()
     public boolean subPlayerChatEvent(AsyncPlayerChatEvent event) {
         Player p = event.getPlayer();
         String message = event.getMessage();
@@ -203,57 +201,65 @@ public final class SWPlayerEvents extends MainEvents {
             if(this.plugin.getCm().isMainLobby()){
                 World w = p.getLocation().getWorld();
                 if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
-                    User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+                    Items.setSkyWarsLobbyItems(p);
+                    User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
                     if(user.getRank() != Rank.USUARIO){
                         p.setAllowFlight(true);
                     }
-                    p.setFoodLevel(20);
-                    p.setFireTicks(0);
-                    p.setExp(0);
-                    p.setLevel(0);
-                    Items.setSkyWarsLobbyItems(p);
-                    p.setHealth(20);
-                    p.setSaturation(20F);
-                    p.setGameMode(GameMode.ADVENTURE);
-                    
+    
                     PlayerVisibility visibility = user.getPlayerVisibility();
-                    
+    
                     for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
                         if(targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
-                        User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
+                        User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
                         PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
                         Rank targetRank = targetUser.getRank();
                         switch(visibility) {
                             case ALL:
-                                p.showPlayer(targetPlayer);
+                                if(targetPlayer.getWorld().equals(p.getWorld())){
+                                    p.showPlayer(targetPlayer);
+                                }
                                 break;
                             case RANKS:
                                 if(targetRank != Rank.USUARIO){
-                                    p.showPlayer(targetPlayer);
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        p.showPlayer(targetPlayer);
+                                    }
                                 } else {
-                                    p.hidePlayer(targetPlayer);
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        p.hidePlayer(targetPlayer);
+                                    }
                                 }
                                 break;
                             default:
-                                p.hidePlayer(targetPlayer);
+                                if(targetPlayer.getWorld().equals(p.getWorld())){
+                                    p.hidePlayer(targetPlayer);
+                                }
                                 break;
                         }
                         
                         switch(targetVisibility) {
                             case ALL: {
-                                targetPlayer.showPlayer(p);
+                                if(targetPlayer.getWorld().equals(p.getWorld()))
+                                    targetPlayer.showPlayer(p);
                                 break;
                             }
                             case RANKS: {
                                 if(targetRank != Rank.USUARIO){
-                                    targetPlayer.showPlayer(p);
+    
+                                    if(targetPlayer.getWorld().equals(p.getWorld()))
+                                        targetPlayer.showPlayer(p);
                                 } else {
-                                    targetPlayer.hidePlayer(p);
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        targetPlayer.hidePlayer(p);
+                                    }
                                 }
                                 break;
                             }
                             default: {
-                                targetPlayer.hidePlayer(p);
+                                if(targetPlayer.getWorld().equals(p.getWorld())){
+                                    targetPlayer.hidePlayer(p);
+                                }
                                 break;
                             }
                         }
@@ -271,65 +277,161 @@ public final class SWPlayerEvents extends MainEvents {
             World w = p.getLocation().getWorld();
             try {
                 if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
-                    User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+                    Items.setSkyWarsLobbyItems(p);
+                    User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
                     if(user.getRank() != Rank.USUARIO){
                         p.setAllowFlight(true);
                     }
-                    
-                    p.setFoodLevel(20);
-                    p.setFireTicks(0);
-                    p.setExp(0);
-                    p.setLevel(0);
-                    Items.setSkyWarsLobbyItems(p);
-                    p.setHealth(20);
-                    p.setSaturation(20F);
-                    p.setGameMode(GameMode.ADVENTURE);
                     
                     
                     PlayerVisibility visibility = user.getPlayerVisibility();
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                         for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
                             if(targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
-                            User targetUser = Main.getInstance().getPlayers().getLocalStoredPlayer(targetPlayer.getUniqueId());
+                            User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
                             PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
                             Rank targetRank = targetUser.getRank();
                             switch(visibility) {
                                 case ALL:
-                                    p.showPlayer(targetPlayer);
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        p.showPlayer(targetPlayer);
+                                    }
                                     break;
                                 case RANKS:
                                     if(targetRank != Rank.USUARIO){
-                                        p.showPlayer(targetPlayer);
+                                        if(targetPlayer.getWorld().equals(p.getWorld())){
+                                            p.showPlayer(targetPlayer);
+                                        }
                                     } else {
-                                        p.hidePlayer(targetPlayer);
+                                        if(targetPlayer.getWorld().equals(p.getWorld())){
+                                            p.hidePlayer(targetPlayer);
+                                        }
                                     }
                                     break;
                                 default:
-                                    p.hidePlayer(targetPlayer);
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        p.hidePlayer(targetPlayer);
+                                    }
                                     break;
                             }
-    
+                            
                             switch(targetVisibility) {
                                 case ALL: {
-                                    targetPlayer.showPlayer(p);
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        targetPlayer.showPlayer(p);
+                                    }
                                     break;
                                 }
                                 case RANKS: {
                                     if(user.getRank() != Rank.USUARIO){
-                                        targetPlayer.showPlayer(p);
+                                        if(targetPlayer.getWorld().equals(p.getWorld())){
+                                            targetPlayer.showPlayer(p);
+                                        }
                                     } else {
-                                        targetPlayer.hidePlayer(p);
+                                        if(targetPlayer.getWorld().equals(p.getWorld())){
+                                            targetPlayer.hidePlayer(p);
+                                        }
                                     }
                                     break;
                                 }
                                 default: {
-                                    targetPlayer.hidePlayer(p);
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        targetPlayer.hidePlayer(p);
+                                    }
                                     break;
                                 }
                             }
-    
+                            
                         }
+                        
+                    }, 1L);
+                }
+            } catch(UserNotFoundException ignored) {
+            }
+        }
+    }
     
+    @EventHandler
+    public void onPlayerChangeWorld(PlayerChangedWorldEvent e) {
+        Player p = e.getPlayer();
+        for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
+            if(p.equals(targetPlayer)) continue;
+            if(p.getWorld().equals(targetPlayer.getWorld())){
+                p.showPlayer(targetPlayer);
+            } else {
+                p.hidePlayer(targetPlayer);
+            }
+        }
+        if(this.plugin.getCm().isMainLobby()){
+            World w = p.getLocation().getWorld();
+            try {
+                if(w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                    Items.setSkyWarsLobbyItems(p);
+                    User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
+                    if(user.getRank() != Rank.USUARIO){
+                        p.setAllowFlight(true);
+                    }
+                    
+                    PlayerVisibility visibility = user.getPlayerVisibility();
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+                        for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
+                            if(targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
+                            User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
+                            PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
+                            Rank targetRank = targetUser.getRank();
+                            switch(visibility) {
+                                case ALL:
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        p.showPlayer(targetPlayer);
+                                    }
+                                    break;
+                                case RANKS:
+                                    if(targetRank != Rank.USUARIO){
+                                        if(targetPlayer.getWorld().equals(p.getWorld())){
+                                            p.showPlayer(targetPlayer);
+                                        }
+                                    } else {
+                                        if(targetPlayer.getWorld().equals(p.getWorld())){
+                                            p.hidePlayer(targetPlayer);
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        p.hidePlayer(targetPlayer);
+                                    }
+                                    break;
+                            }
+                            
+                            switch(targetVisibility) {
+                                case ALL: {
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        targetPlayer.showPlayer(p);
+                                    }
+                                    break;
+                                }
+                                case RANKS: {
+                                    if(user.getRank() != Rank.USUARIO){
+                                        if(targetPlayer.getWorld().equals(p.getWorld())){
+                                            targetPlayer.showPlayer(p);
+                                        }
+                                    } else {
+                                        if(targetPlayer.getWorld().equals(p.getWorld())){
+                                            targetPlayer.hidePlayer(p);
+                                        }
+                                    }
+                                    break;
+                                }
+                                default: {
+                                    if(targetPlayer.getWorld().equals(p.getWorld())){
+                                        targetPlayer.hidePlayer(p);
+                                    }
+                                    break;
+                                }
+                            }
+                            
+                        }
+                        
                     }, 1L);
                 }
             } catch(UserNotFoundException ignored) {
@@ -344,6 +446,9 @@ public final class SWPlayerEvents extends MainEvents {
         if(item.getType() == Material.AIR) return;
         Player p = e.getPlayer();
         if(this.plugin.getCm().isMainLobby()){
+            World w = p.getLocation().getWorld();
+            if(!w.getName().equals(this.plugin.getCm().getLobbyWorld()))
+                return;
             NBTItem nbtItem = new NBTItem(item);
             if(nbtItem.hasTag("item-prop")){
                 String prop = nbtItem.getTag("item-prop");
@@ -361,6 +466,55 @@ public final class SWPlayerEvents extends MainEvents {
             } else if(nbtItem.hasTag("command")){
                 String command = nbtItem.getTag("command").replace("_", " ");
                 e.getPlayer().performCommand(command);
+            } else if(nbtItem.hasTag("lobby-player-visibility")){
+                if(Main.getInstance().getCoolDownManager().hasCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE)){
+                    CoolDown coolDown = Main.getInstance().getCoolDownManager().getCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
+                    p.sendMessage(Utils.format(coolDown.getMessage()));
+                    e.setCancelled(true);
+                    return;
+                }
+                Main.getInstance().getCoolDownManager().removeCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
+    
+                User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
+                PlayerVisibility currentPlayerVisibility = user.getPlayerVisibility();
+                user.nextPlayerVisibility();
+                Main.getInstance().getPlayers().savePlayer(user);
+                for ( Player player : Bukkit.getOnlinePlayers() ){
+                    if(player.getUniqueId().equals(p.getUniqueId())) continue;
+                    switch(currentPlayerVisibility) {
+                        case ALL:
+                            final User spigotUser = Main.getInstance().getPlayers().getCachedPlayer(player.getUniqueId());
+                            if(spigotUser.getRank() == Rank.USUARIO){
+                                if(player.getWorld().equals(p.getWorld())){
+                                    p.hidePlayer(player);
+                                }
+                            }
+                            break;
+                        case RANKS:
+                            if(player.getWorld().equals(p.getWorld())){
+                                p.hidePlayer(player);
+                            }
+                            break;
+                        case NONE:
+                            if(player.getWorld().equals(p.getWorld())){
+                                p.showPlayer(player);
+                            }
+                            break;
+                    }
+                }
+                switch(currentPlayerVisibility) {
+                    case ALL:
+                        p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_RANKS.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_RANKS.getItem());
+                        break;
+                    case RANKS:
+                        p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_NONE.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_NONE.getItem());
+                        break;
+                    case NONE:
+                        p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_ALL.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_ALL.getItem());
+                        break;
+                }
+                Main.getInstance().getCoolDownManager().addCoolDown(new LobbyCoolDown(p.getUniqueId(), 1));
+                p.updateInventory();
             } else if(nbtItem.hasTag("lobby-player-join-arena")){
                 if(Main.getInstance().getCoolDownManager().hasCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE)){
                     CoolDown coolDown = Main.getInstance().getCoolDownManager().getCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
@@ -370,11 +524,11 @@ public final class SWPlayerEvents extends MainEvents {
                 }
                 Main.getInstance().getCoolDownManager().removeCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
                 Action action = e.getAction();
-                User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+                User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
                 JoinSkyWarsArenaType currentJoinArenaType = user.getJoinSkyWarsArenaType();
-                
+    
                 if(action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)){
-                    
+        
                     switch(currentJoinArenaType) {
                         case SOLO: {
                             LinkedHashMap<Integer, Game> games = new LinkedHashMap<>(this.plugin.getGm().getGames());
@@ -413,7 +567,7 @@ public final class SWPlayerEvents extends MainEvents {
                     e.setCancelled(true);
                     return;
                 }
-                
+    
                 user.nextJoinArenaType(Settings.SERVER_TYPE);
                 Main.getInstance().getPlayers().savePlayer(user);
                 switch(currentJoinArenaType) {
@@ -531,7 +685,7 @@ public final class SWPlayerEvents extends MainEvents {
             World w = p.getLocation().getWorld();
             if(w.getName().equals(this.plugin.getCm().getLobbyWorld()))
                 e.setCancelled(true);
-            User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+            User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
             JoinSkyWarsArenaType currentJoinArenaType = user.getJoinSkyWarsArenaType();
             switch(currentJoinArenaType) {
                 case SOLO: {

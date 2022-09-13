@@ -38,9 +38,12 @@ public class Admin implements ILyCommand {
                 Main.getInstance().getConfig().saveData();
                 Utils.sendMessage(context.getSender(), "&c&lYandere &cDEBUG " + (Settings.DEBUG ? "&aEnabled" : "&cDisabled"));
                 return new CommandResponse();
-            } else if (context.getArg(0).equalsIgnoreCase("refresh-plugins")){
+            } else if(context.getArg(0).equalsIgnoreCase("refresh-plugins")){
                 Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for plugin updates");
                 Main.getInstance().getServerRepository().checkForPluginsUpdates();
+                return new CommandResponse();
+            } else if(context.getArg(0).equalsIgnoreCase("test-reload")){
+                LyApi.reloadConfigs();
                 return new CommandResponse();
             }
         }
@@ -48,7 +51,7 @@ public class Admin implements ILyCommand {
             Player p = (Player) context.getSender();
             if (context.getArgs().length == 2){
                 if (context.getArg(0).equalsIgnoreCase("menu")){
-                    final User target = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(1));
+                    final User target = Main.getInstance().getPlayers().getCachedPlayer(context.getArg(1));
                     new AdminMenu(LyApi.getPlayerMenuUtility(p), target).open();
                     return new CommandResponse();
                 }
@@ -76,6 +79,7 @@ public class Admin implements ILyCommand {
                 list.add("debug");
                 list.add("menu");
                 list.add("refresh-plugins");
+                list.add("test-reload");
                 return list;
             }
             if (context.getArgs().length == 2){

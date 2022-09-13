@@ -36,7 +36,7 @@ public class EconomyCommand implements ILyCommand {
         OfflinePlayer target = Bukkit.getOfflinePlayer(context.getArg(0));
         
         try {
-            User user = Main.getInstance().getPlayers().getLocalStoredPlayer(context.getArg(0));
+            User user = Main.getInstance().getPlayers().getCachedPlayer(context.getArg(0));
             final HashMap<String, String> replacements = new HashMap<>();
             replacements.put("player", context.getArg(0));
             replacements.put("amount", String.valueOf(user.getCoins()));

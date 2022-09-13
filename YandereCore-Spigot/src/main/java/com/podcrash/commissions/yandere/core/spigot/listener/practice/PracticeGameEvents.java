@@ -21,20 +21,20 @@ public class PracticeGameEvents implements Listener {
         final ArrayList<User> losers = new ArrayList<>();
         if (event instanceof DuelEndEvent){
             DuelEndEvent duelEvent = (DuelEndEvent) event;
-            winners.add(Main.getInstance().getPlayers().getLocalStoredPlayer(duelEvent.getWinner().getUniqueId()));
-            losers.add(Main.getInstance().getPlayers().getLocalStoredPlayer(duelEvent.getLoser().getUniqueId()));
+            winners.add(Main.getInstance().getPlayers().getCachedPlayer(duelEvent.getWinner().getUniqueId()));
+            losers.add(Main.getInstance().getPlayers().getCachedPlayer(duelEvent.getLoser().getUniqueId()));
         }
     
         if (event instanceof PartyFFAEndEvent){
             PartyFFAEndEvent partyFFAEndEvent = (PartyFFAEndEvent) event;
-            winners.add(Main.getInstance().getPlayers().getLocalStoredPlayer(partyFFAEndEvent.getWinner().getUniqueId()));
-            partyFFAEndEvent.getParty().getPlayers().forEach(looser -> losers.add(Main.getInstance().getPlayers().getLocalStoredPlayer(looser.getUniqueId())));
+            winners.add(Main.getInstance().getPlayers().getCachedPlayer(partyFFAEndEvent.getWinner().getUniqueId()));
+            partyFFAEndEvent.getParty().getPlayers().forEach(looser -> losers.add(Main.getInstance().getPlayers().getCachedPlayer(looser.getUniqueId())));
         }
         
         if (event instanceof PartyVsPartyEndEvent){
             PartyVsPartyEndEvent partyFFAEndEvent = (PartyVsPartyEndEvent) event;
-            partyFFAEndEvent.getWinner().getPlayers().forEach(winner -> winners.add(Main.getInstance().getPlayers().getLocalStoredPlayer(winner.getUniqueId())));
-            partyFFAEndEvent.getLoser().getPlayers().forEach(looser -> losers.add(Main.getInstance().getPlayers().getLocalStoredPlayer(looser.getUniqueId())));
+            partyFFAEndEvent.getWinner().getPlayers().forEach(winner -> winners.add(Main.getInstance().getPlayers().getCachedPlayer(winner.getUniqueId())));
+            partyFFAEndEvent.getLoser().getPlayers().forEach(looser -> losers.add(Main.getInstance().getPlayers().getCachedPlayer(looser.getUniqueId())));
         }
         
         

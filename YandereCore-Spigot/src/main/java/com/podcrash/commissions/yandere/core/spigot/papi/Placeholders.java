@@ -130,7 +130,7 @@ public class Placeholders extends PlaceholderExpansion {
         if (identifier.equals("health")) return String.valueOf(player.getHealth());
         if (identifier.equals("gamemode")) return String.valueOf(player.getGameMode());
     
-        final User p = Main.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
+        final User p = Main.getInstance().getPlayers().getCachedPlayer(player.getUniqueId());
         if (p == null) return "Jugador no encontrado";
     
         switch(identifier){
@@ -147,22 +147,25 @@ public class Placeholders extends PlaceholderExpansion {
             case "address":{
                 return p.getAddress();
             }
-            case "rank_tab":{
+            case "rank_tab": {
                 return p.getRank().getTabPrefix();
             }
-            case "rank_score_board":{
+            case "rank_score_board": {
                 return p.getRank().getScoreBoardName();
             }
-            case "rank_prefix":{
+            case "rank_prefix": {
                 return p.getRank().getTagNamePrefix();
             }
-            case "coins":{
+            case "suffix": {
+                return p.getSuffix();
+            }
+            case "coins": {
                 return p.getCoinsSemiFormatted();
             }
-            case "coins_formatted":{
+            case "coins_formatted": {
                 return p.getCoinsFormatted();
             }
-            case "level":{
+            case "level": {
                 return String.valueOf(p.getLevel().getLevel());
             }
             case "level_next_cost":
@@ -188,7 +191,7 @@ public class Placeholders extends PlaceholderExpansion {
                 return p.getLevel().getFormattedRequiredXp();
             }
         }
-        
-        return null;
+    
+        return "&cJugador oo encontrado";
     }
 }

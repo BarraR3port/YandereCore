@@ -27,6 +27,8 @@ import com.podcrash.commissions.yandere.core.spigot.commands.spawn.Spawn;
 import com.podcrash.commissions.yandere.core.spigot.commands.tp.Teleport;
 import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpAll;
 import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpHere;
+import com.podcrash.commissions.yandere.core.spigot.config.ItemsConfig;
+import com.podcrash.commissions.yandere.core.spigot.config.SoundsConfig;
 import com.podcrash.commissions.yandere.core.spigot.config.YandereConfig;
 import com.podcrash.commissions.yandere.core.spigot.cooldowns.CoolDownManager;
 import com.podcrash.commissions.yandere.core.spigot.inv.EndInvManager;
@@ -81,8 +83,8 @@ public final class Main extends JavaPlugin implements YandereApi {
     private final CoolDownManager coolDownManager = new CoolDownManager();
     private ProxyStats proxyStats = new ProxyStats();
     private YandereConfig config;
-    private YandereConfig items;
-    private YandereConfig sounds;
+    private ItemsConfig items;
+    private SoundsConfig sounds;
     private String nms_version;
     private IPlayerRepository players;
     private ILogRepository logs;
@@ -114,17 +116,17 @@ public final class Main extends JavaPlugin implements YandereApi {
     }
     
     @Override
-    public void onEnable(){
+    public void onEnable() {
         instance = this;
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "podcrash:yandere", new PluginMessage());
         getServer().getMessenger().registerOutgoingPluginChannel(this, "podcrash:yandere");
         config = new YandereConfig(this, "config.yml");
-        items = new YandereConfig(this, "items.yml");
-        sounds = new YandereConfig(this, "sounds.yml");
+        items = new ItemsConfig(this, "items.yml");
+        sounds = new SoundsConfig(this, "sounds.yml");
         try {
             api = new LyApi(this, "Yandere", "&c[&4ERROR&c] &cNo tienes el siguiente permiso:&e permission", new ESLang(new Config(this, "es.yml"), config.getString("global.prefix"), "&c[&4ERROR&c]"), true);
-        } catch (LyApiInitializationError e) {
+        } catch(LyApiInitializationError e) {
             e.printStackTrace();
             getServer().shutdown();
         }
@@ -265,11 +267,11 @@ public final class Main extends JavaPlugin implements YandereApi {
         return config;
     }
     
-    public YandereConfig getItems(){
+    public ItemsConfig getItems() {
         return items;
     }
     
-    public YandereConfig getSounds(){
+    public SoundsConfig getSounds() {
         return sounds;
     }
     

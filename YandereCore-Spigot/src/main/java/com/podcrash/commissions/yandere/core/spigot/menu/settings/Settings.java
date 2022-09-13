@@ -24,7 +24,7 @@ public class Settings extends UpdatableMenu {
     
     @Override
     public String getMenuName(){
-        return "&4• &8" + (targetUUID.equals(getOwner().getUniqueId()) ? "Ajustes" : "Ajustes de " + Main.getInstance().getPlayers().getLocalStoredPlayer(targetUUID).getName());
+        return "&4• &8" + (targetUUID.equals(getOwner().getUniqueId()) ? "Ajustes" : "Ajustes de " + Main.getInstance().getPlayers().getCachedPlayer(targetUUID).getName());
     }
     
     @Override

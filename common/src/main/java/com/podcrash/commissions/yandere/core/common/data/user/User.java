@@ -32,6 +32,7 @@ public class User {
     private String address;
     private String skin;
     private Loc lastLocation;
+    private String suffix = "";
     
     public User(String name, UUID uuid){
         this.name = name;
@@ -183,8 +184,11 @@ public class User {
         this.coins -= coins;
     }
     
-    private void addDefaultOptions(){
+    private void addDefaultOptions() {
         options.put("announcements-streams", true);
+        options.put("announcements-general", true);
+        options.put("announcements-join", true);
+        options.put("announcements-join-others", true);
         //options.put("lobby_")
     }
     
@@ -259,8 +263,15 @@ public class User {
         return Utils.format(coins + "&e⛂");
     }
     
-    public String getCoinsSemiFormatted(){
+    public String getCoinsSemiFormatted() {
         return Utils.format(new DecimalFormat("###,###,###").format(coins) + "&e⛃");
     }
     
+    public String getSuffix() {
+        return suffix;
+    }
+    
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
 }

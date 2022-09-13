@@ -5,15 +5,15 @@ import net.lymarket.lyapi.spigot.config.ReloadableConfig;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @ReloadableConfig
-public final class YandereConfig extends Config {
+public class ItemsConfig extends Config {
     
     
-    public YandereConfig(JavaPlugin plugin, String name){
+    public ItemsConfig(JavaPlugin plugin, String name) {
         super(plugin, name);
     }
     
     
-    public YandereConfig(JavaPlugin plugin, String name, String resourcePath, String filePath){
+    public ItemsConfig(JavaPlugin plugin, String name, String resourcePath, String filePath) {
         super(plugin, name, resourcePath, filePath);
     }
 }

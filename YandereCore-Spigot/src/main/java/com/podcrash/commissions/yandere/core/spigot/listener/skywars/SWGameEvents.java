@@ -18,13 +18,13 @@ public class SWGameEvents implements Listener {
     public void onGameEnd(USWGameWinEvent event) {
         final ArrayList<Player> winners = (ArrayList<Player>) event.getWinner().getMembers();
         for ( Player winner : winners ){
-            User user = Main.getInstance().getPlayers().getLocalStoredPlayer(winner.getUniqueId());
+            User user = Main.getInstance().getPlayers().getCachedPlayer(winner.getUniqueId());
             Main.getInstance().getPlayers().addCoins(user, 400);
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(user, 800, Level.GainSource.GAME_WIN), 65L);
         }
         event.getGame().getPlayers().forEach(player -> {
             if(winners.contains(player)) return;
-            User user = Main.getInstance().getPlayers().getLocalStoredPlayer(player.getUniqueId());
+            User user = Main.getInstance().getPlayers().getCachedPlayer(player.getUniqueId());
             Main.getInstance().getPlayers().addCoins(user, 100);
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(user, 200, Level.GainSource.GAME_WIN), 65L);
         });
@@ -32,7 +32,7 @@ public class SWGameEvents implements Listener {
     
     @EventHandler
     public void onPlayerKill(USWGameKillEvent event) {
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(event.getPlayer().getUniqueId());
+        User user = Main.getInstance().getPlayers().getCachedPlayer(event.getPlayer().getUniqueId());
         Main.getInstance().getPlayers().addCoins(user, 5);
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(user, 50, Level.GainSource.PER_KILL), 65L);
     }

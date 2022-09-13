@@ -28,7 +28,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class ServerRepository extends IServerRepository {
     private Server server;
@@ -103,7 +102,6 @@ public class ServerRepository extends IServerRepository {
                     }
                 }
             }
-            System.out.println(loadedPlugins.stream().map(LoadedPlugin::getName).collect(Collectors.joining(", ")));
             String json = Api.getGson().toJson(plugins);
             Request request = new Request.Builder()
                     .url(Settings.WEB_URL + "/api/lydark/server/checkPlugins")
@@ -173,7 +171,7 @@ public class ServerRepository extends IServerRepository {
                         Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting....");
                         Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting.....");
                         Bukkit.shutdown();
-            
+    
                     } else {
                         Main.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
                     }
@@ -183,16 +181,10 @@ public class ServerRepository extends IServerRepository {
                     Main.getInstance().getLogger().severe("[UPDATE MACHINE] There is something wrong with the server, please contact the AL TIO BARRAAAAAAAAAAAAAAAAAA");
                 }
             }
-        } catch(IOException ignored) {
-            ignored.printStackTrace();
-        } catch(NullPointerException ignored) {
-            ignored.printStackTrace();
-        } catch(ConcurrentModificationException ignored) {
-            ignored.printStackTrace();
-        } catch(NoSuchAlgorithmException ignored) {
-            ignored.printStackTrace();
+        } catch(IOException | NullPointerException | ConcurrentModificationException |
+                NoSuchAlgorithmException ignored) {
         }
-        
+    
     }
     
     public void pluginFilesGarbageCollector() {

@@ -38,7 +38,7 @@ public class RankMenu implements ILyCommand {
                 final String target = context.getArg(1);
                 try {
                     Rank rank = Rank.valueOf(context.getArg(2).toUpperCase(Locale.ROOT));
-                    User user = Main.getInstance().getPlayers().getLocalStoredPlayer(target);
+                    User user = Main.getInstance().getPlayers().getCachedPlayer(target);
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + target + " group set " + rank.getLpName());
                     Main.getInstance().getPlayers().setPlayerRank(user, rank);
                 } catch (NullPointerException e) {

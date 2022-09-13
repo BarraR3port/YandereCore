@@ -10,6 +10,7 @@ import com.podcrash.commissions.yandere.core.spigot.items.lobby.LobbyItem;
 import net.lymarket.lyapi.spigot.config.Config;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
 import net.lymarket.lyapi.spigot.utils.Utils;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -223,7 +224,7 @@ public final class Items {
     }
     
     public static ItemStack head(Player owner){
-        final User user = Main.getInstance().getPlayers().getLocalStoredPlayer(owner.getUniqueId());
+        final User user = Main.getInstance().getPlayers().getCachedPlayer(owner.getUniqueId());
         return new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
                 .setHeadSkin(user.getSkin())
                 .setDisplayName("&a" + owner.getName() + "'s &7Stats:")
@@ -246,7 +247,7 @@ public final class Items {
         p.getInventory().setItem(LOBBY_MENU.getSlot(), LOBBY_MENU.getItem());
         p.getInventory().setItem(MULTI_LOBBY_MENU_HOT_BAR.getSlot(), MULTI_LOBBY_MENU_HOT_BAR.getItem());
     
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+        User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         PlayerVisibility playerVisibility = user.getPlayerVisibility();
         switch(playerVisibility){
             case ALL:
@@ -259,6 +260,14 @@ public final class Items {
                 p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_NONE.getSlot(), LOBBY_PLAYER_VISIBILITY_NONE.getItem());
                 break;
         }
+        p.setHealth(p.getMaxHealth());
+        p.setGameMode(GameMode.ADVENTURE);
+        p.setFoodLevel(20);
+        p.setFireTicks(0);
+        p.setExp(0);
+        p.setLevel(0);
+        p.setSaturation(20F);
+        p.getInventory().setHeldItemSlot(0);
         p.updateInventory();
     
     }
@@ -271,8 +280,8 @@ public final class Items {
             if (!name.startsWith("lobby-skywars-")) continue;
             p.getInventory().setItem(config.getInt("items." + name + ".slot"), config.getItem(name));
         }
-        
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+    
+        User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         PlayerVisibility playerVisibility = user.getPlayerVisibility();
         switch(playerVisibility){
             case ALL:
@@ -300,10 +309,16 @@ public final class Items {
                 p.getInventory().setItem(LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getSlot(), LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getItem());
                 break;
         }
-        
-        
+        p.setHealth(p.getMaxHealth());
+        p.setGameMode(GameMode.ADVENTURE);
+        p.setFoodLevel(20);
+        p.setFireTicks(0);
+        p.setExp(0);
+        p.setLevel(0);
+        p.setSaturation(20F);
+        p.getInventory().setHeldItemSlot(0);
         p.updateInventory();
-        
+    
     }
     
     public static void setBedWarsLobbyItems(Player p){
@@ -314,8 +329,8 @@ public final class Items {
             if (!name.startsWith("lobby-bedwars-")) continue;
             p.getInventory().setItem(config.getInt("items." + name + ".slot"), config.getItem(name));
         }
-        
-        User user = Main.getInstance().getPlayers().getLocalStoredPlayer(p.getUniqueId());
+    
+        User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         PlayerVisibility playerVisibility = user.getPlayerVisibility();
         switch(playerVisibility){
             case ALL:
