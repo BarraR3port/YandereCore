@@ -25,83 +25,88 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public final class LBWPlayerEvents extends LobbyPlayerEvents {
     
-    public LBWPlayerEvents() {
+    public LBWPlayerEvents(){
     }
     
-    public void subPlayerQuitEvent(PlayerQuitEvent e) {
+    public void subPlayerQuitEvent(PlayerQuitEvent e){
         
     }
     
     @Override
-    public void subPlayerJoinEvent(PlayerJoinEvent e) {
+    public void subPlayerJoinEvent(PlayerJoinEvent e){
         Player p = e.getPlayer();
         try {
             p.teleport(Settings.SPAWN_LOCATION);
-        } catch(NullPointerException | IllegalArgumentException ex) {
+        } catch (NullPointerException | IllegalArgumentException ex) {
             p.teleport(p.getWorld().getSpawnLocation());
         }
         Items.setBedWarsLobbyItems(p);
         
         User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         boolean hasRank = user.getRank() != Rank.USUARIO;
-        String joinMsg = "";
-        if(hasRank){
+        
+        if (hasRank){
             p.setAllowFlight(true);
-            joinMsg = " &8&l»" + user.getRank().getTabPrefix() + p.getName() + " &fse ha unido al servidor!";
         }
         PlayerVisibility visibility = user.getPlayerVisibility();
-        for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
-            if(targetPlayer.getUniqueId().equals(p.getUniqueId())){
-                p.sendMessage(Utils.format(joinMsg));
-                continue;
-            }
-            User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
-            if(hasRank && targetUser.getOption("announcements-join-others")){
-                targetPlayer.sendMessage(Utils.format(joinMsg));
-            }
-            PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
-            Rank targetRank = targetUser.getRank();
-            switch(visibility) {
-                case ALL:
-                    p.showPlayer(targetPlayer);
-                    break;
-                case RANKS:
-                    if(targetRank != Rank.USUARIO){
+        String joinMsg = hasRank ? Utils.format(" &8&l»" + user.getRank().getTabPrefix() + p.getName() + " &fse ha unido al servidor!") : "";
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+            for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
+                if (targetPlayer.getUniqueId().equals(p.getUniqueId())){
+                    if (!joinMsg.equals("")){
+                        targetPlayer.sendMessage(joinMsg);
+                    }
+                    continue;
+                }
+                User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
+                if (!joinMsg.equals("") && targetUser.getOptionOrDefault("announcements-join-others", true)){
+                    targetPlayer.sendMessage(joinMsg);
+                }
+                PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
+                Rank targetRank = targetUser.getRank();
+                switch(visibility){
+                    case ALL:
                         p.showPlayer(targetPlayer);
-                    } else {
+                        break;
+                    case RANKS:
+                        if (targetRank != Rank.USUARIO){
+                            p.showPlayer(targetPlayer);
+                        } else {
+                            p.hidePlayer(targetPlayer);
+                        }
+                        break;
+                    default:
                         p.hidePlayer(targetPlayer);
-                    }
-                    break;
-                default:
-                    p.hidePlayer(targetPlayer);
-                    break;
-            }
-            switch(targetVisibility) {
-                case ALL: {
-                    targetPlayer.showPlayer(p);
-                    break;
+                        break;
                 }
-                case RANKS: {
-                    if(user.getRank() != Rank.USUARIO){
+                switch(targetVisibility){
+                    case ALL:{
                         targetPlayer.showPlayer(p);
-                    } else {
-                        targetPlayer.hidePlayer(p);
+                        break;
                     }
-                    break;
-                }
-                default: {
-                    targetPlayer.hidePlayer(p);
-                    break;
+                    case RANKS:{
+                        if (user.getRank() != Rank.USUARIO){
+                            targetPlayer.showPlayer(p);
+                        } else {
+                            targetPlayer.hidePlayer(p);
+                        }
+                        break;
+                    }
+                    default:{
+                        targetPlayer.hidePlayer(p);
+                        break;
+                    }
                 }
             }
-        }
+        }, 1L);
     }
     
     @Override
-    public boolean subPlayerChatEvent(AsyncPlayerChatEvent event) {
+    public boolean subPlayerChatEvent(AsyncPlayerChatEvent event){
         Player p = event.getPlayer();
         String message = event.getMessage();
         
@@ -156,11 +161,11 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
     }
     
     @Override
-    public boolean subPlayerClicks(PlayerInteractEvent e) {
+    public boolean subPlayerClicks(PlayerInteractEvent e){
         Player p = e.getPlayer();
-        if(Main.getInstance().getCoolDownManager().hasCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE)){
+        if (Main.getInstance().getCoolDownManager().hasCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE)){
             CoolDown coolDown = Main.getInstance().getCoolDownManager().getCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
-            p.sendMessage(Utils.format(coolDown.getMessage()));
+            p.spigot().sendMessage(Utils.hoverOverMessage(coolDown.getMessage(), Collections.singletonList("&7Tiempo restante: &e" + coolDown.getRemainingTime() + "s")));
             p.updateInventory();
             return true;
         }
@@ -168,14 +173,14 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
         Action action = e.getAction();
         User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         JoinBedWarsArenaType currentJoinArenaType = user.getJoinBedWarsArenaType();
-        if(action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)){
-            if(currentJoinArenaType.equals(JoinBedWarsArenaType.RANDOM)){
-                if(!ArenaManager.getInstance().joinRandomArena(p)){
+        if (action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)){
+            if (currentJoinArenaType.equals(JoinBedWarsArenaType.RANDOM)){
+                if (!ArenaManager.getInstance().joinRandomArena(p)){
                     p.sendMessage(Utils.format("&cNo se ha encontrado una partida de BedWars en modo &eAleatorio."));
                     p.teleport(Settings.SPAWN_LOCATION);
                 }
             } else {
-                if(!ArenaManager.getInstance().joinRandomFromGroup(p, currentJoinArenaType.getBwName())){
+                if (!ArenaManager.getInstance().joinRandomFromGroup(p, currentJoinArenaType.getBwName())){
                     p.sendMessage(Utils.format("&cNo se ha encontrado una partida de BedWars en modo &e" + currentJoinArenaType.getBwName() + "."));
                     p.teleport(Settings.SPAWN_LOCATION);
                 }
@@ -186,7 +191,7 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
         
         user.nextJoinArenaType(Settings.SERVER_TYPE);
         Main.getInstance().getPlayers().savePlayer(user);
-        switch(currentJoinArenaType) {
+        switch(currentJoinArenaType){
             case SOLO:
                 p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_DUO.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_DUO.getItem());
                 break;

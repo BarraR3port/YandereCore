@@ -3,6 +3,7 @@ package com.podcrash.commissions.yandere.core.velocity.manager;
 import com.podcrash.commissions.yandere.core.velocity.socketmanager.ProxySocketServer;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Optional;
 
 public class ServerSocketManager {
@@ -37,4 +38,7 @@ public class ServerSocketManager {
         return socketByServer;
     }
     
+    public LinkedList<ProxySocketServer> getSocketServers(){
+        return new LinkedList<>(socketByServer.values());
+    }
 }

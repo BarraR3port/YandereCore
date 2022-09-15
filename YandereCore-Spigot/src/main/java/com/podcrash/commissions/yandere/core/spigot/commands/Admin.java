@@ -38,14 +38,18 @@ public class Admin implements ILyCommand {
                 Main.getInstance().getConfig().saveData();
                 Utils.sendMessage(context.getSender(), "&c&lYandere &cDEBUG " + (Settings.DEBUG ? "&aEnabled" : "&cDisabled"));
                 return new CommandResponse();
-            } else if(context.getArg(0).equalsIgnoreCase("refresh-plugins")){
+            } else if (context.getArg(0).equalsIgnoreCase("refresh-plugins")){
                 Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for plugin updates");
                 Main.getInstance().getServerRepository().checkForPluginsUpdates();
                 return new CommandResponse();
-            } else if(context.getArg(0).equalsIgnoreCase("test-reload")){
+            } else if (context.getArg(0).equalsIgnoreCase("refresh-plugins-general")){
+                Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for plugin updates (General)");
+                Main.getInstance().getSocket().sendCheckPluginUpdates();
+                return new CommandResponse();
+            } /*else if(context.getArg(0).equalsIgnoreCase("test-reload")){
                 LyApi.reloadConfigs();
                 return new CommandResponse();
-            }
+            }*/
         }
         if (context.getSender() instanceof Player){
             Player p = (Player) context.getSender();
@@ -79,7 +83,8 @@ public class Admin implements ILyCommand {
                 list.add("debug");
                 list.add("menu");
                 list.add("refresh-plugins");
-                list.add("test-reload");
+                list.add("refresh-plugins-general");
+                //list.add("test-reload");
                 return list;
             }
             if (context.getArgs().length == 2){

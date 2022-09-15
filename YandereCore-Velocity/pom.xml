@@ -278,12 +278,12 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>net.lymarket.lyapi</groupId>
             <artifactId>common</artifactId>
             <version>1.2.12</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
 
         <!-- <dependency>
              <groupId>com.yworks</groupId>

@@ -83,67 +83,70 @@ public class MainLobbyPlayerEvents extends LobbyPlayerEvents {
         return false;
     }
     
-    public void subPlayerJoinEvent(PlayerJoinEvent e) {
+    public void subPlayerJoinEvent(PlayerJoinEvent e){
         Player p = e.getPlayer();
         try {
             p.teleport(Settings.SPAWN_LOCATION);
-        } catch(NullPointerException | IllegalArgumentException ex) {
+        } catch (NullPointerException | IllegalArgumentException ex) {
             p.teleport(p.getWorld().getSpawnLocation());
         }
         Items.setLobbyItems(p);
         User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         boolean hasRank = user.getRank() != Rank.USUARIO;
-        String joinMsg = "";
-        if(hasRank){
+        if (hasRank){
             p.setAllowFlight(true);
-            joinMsg = " &8&l»" + user.getRank().getTabPrefix() + p.getName() + " &fse ha unido al servidor!";
         }
         PlayerVisibility visibility = user.getPlayerVisibility();
-        for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
-            if(targetPlayer.getUniqueId().equals(p.getUniqueId())){
-                p.sendMessage(Utils.format(joinMsg));
-                continue;
-            }
-            User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
-            if(hasRank && targetUser.getOption("announcements-join-others")){
-                targetPlayer.sendMessage(Utils.format(joinMsg));
-            }
-            PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
-            Rank targetRank = targetUser.getRank();
-            switch(visibility) {
-                case ALL:
-                    p.showPlayer(targetPlayer);
-                    break;
-                case RANKS:
-                    if(targetRank != Rank.USUARIO){
+        String joinMsg = hasRank ? Utils.format(" &8&l»" + user.getRank().getTabPrefix() + p.getName() + " &fse ha unido al servidor!") : "";
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+            for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
+                if (targetPlayer.getUniqueId().equals(p.getUniqueId())){
+                    if (!joinMsg.equals("")){
+                        targetPlayer.sendMessage(joinMsg);
+                    }
+                    continue;
+                }
+                User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
+                if (!joinMsg.equals("") && targetUser.getOptionOrDefault("announcements-join-others", true)){
+                    targetPlayer.sendMessage(joinMsg);
+                }
+                PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
+                Rank targetRank = targetUser.getRank();
+                switch(visibility){
+                    case ALL:
                         p.showPlayer(targetPlayer);
-                    } else {
+                        break;
+                    case RANKS:
+                        if (targetRank != Rank.USUARIO){
+                            p.showPlayer(targetPlayer);
+                        } else {
+                            p.hidePlayer(targetPlayer);
+                        }
+                        break;
+                    default:
                         p.hidePlayer(targetPlayer);
-                    }
-                    break;
-                default:
-                    p.hidePlayer(targetPlayer);
-                    break;
-            }
-            switch(targetVisibility){
-                case ALL:{
-                    targetPlayer.showPlayer(p);
-                    break;
+                        break;
                 }
-                case RANKS:{
-                    if (user.getRank() != Rank.USUARIO){
+                switch(targetVisibility){
+                    case ALL:{
                         targetPlayer.showPlayer(p);
-                    } else {
-                        targetPlayer.hidePlayer(p);
+                        break;
                     }
-                    break;
-                }
-                default:{
-                    targetPlayer.hidePlayer(p);
-                    break;
+                    case RANKS:{
+                        if (user.getRank() != Rank.USUARIO){
+                            targetPlayer.showPlayer(p);
+                        } else {
+                            targetPlayer.hidePlayer(p);
+                        }
+                        break;
+                    }
+                    default:{
+                        targetPlayer.hidePlayer(p);
+                        break;
+                    }
                 }
             }
-        }
+        }, 1L);
     }
 }
 

@@ -9,6 +9,7 @@ import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import com.podcrash.commissions.yandere.core.common.socket.ISocketClient;
 import com.podcrash.commissions.yandere.core.spigot.Main;
+import com.podcrash.commissions.yandere.core.spigot.party.PartiesManager;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
@@ -19,6 +20,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static com.podcrash.commissions.yandere.core.spigot.Main.GSON;
 
@@ -48,6 +50,14 @@ public class SpigotSocketClient extends ISocket {
         js.addProperty("server_target", serverTarget);
         js.addProperty("owner_uuid", owner.toString());
         js.addProperty("msg", "EMPTY");
+        if (PartiesManager.isInParty(owner)){
+            if (PartiesManager.isPartyLeader(owner)){
+                List<Player> players = PartiesManager.getPlayersParty(owner);
+                players.forEach(player -> getPlayers().savePlayer(player.getUniqueId()));
+                String uuids = players.stream().map(Player::getUniqueId).map(UUID::toString).collect(Collectors.joining(";"));
+                js.addProperty("party_members", uuids);
+            }
+        }
         sendMessage(js);
     }
     
@@ -64,6 +74,14 @@ public class SpigotSocketClient extends ISocket {
         js.addProperty("server_target", serverTarget);
         js.addProperty("owner_uuid", owner.toString());
         js.addProperty("msg", msg);
+        if (PartiesManager.isInParty(owner)){
+            if (PartiesManager.isPartyLeader(owner)){
+                List<Player> players = PartiesManager.getPlayersParty(Bukkit.getPlayer(owner));
+                players.forEach(player -> getPlayers().savePlayer(player.getUniqueId()));
+                String uuids = players.stream().map(Player::getUniqueId).map(UUID::toString).collect(Collectors.joining(";"));
+                js.addProperty("party_members", uuids);
+            }
+        }
         sendMessage(js);
     }
     
@@ -105,6 +123,14 @@ public class SpigotSocketClient extends ISocket {
             replacements.addProperty(word, replacementsMap.get(word));
         }
         js.add("replacements", replacements);
+        sendMessage(js);
+    }
+    
+    @Override
+    public void sendCheckPluginUpdates(){
+        JsonObject js = new JsonObject();
+        js.addProperty("type", "CHECK_PLUGIN_UPDATES");
+        js.addProperty("current_server", Settings.PROXY_SERVER_NAME);
         sendMessage(js);
     }
     
@@ -182,7 +208,7 @@ public class SpigotSocketClient extends ISocket {
         private PrintWriter out;
         private Scanner in;
         private boolean compute = true;
-        
+    
         private ProxySocket(Socket socket, String name){
             this.name = name;
             this.socket = socket;
@@ -192,7 +218,7 @@ public class SpigotSocketClient extends ISocket {
                 out = null;
                 return;
             }
-            
+        
             try {
                 in = new Scanner(socket.getInputStream());
             } catch (IOException ignored) {
@@ -232,6 +258,12 @@ public class SpigotSocketClient extends ISocket {
                                     Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> Main.getInstance().setProxyStats(GSON.fromJson(json.getAsJsonObject("stats"), ProxyStats.class)));
                                     continue;
                                 }
+                                case "CHECK_PLUGIN_UPDATES":
+                                case "CHECK_PLUGIN_UPDATES_POST":{
+                                    Utils.sendMessage(Bukkit.getConsoleSender(), "&c&lYandere &7- Checking for plugin updates externally...");
+                                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> Main.getInstance().getServerRepository().checkForPluginsUpdates());
+                                    continue;
+                                }
                                 case "SEND_MSG_TO_PLAYER_POST":{
                                     if (!json.has("target_uuid")) continue;
                                     if (!json.has("current_server")) continue;
@@ -239,14 +271,14 @@ public class SpigotSocketClient extends ISocket {
                                     final UUID target_uuid = UUID.fromString(json.get("target_uuid").getAsString());
                                     final String key = json.get("key").getAsString();
                                     final boolean hasReplacements = json.get("has-replacements").getAsBoolean();
-                                    
+                
                                     try {
                                         final Player player = Bukkit.getPlayer(target_uuid);
                                         if (player == null) continue;
                                         if (hasReplacements){
                                             final JsonObject replacements = json.get("replacements").getAsJsonObject();
                                             final HashMap<String, String> replace = new HashMap<>();
-                                            
+                        
                                             for ( Map.Entry<String, JsonElement> entry : replacements.entrySet() ){
                                                 replace.put(entry.getKey(), entry.getValue().getAsString());
                                             }
@@ -254,7 +286,7 @@ public class SpigotSocketClient extends ISocket {
                                         } else {
                                             player.sendMessage(Main.getLang().getMSG(key));
                                         }
-                                        
+                    
                                     } catch (NullPointerException e) {
                                         e.printStackTrace();
                                     }

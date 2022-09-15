@@ -76,6 +76,10 @@ public class User {
         return options.getOrDefault(key, false);
     }
     
+    public boolean getOptionOrDefault(String key, boolean def){
+        return options.getOrDefault(key, def);
+    }
+    
     public void removeOption(String key){
         options.remove(key);
     }
@@ -85,7 +89,7 @@ public class User {
     }
     
     public String getProperty(String key){
-        return properties.get(key);
+        return properties.getOrDefault(key, "");
     }
     
     public void removeProperty(String key){
@@ -184,7 +188,7 @@ public class User {
         this.coins -= coins;
     }
     
-    private void addDefaultOptions() {
+    public void addDefaultOptions(){
         options.put("announcements-streams", true);
         options.put("announcements-general", true);
         options.put("announcements-join", true);
@@ -192,13 +196,13 @@ public class User {
         //options.put("lobby_")
     }
     
-    private void addDefaultProps(){
+    public void addDefaultProps(){
         properties.put("lobby-player-visibility", PlayerVisibility.ALL.toString());
         properties.put("lobby-sw-join-type", JoinSkyWarsArenaType.RANDOM.toString());
         properties.put("lobby-bw-join-type", JoinBedWarsArenaType.RANDOM.toString());
     }
     
-    private void addDefaultRewards(){
+    public void addDefaultRewards(){
         if (new Date().before(new Date("10/10/2022"))){
             rewards.add(new BetaTester());
         }

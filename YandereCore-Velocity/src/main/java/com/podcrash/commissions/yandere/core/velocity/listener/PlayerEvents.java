@@ -8,10 +8,7 @@ import com.podcrash.commissions.yandere.core.velocity.VMain;
 import com.podcrash.commissions.yandere.core.velocity.utils.Utils;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.connection.DisconnectEvent;
-import com.velocitypowered.api.event.connection.PluginMessageEvent;
-import com.velocitypowered.api.event.connection.PostLoginEvent;
-import com.velocitypowered.api.event.connection.PreLoginEvent;
+import com.velocitypowered.api.event.connection.*;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.ServerConnection;
@@ -25,13 +22,6 @@ public class PlayerEvents {
     
     
     public PlayerEvents(){
-    
-    
-    }
-    
-    @Subscribe
-    public void onPostLoginEvent(PostLoginEvent e){
-        VMain.getInstance().getPlayers().getOrCreatePlayer(e.getPlayer().getUsername(), e.getPlayer().getUniqueId(), String.valueOf(e.getPlayer().getRemoteAddress().getAddress()).replace("/", ""));
     }
     
     @Subscribe
@@ -43,7 +33,18 @@ public class PlayerEvents {
     }
     
     @Subscribe
+    public void onPostLoginEvent(PostLoginEvent e){
+        VMain.getInstance().getPlayers().getOrCreatePlayer(e.getPlayer().getUsername(), e.getPlayer().getUniqueId(), String.valueOf(e.getPlayer().getRemoteAddress().getAddress()).replace("/", ""));
+    }
+    
+    @Subscribe
     public void onDisconnectEvent(DisconnectEvent e){
+        VMain.getInstance().getPlayers().unCachePlayer(e.getPlayer().getUniqueId());
+    }
+    
+    @Subscribe
+    public void onDisconnectEvent(ConnectionHandshakeEvent e){
+        VMain.debug("Connection Handshake to " + e.getConnection().getRemoteAddress().getAddress());
     }
     
     /*@Subscribe(order = PostOrder.FIRST)
@@ -75,7 +76,6 @@ public class PlayerEvents {
         ServerPing prev = event.getPing();
         if (prev.getPlayers().isPresent() && prev.getFavicon().isPresent()){
             if (prev.getModinfo().isPresent()){
-                
                 if (prev.getVersion().getProtocol() > 757 || prev.getVersion().getProtocol() < 46){
                     prev.asBuilder().version(new ServerPing.Version(ProtocolVersion.MINECRAFT_1_18.getProtocol(), "YandereCraft 1.8.x - 1.19.x "));
                 } else {

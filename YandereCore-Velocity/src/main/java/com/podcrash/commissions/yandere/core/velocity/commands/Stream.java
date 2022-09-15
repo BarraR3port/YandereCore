@@ -71,7 +71,7 @@ public class Stream implements SimpleCommand {
                                             p.sendMessage(Utils.format(" "));
                                             p.sendMessage(Utils.format("&7    Nuestro streamer &c" + playerName + " &7está en directo en:"));
                                             p.sendMessage(Utils.format("&f                            「" + (Objects.equals(type, "twitch") ? "&5&lTwitch" : "&f&lYou&4&lTube") + "&f⏌").clickEvent(ClickEvent.openUrl(url)).hoverEvent(HoverEvent.showText(Utils.format("&7Click aquí para entrar al stream!"))));
-                                            p.sendMessage(Utils.format("&7                Se encuentra jugando en " + Utils.getPlayerServerFormatted(p)));
+                                            p.sendMessage(Utils.format("&7                Se encuentra jugando en " + Utils.getPlayerServerFormatted(player)));
                                             p.sendMessage(Utils.format(" "));
                                             p.sendMessage(Utils.format("&m                                                                           &a"));
                                         }

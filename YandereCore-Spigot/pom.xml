@@ -388,6 +388,11 @@
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
 
+        <repository>
+            <id>alessiodp-repo</id>
+            <url>https://repo.alessiodp.com/releases/</url>
+        </repository>
+
     </repositories>
 
     <dependencies>
@@ -395,6 +400,13 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -529,7 +541,7 @@
         <dependency>
             <groupId>com.podcrash.commissions.skywars</groupId>
             <artifactId>UltraSkyWars-Spigot</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>9.0.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -561,6 +573,19 @@
             </exclusions>
             <systemPath>/home/barra/Desktop/apis/UltraCosmetics-2.9-DEV-b7.jar</systemPath>
 
+        </dependency>
+
+        <dependency>
+            <groupId>com.alessiodp.parties</groupId>
+            <artifactId>parties-api</artifactId>
+            <version>3.2.6</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.md</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--

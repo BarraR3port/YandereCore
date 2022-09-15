@@ -67,7 +67,7 @@ public abstract class MainEvents implements Listener {
             if(log != null){
                 if(Main.getInstance().getCoolDownManager().hasCoolDown(e.getPlayer().getUniqueId(), CoolDownType.MSG)){
                     CoolDown coolDown = Main.getInstance().getCoolDownManager().getCoolDown(e.getPlayer().getUniqueId(), CoolDownType.MSG);
-                    e.getPlayer().sendMessage(Utils.format(coolDown.getMessage()));
+                    e.getPlayer().spigot().sendMessage(Utils.hoverOverMessage(coolDown.getMessage(), Collections.singletonList("&7Tiempo restante: &e" + coolDown.getRemainingTime() + "s")));
                     e.setCancelled(true);
                     return;
                 } else if(log.getMsg().equalsIgnoreCase(e.getMessage()) || log.getMsg().startsWith(e.getMessage()) || e.getMessage().startsWith(log.getMsg())){
@@ -123,14 +123,14 @@ public abstract class MainEvents implements Listener {
     }
     
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerInteractInInventory(InventoryDragEvent e) {
+    public synchronized void onPlayerInteractInInventory(InventoryDragEvent e){
         ItemStack item = e.getCursor();
         ItemStack itemOld = e.getOldCursor();
-        if(item == null) return;
-        if(itemOld == null) return;
-        if(NBTItem.hasTag(item, "item-prop") || NBTItem.hasTag(itemOld, "item-prop")){
+        if (item == null) return;
+        if (itemOld == null) return;
+        if (NBTItem.hasTag(item, "item-prop") || NBTItem.hasTag(itemOld, "item-prop")){
             String prop = NBTItem.getTag(item, "item-prop");
-            switch(prop) {
+            switch(prop){
                 case "lobby-menu":
                 case "no-move":
                 case "multi-lobby-menu":

@@ -72,6 +72,9 @@ public class PlayerRepository extends IPlayerRepository {
                 User user = Api.getGson().fromJson(docName.toJson(), User.class);
                 final UUID prevUUID = user.getUUID();
                 user.setUUID(uuid);
+                user.addDefaultProps();
+                user.addDefaultOptions();
+                user.addDefaultRewards();
                 return savePlayer(user, prevUUID);
             }
         }
@@ -85,10 +88,6 @@ public class PlayerRepository extends IPlayerRepository {
     public void createPlayer(String name, UUID uuid, String address){
         User user = new User(name, uuid);
         user.setAddress(address);
-        user.setOption("allow-pm", true);
-        user.addProperty("lobby-player-visibility", "ALL");
-        user.addProperty("lobby-sw-join-type", "RANDOM");
-        user.addProperty("lobby-bw-join-type", "RANDOM");
         final net.luckperms.api.model.user.User luckPermsUser = LuckPermsProvider.get().getUserManager().getUser(uuid);
         if (luckPermsUser != null){
             user.setRank(Rank.fromString(luckPermsUser.getPrimaryGroup()));

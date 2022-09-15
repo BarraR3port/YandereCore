@@ -15,12 +15,11 @@ import com.velocitypowered.api.proxy.Player;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Base64;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import static com.podcrash.commissions.yandere.core.velocity.VMain.GSON;
 
@@ -46,7 +45,7 @@ public class ProxySocketServer implements Runnable {
             if (!socket.isClosed()){
                 socket.close();
             }
-    
+            
         } catch (IOException error) {
             error.printStackTrace();
         }
@@ -61,21 +60,11 @@ public class ProxySocketServer implements Runnable {
     
     
     public void sendMessage(JsonObject message){
-        if (socket == null){
-            return;
-        }
-        if (!socket.isConnected()){
-            return;
-        }
-        if (out == null){
-            return;
-        }
-        if (in == null){
-            return;
-        }
-        if (out.checkError()){
-            return;
-        }
+        if (socket == null) return;
+        if (!socket.isConnected()) return;
+        if (out == null) return;
+        if (in == null) return;
+        if (out.checkError()) return;
         final String type = message.get("type").getAsString();
         if (type != null && !type.equals("MSG_RECEIVED") && !type.equals("UPDATE_SERVER_STATS")){
             VMain.debug("Sending message to " + (server == null ? "Unknown" : server.getProxyName()) + ": \n" + GSON.toJson(message));
@@ -149,11 +138,17 @@ public class ProxySocketServer implements Runnable {
                                 if (!json.has("current_server")) continue;
                                 if (!json.has("key")) continue;
                                 final UUID target_uuid = UUID.fromString(json.get("target_uuid").getAsString());
-                                
+            
                                 json.remove("type");
                                 json.addProperty("type", "SEND_MSG_TO_PLAYER_POST");
                                 VMain.getInstance().getProxy().getPlayer(target_uuid).flatMap(p -> p.getCurrentServer().flatMap(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName()))).ifPresent(socket -> socket.sendMessage(json));
-                                
+                            }
+                            case "CHECK_PLUGIN_UPDATES" -> {
+                                json.remove("type");
+                                json.addProperty("type", "CHECK_PLUGIN_UPDATES_POST");
+                                VMain.getInstance().getProxy().getAllServers().forEach(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName()).ifPresent(socket -> socket.sendMessage(json)));
+            
+                                //socketManager.getSocketServers().forEach(socketServer -> socketServer.sendMessage(json));
                             }
                             case "CONNECT_TO_SERVER" -> {
                                 if (!json.has("server_target")) continue;
@@ -164,34 +159,41 @@ public class ProxySocketServer implements Runnable {
                                 final String currentServer = json.get("current_server").getAsString();
                                 final UUID owner_uuid = UUID.fromString(json.get("owner_uuid").getAsString());
                                 final String msg = json.get("msg").getAsString();
-                                
-                                if (VMain.getInstance().getProxy().getPlayer(owner_uuid).isPresent()){
-                                    final Player p = VMain.getInstance().getProxy().getPlayer(owner_uuid).get();
-                                    if (currentServer.equalsIgnoreCase(serverName)){
-                                        p.sendMessage(Utils.format("&cYa estás conectado en el server " + serverName));
-                                        return;
-                                    }
-                                    if (serverName.equals("EMPTY")){
-                                        p.sendMessage(Utils.format("&cEste server está cerrado."));
-                                        continue;
-                                    }
-                                    
-                                    VMain.getInstance().getProxy().getServer(serverName).ifPresent(server -> {
-                                        try {
-                                            ConnectionRequestBuilder.Result result = p.createConnectionRequest(server).connect().get(5, TimeUnit.SECONDS);
-                                            if (!result.getStatus().equals(ConnectionRequestBuilder.Status.SUCCESS)){
+                                List<UUID> party_members = new ArrayList<>();
+                                if (json.has("party_members")){
+                                    party_members = Arrays.stream(json.get("party_members").getAsString().split(";")).map(UUID::fromString).collect(Collectors.toList());
+                                } else {
+                                    party_members.add(owner_uuid);
+                                }
+                                for ( UUID party_member_uuid : party_members ){
+                                    if (VMain.getInstance().getProxy().getPlayer(party_member_uuid).isPresent()){
+                                        final Player p = VMain.getInstance().getProxy().getPlayer(party_member_uuid).get();
+                                        if (currentServer.equalsIgnoreCase(serverName)){
+                                            p.sendMessage(Utils.format("&cYa estás conectado en el server " + serverName));
+                                            return;
+                                        }
+                                        if (serverName.equals("EMPTY")){
+                                            p.sendMessage(Utils.format("&cEste server está cerrado."));
+                                            continue;
+                                        }
+                    
+                                        VMain.getInstance().getProxy().getServer(serverName).ifPresent(server -> {
+                                            try {
+                                                ConnectionRequestBuilder.Result result = p.createConnectionRequest(server).connect().get(5, TimeUnit.SECONDS);
+                                                if (!result.getStatus().equals(ConnectionRequestBuilder.Status.SUCCESS)){
+                                                    p.sendMessage(Utils.format("&cError al conectar, espera unos segundos."));
+                                                }
+                                            } catch (InterruptedException | ExecutionException |
+                                                     TimeoutException ignored) {
                                                 p.sendMessage(Utils.format("&cError al conectar, espera unos segundos."));
                                             }
-                                        } catch (InterruptedException | ExecutionException | TimeoutException ignored) {
-                                            p.sendMessage(Utils.format("&cError al conectar, espera unos segundos."));
+                                        });
+                                        if (!msg.equalsIgnoreCase("EMPTY")){
+                                            p.sendMessage(Utils.format(msg.replace("%player%", p.getUsername())));
                                         }
-                                    });
-    
-                                    if (!msg.equalsIgnoreCase("EMPTY")){
-                                        p.sendMessage(Utils.format(msg.replace("%player%", p.getUsername())));
                                     }
                                 }
-                                
+            
                             }
                             case "ERROR" -> {
                                 if (!json.has("error")) continue;
@@ -204,9 +206,9 @@ public class ProxySocketServer implements Runnable {
                                         if (!json.has("server_target")) continue;
                                         if (!json.has("world_uuid")) continue;
                                         final String current_server = json.get("current_server").getAsString();
-                                        
+            
                                         ServerSocketManager.getSocketByServer(current_server).ifPresent(socket -> socket.sendMessage(json));
-                                        
+            
                                     }
                                     case "SERVER_NOT_ONLINE":{
                                         if (!json.has("owner_uuid")) continue;

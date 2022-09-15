@@ -54,7 +54,6 @@ public abstract class IPlayerRepository extends MongoDB<UUID, User> {
         User user = getCachedPlayer(uuid);
         database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()), user);
         list.remove(uuid);
-    
     }
     
     public void deletePlayer(UUID uuid){
@@ -69,6 +68,10 @@ public abstract class IPlayerRepository extends MongoDB<UUID, User> {
         final User user = getCachedPlayer(uuid);
         database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()), user);
         return user;
+    }
+    
+    public void unCachePlayer(UUID uuid){
+        list.remove(uuid);
     }
     
     public abstract User savePlayer(User user);

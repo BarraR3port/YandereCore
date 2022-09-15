@@ -17,6 +17,11 @@ public final class OfflineSocketClient extends ISocket {
     }
     
     @Override
+    public void sendCheckPluginUpdates(){
+    
+    }
+    
+    @Override
     public void sendDisconnectInfoToProxy(){
     
     }

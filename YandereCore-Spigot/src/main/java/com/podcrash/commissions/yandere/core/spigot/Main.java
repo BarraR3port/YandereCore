@@ -47,6 +47,7 @@ import com.podcrash.commissions.yandere.core.spigot.listener.skywars.SWGameEvent
 import com.podcrash.commissions.yandere.core.spigot.listener.skywars.SWPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.log.LogRepository;
 import com.podcrash.commissions.yandere.core.spigot.papi.Placeholders;
+import com.podcrash.commissions.yandere.core.spigot.party.PartiesManager;
 import com.podcrash.commissions.yandere.core.spigot.server.ServerRepository;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.commissions.yandere.core.spigot.socket.SpigotSocketClient;
@@ -217,6 +218,7 @@ public final class Main extends JavaPlugin implements YandereApi {
                 break;
             }*/
         }
+        new PartiesManager();
         vanishManager = new VanishManager();
         invManager = new InvManager();
         endInvManager = new EndInvManager();
@@ -257,6 +259,9 @@ public final class Main extends JavaPlugin implements YandereApi {
     
     @Override
     public void onDisable(){
+        for ( Player p : Bukkit.getOnlinePlayers() ){
+            p.kickPlayer(Utils.format("&cSe está reiniciando el servidor, por favor, vuelve a entrar en unos minutos."));
+        }
         socket.sendDisconnectInfoToProxy();
         socket.disable();
         getServer().getScheduler().cancelTasks(this);

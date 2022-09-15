@@ -35,6 +35,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.UUID;
 
@@ -87,7 +88,7 @@ public abstract class LobbyPlayerEvents extends MainEvents {
         } else if (nbtItem.hasTag("lobby-player-visibility")){
             if (Main.getInstance().getCoolDownManager().hasCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE)){
                 CoolDown coolDown = Main.getInstance().getCoolDownManager().getCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
-                p.sendMessage(Utils.format(coolDown.getMessage()));
+                p.spigot().sendMessage(Utils.hoverOverMessage(coolDown.getMessage(), Collections.singletonList("&7Tiempo restante: &e" + coolDown.getRemainingTime() + "s")));
                 e.setCancelled(true);
                 return;
             }

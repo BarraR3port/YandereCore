@@ -8,6 +8,7 @@ softdepend:
   - UltraSkyWars
   - UltraSkyWarsWP
   - BedWarsProxy
+  - Parties
 
 load: POSTWORLD
 api-version: 1.13

@@ -84,21 +84,21 @@ public final class Items {
         MULTI_LOBBY_MENU_HOT_BAR = new LobbyItem(itemsConfig.getItem("lobby-multi-lobby-item-hotbar"), itemsConfig.getInt("items.lobby-multi-lobby-item-hotbar.slot"));
         SKY_WARS_BASE = new ItemBuilder(Material.SKULL_ITEM)
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTNkNTkxNTUzNzhiNGFjNGQyYjE0MmUyZjIzNWQwMzdmNjhhOWI4ZTI0YWU5ZWQ0ODU3MzE2YjI4ZGNlMDU2ZiJ9fX0=")
-                .setDisplayName("&b&lSkyWars")
+                .setDisplayName("&6&lSkyWars")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
         BED_WARS_BASE = new ItemBuilder(Material.SKULL_ITEM)
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmZiMjkwYTEzZGY4ODI2N2VhNWY1ZmNmNzk2YjYxNTdmZjY0Y2NlZTVjZDM5ZDQ2OTcyNDU5MWJhYmVlZDFmNiJ9fX0=")
-                .setDisplayName("&b&lBedWars")
+                .setDisplayName("&6&lBedWars")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
                 .build();
         PRACTICE_BASE = new ItemBuilder(Material.SKULL_ITEM)
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWI3NzE3ZDlkMzNkNjlhZjg1NWQ4NGNmY2ExODExMTZhNzI1YzE5MTVmMDBmNTE0NzE2ZDliYmIwZWFlYTZiZiJ9fX0=")
-                .setDisplayName("&b&lPractice PVP")
+                .setDisplayName("&c&lPractice PVP")
                 .addLoreLine("&7Entra a jugar el Clásico modo de juego")
                 .addLoreLine("&7sólo o con amigos.")
                 .addLoreLine("")
@@ -244,6 +244,7 @@ public final class Items {
     
     public static void setLobbyItems(Player p){
         p.getInventory().clear();
+        p.getInventory().setArmorContents(null);
         p.getInventory().setItem(LOBBY_MENU.getSlot(), LOBBY_MENU.getItem());
         p.getInventory().setItem(MULTI_LOBBY_MENU_HOT_BAR.getSlot(), MULTI_LOBBY_MENU_HOT_BAR.getItem());
     
@@ -274,6 +275,7 @@ public final class Items {
     
     public static void setSkyWarsLobbyItems(Player p){
         p.getInventory().clear();
+        p.getInventory().setArmorContents(null);
         p.getInventory().setItem(LOBBY_MENU.getSlot(), LOBBY_MENU.getItem());
         p.getInventory().setItem(MULTI_LOBBY_MENU_HOT_BAR.getSlot(), MULTI_LOBBY_MENU_HOT_BAR.getItem());
         for ( String name : config.getConfigurationSection("items").getKeys(false) ){

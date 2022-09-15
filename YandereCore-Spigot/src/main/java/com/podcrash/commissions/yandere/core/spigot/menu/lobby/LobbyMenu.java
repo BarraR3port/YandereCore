@@ -10,6 +10,7 @@ import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
 import net.lymarket.lyapi.spigot.menu.UpdatableMenu;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
 import net.lymarket.lyapi.spigot.utils.NBTItem;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -92,7 +93,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getBedWarsPlayerSize())
                 .addTag("server-name", proxyStats.getRandomBedWarsServer().getProxyName())
                 .build());
-        
+    
         inventory.setItem(15, new ItemBuilder(Items.PRACTICE_BASE.clone())
                 .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isPracticeOnline() ? "&aACTIVO" : "&cCERRADO"))
@@ -100,7 +101,16 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getPracticePlayerSize())
                 .addTag("server-name", proxyStats.getRandomPracticeServer().getProxyName())
                 .build());
-        
+    
+        inventory.setItem(26, new ItemBuilder(Material.NETHER_STAR)
+                .setDisplayName("&a&lLobbies")
+                .addLoreLine("")
+                .addLoreLine("&7Estado: " + (proxyStats.isLobbyOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine("")
+                .addLoreLine("&7Click para ver la lista de Lobbies.")
+                .addTag("server-name", proxyStats.getRandomLobbyServer().getProxyName())
+                .build());
+    
         inventory.setItem(30, new ItemBuilder(Items.TNT_TAG.clone())
                 .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isTNTTagOnline() ? "&aACTIVO" : "&cCERRADO"))
@@ -108,7 +118,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getTNTTagPlayerSize())
                 .addTag("server-name", proxyStats.getRandomTNTTagServer().getProxyName())
                 .build());
-        
+    
         inventory.setItem(32, new ItemBuilder(Items.SURVIVAL.clone())
                 .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isSurvivalOnline() ? "&aACTIVO" : "&cCERRADO"))
@@ -128,11 +138,6 @@ public class LobbyMenu extends UpdatableMenu {
                 .addTag("stats", "stats")
                 .build());
         
-        /*inventory.setItem(26, new ItemBuilder(XMaterial.NETHER_STAR.parseItem())
-                .setDisplayName("&bLobby")
-                .addTag("server-name", proxyStats.getRandomLobbyServer().getProxyName())
-                .build());
-        */
         inventory.setItem(36, super.CLOSE_ITEM);
         
     }
