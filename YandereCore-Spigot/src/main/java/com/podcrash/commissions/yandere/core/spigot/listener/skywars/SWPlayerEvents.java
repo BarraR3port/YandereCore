@@ -194,22 +194,24 @@ public final class SWPlayerEvents extends MainEvents {
     }
     
     
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTeleport(PlayerTeleportEvent e){
         Player p = e.getPlayer();
+        e.setCancelled(false);
+        if (p.hasMetadata("NPC")) return;
         try {
             if (this.plugin.getCm().isMainLobby()){
                 World w = p.getLocation().getWorld();
                 if (w.getName().equals(this.plugin.getCm().getLobbyWorld())){
+                    e.setCancelled(false);
                     Items.setSkyWarsLobbyItems(p);
                     User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
                     if (user.getRank() != Rank.USUARIO){
                         p.setAllowFlight(true);
                     }
-                    
                     PlayerVisibility visibility = user.getPlayerVisibility();
-                    
-                    for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
+                
+                    for ( Player targetPlayer : w.getPlayers() ){
                         if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
                         User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
                         PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
@@ -273,6 +275,7 @@ public final class SWPlayerEvents extends MainEvents {
     
     public void subPlayerJoinEvent(PlayerJoinEvent e){
         Player p = e.getPlayer();
+        if (p.hasMetadata("NPC")) return;
         if (this.plugin.getCm().isMainLobby()){
             World w = p.getLocation().getWorld();
             try {
@@ -280,14 +283,14 @@ public final class SWPlayerEvents extends MainEvents {
                     Items.setSkyWarsLobbyItems(p);
                     User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
                     boolean hasRank = user.getRank() != Rank.USUARIO;
-                    
+                
                     if (hasRank){
                         p.setAllowFlight(true);
                     }
                     PlayerVisibility visibility = user.getPlayerVisibility();
                     String joinMsg = hasRank ? Utils.format(" &8&l»" + user.getRank().getTabPrefix() + p.getName() + " &fse ha unido al servidor!") : "";
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                        for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
+                        for ( Player targetPlayer : w.getPlayers() ){
                             if (targetPlayer.getUniqueId().equals(p.getUniqueId())){
                                 if (!joinMsg.equals("")){
                                     targetPlayer.sendMessage(joinMsg);
@@ -367,8 +370,10 @@ public final class SWPlayerEvents extends MainEvents {
             if (p.equals(targetPlayer)) continue;
             if (p.getWorld().equals(targetPlayer.getWorld())){
                 p.showPlayer(targetPlayer);
+                targetPlayer.showPlayer(p);
             } else {
                 p.hidePlayer(targetPlayer);
+                targetPlayer.hidePlayer(p);
             }
         }
         if (this.plugin.getCm().isMainLobby()){
@@ -383,7 +388,7 @@ public final class SWPlayerEvents extends MainEvents {
                     
                     PlayerVisibility visibility = user.getPlayerVisibility();
                     Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-                        for ( Player targetPlayer : Bukkit.getOnlinePlayers() ){
+                        for ( Player targetPlayer : w.getPlayers() ){
                             if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
                             User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
                             PlayerVisibility targetVisibility = targetUser.getPlayerVisibility();
@@ -490,7 +495,7 @@ public final class SWPlayerEvents extends MainEvents {
                 PlayerVisibility currentPlayerVisibility = user.getPlayerVisibility();
                 user.nextPlayerVisibility();
                 Main.getInstance().getPlayers().savePlayer(user);
-                for ( Player player : Bukkit.getOnlinePlayers() ){
+                for ( Player player : w.getPlayers() ){
                     if (player.getUniqueId().equals(p.getUniqueId())) continue;
                     switch(currentPlayerVisibility){
                         case ALL:

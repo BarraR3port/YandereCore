@@ -33,6 +33,7 @@ public class MultiLobbyMenu extends UpdatableMenu {
             case SKY_WARS:
                 return "&4• &8Lobbies de &eSky Wars";
             case BED_WARS:
+            case LOBBY_BED_WARS:
                 return "&4• &8Lobbies de &eBed Wars";
             case PRACTICE:
                 return "&4• &8Lobbies de &ePractice";
@@ -40,7 +41,6 @@ public class MultiLobbyMenu extends UpdatableMenu {
                 return "&4• &8Lobbies de &eTNT Tag";
             case SURVIVAL:
                 return "&4• &8Lobbies de &eSurvival";
-            case LOBBY:
             default:
                 return "&4• &8Lobbies";
         }

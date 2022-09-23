@@ -338,6 +338,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         api.getCommandService().registerCommands(new GMSPCommand());
         api.getCommandService().registerCommands(new Fly());
         api.getCommandService().registerCommands(new Heal());
+        api.getCommandService().registerCommands(new NbtInfoCommand());
     }
     
     public void reconnectToProxy(){

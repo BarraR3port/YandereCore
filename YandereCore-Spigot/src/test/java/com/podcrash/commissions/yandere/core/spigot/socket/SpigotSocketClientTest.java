@@ -68,15 +68,25 @@ public class SpigotSocketClientTest {
             list.add("test2");
             list.add("test3");
         }
-        
-        public ArrayList<String> getList() {
+    
+        public ArrayList<String> getList(){
             return list;
         }
-        
-        public void addToList(List<String> list) {
+    
+        public void addToList(List<String> list){
             list.add("test4");
         }
     }
     
+    
+    @Test
+    public void test5(){
+        int req = 5000;
+        int current = 2313;
+        
+        String percent = (int) Math.floor((double) current / (double) req * 100) + "%";
+        
+        System.out.println(percent);
+    }
     
 }

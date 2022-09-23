@@ -5,6 +5,7 @@ import com.podcrash.commissions.yandere.core.common.data.lobby.JoinBedWarsArenaT
 import com.podcrash.commissions.yandere.core.common.data.lobby.JoinSkyWarsArenaType;
 import com.podcrash.commissions.yandere.core.common.data.lobby.PlayerVisibility;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
+import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.lobby.LobbyItem;
 import net.lymarket.lyapi.spigot.config.Config;
@@ -275,6 +276,9 @@ public final class Items {
     
     public static void setSkyWarsLobbyItems(Player p){
         p.getInventory().clear();
+        if (p.hasMetadata("NPC")){
+            throw new UserNotFoundException("Player is an NPC");
+        }
         p.getInventory().setArmorContents(null);
         p.getInventory().setItem(LOBBY_MENU.getSlot(), LOBBY_MENU.getItem());
         p.getInventory().setItem(MULTI_LOBBY_MENU_HOT_BAR.getSlot(), MULTI_LOBBY_MENU_HOT_BAR.getItem());
