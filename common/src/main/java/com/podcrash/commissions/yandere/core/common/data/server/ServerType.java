@@ -1,24 +1,22 @@
 package com.podcrash.commissions.yandere.core.common.data.server;
 
 public enum ServerType {
-    LOBBY("LOBBY-", "Lobby", 50),
-    REGISTRO("RG-", "Registro", 20),
-    SKY_WARS("SW-", "SkyWars", 75),
-    LOBBY_BED_WARS("LB-BW-", "Lobby BedWars", 50),
-    BED_WARS("BW-", "BedWars", 75),
-    TNT_TAG("TNT-TAG-", "TNT Tag", 100),
-    PRACTICE("PR-", "Practice", 50),
-    SURVIVAL("SG-", "Survival", 50),
-    EMPTY("EMPTY", "Empty", 0);
+    LOBBY("LOBBY-", "Lobby"),
+    REGISTRO("RG-", "Registro"),
+    SKY_WARS("SW-", "SkyWars"),
+    LOBBY_BED_WARS("LB-BW-", "Lobby BedWars"),
+    BED_WARS("BW-", "BedWars"),
+    TNT_TAG("TNT-TAG-", "TNT Tag"),
+    PRACTICE("PR-", "Practice"),
+    SURVIVAL("SG-", "Survival"),
+    EMPTY("EMPTY", "Empty");
     
     private final String prefix;
     private final String name;
-    private final int maxPlayers;
     
-    ServerType(String prefix, String name, int maxPlayers){
+    ServerType(String prefix, String name){
         this.prefix = prefix;
         this.name = name;
-        this.maxPlayers = maxPlayers;
     }
     
     public static ServerType match(String serverName){
@@ -40,9 +38,5 @@ public enum ServerType {
     
     public String getName(){
         return name;
-    }
-    
-    public int getMaxPlayers(){
-        return maxPlayers;
     }
 }

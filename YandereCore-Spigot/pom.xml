@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.podcrash.commissions.yandere.core</groupId>
         <artifactId>YandereCore</artifactId>
-        <version>1.0.9-ALPHA</version>
+        <version>1.1-ALPHA</version>
     </parent>
 
     <artifactId>YandereCore-Spigot</artifactId>
@@ -88,21 +88,21 @@
                                     <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.lang3
                                     </shadedPattern>
                                 </relocation>
-                                <relocation>
+                                <!--<relocation>
                                     <pattern>org.apache.logging.log4j</pattern>
                                     <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.log4j
                                     </shadedPattern>
-                                </relocation>
+                                </relocation>-->
                                 <relocation>
                                     <pattern>org.bson</pattern>
                                     <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.bson
                                     </shadedPattern>
                                 </relocation>
-                                <relocation>
+                                <!--<relocation>
                                     <pattern>org.slf4j</pattern>
                                     <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.slf4j
                                     </shadedPattern>
-                                </relocation>
+                                </relocation>-->
                                 <relocation>
                                     <pattern>com.cryptomorin.xseries</pattern>
                                     <shadedPattern>com.podcrash.commissions.yandere.core.spigot.libs.xseries
@@ -554,15 +554,15 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.0</version>
+            <version>2.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>ga.strikepractice</groupId>
             <artifactId>StrikePractice</artifactId>
-            <version>3.4.6</version>
+            <version>3.5.2</version>
             <scope>system</scope>
-            <systemPath>/home/barra/Desktop/apis/strikepractice-3.4.6.jar</systemPath>
+            <systemPath>/home/barra/Desktop/apis/strikepractice-3.5.2.jar</systemPath>
         </dependency>
 
         <dependency>

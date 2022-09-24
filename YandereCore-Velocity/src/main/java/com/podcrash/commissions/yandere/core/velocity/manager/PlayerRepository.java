@@ -2,9 +2,9 @@ package com.podcrash.commissions.yandere.core.velocity.manager;
 
 import com.mongodb.client.model.Filters;
 import com.podcrash.commissions.yandere.core.common.data.level.Level;
+import com.podcrash.commissions.yandere.core.common.data.user.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
-import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import net.luckperms.api.LuckPermsProvider;
 import net.lymarket.lyapi.common.Api;

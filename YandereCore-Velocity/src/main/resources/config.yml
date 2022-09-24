@@ -13,3 +13,19 @@ db:
   password: JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK
   database: yandere
   urli: "mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@172.18.0.1:27017/"
+
+announcements:
+  1:
+    delay: 15
+    timeType: MINUTES
+    sound: true
+    messages:
+      - "&7&m-------------&e&lYandere&c&lRangos&7&m-------------"
+      - ""
+      - "&f&l   Compra rangos para obtener mejoras visuales, "
+      - "&f&l   mayor prioridad, partículas, y mucho más"
+      - "&f&l   dentro de nuestras diferentes modalidades."
+      - ""
+      - "  &e&l¡Compra tu rango en &c&lstore.yandere.es&f&l!"
+      - ""
+      - "&7&m--------------------------------------------"

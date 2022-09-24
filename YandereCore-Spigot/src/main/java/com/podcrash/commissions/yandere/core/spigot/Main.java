@@ -6,11 +6,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.podcrash.commissions.yandere.core.common.YandereApi;
 import com.podcrash.commissions.yandere.core.common.data.logs.OfflineLogRepository;
+import com.podcrash.commissions.yandere.core.common.data.server.IGlobalServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.IServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
-import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
-import com.podcrash.commissions.yandere.core.common.db.OfflinePlayerRepository;
+import com.podcrash.commissions.yandere.core.common.data.user.IPlayerRepository;
+import com.podcrash.commissions.yandere.core.common.data.user.OfflinePlayerRepository;
 import com.podcrash.commissions.yandere.core.common.log.ILogRepository;
 import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import com.podcrash.commissions.yandere.core.common.socket.OfflineSocketClient;
@@ -48,6 +49,7 @@ import com.podcrash.commissions.yandere.core.spigot.listener.skywars.SWPlayerEve
 import com.podcrash.commissions.yandere.core.spigot.log.LogRepository;
 import com.podcrash.commissions.yandere.core.spigot.papi.Placeholders;
 import com.podcrash.commissions.yandere.core.spigot.party.PartiesManager;
+import com.podcrash.commissions.yandere.core.spigot.server.GlobalServerRepository;
 import com.podcrash.commissions.yandere.core.spigot.server.ServerRepository;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.commissions.yandere.core.spigot.socket.SpigotSocketClient;
@@ -97,6 +99,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     private boolean hockedIntoBedWars = false;
     private boolean hockedIntoSkyWars = false;
     private IServerRepository serverRepository;
+    private IGlobalServerRepository globalServerRepository;
     
     public static LyApi getApi(){
         return api;
@@ -161,6 +164,7 @@ public final class Main extends JavaPlugin implements YandereApi {
             players = new PlayerRepository(mongo, "players");
             logs = new LogRepository(mongo, "logs");
             serverRepository = new ServerRepository(mongo, "servers");
+            globalServerRepository = new GlobalServerRepository(mongo, "server_settings");
             try {
                 socket = new SpigotSocketClient(players);
                 if (Settings.IS_SERVER_LINKED){
@@ -439,11 +443,16 @@ public final class Main extends JavaPlugin implements YandereApi {
         return hockedIntoSkyWars;
     }
     
-    public void overrideSpigotDefaultMessages() {
+    public void overrideSpigotDefaultMessages(){
         org.spigotmc.SpigotConfig.unknownCommandMessage = Utils.format("  &8&l▸ &cComando no encontrado, usa &e/ayuda &cpa ver los comandos disponibles.");
     }
     
-    public IServerRepository getServerRepository() {
+    public IServerRepository getServerRepository(){
         return serverRepository;
     }
+    
+    public IGlobalServerRepository getGlobalServerSettings(){
+        return globalServerRepository;
+    }
+    
 }

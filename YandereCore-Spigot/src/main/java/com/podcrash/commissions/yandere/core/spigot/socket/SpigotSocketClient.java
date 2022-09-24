@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
-import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
+import com.podcrash.commissions.yandere.core.common.data.user.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import com.podcrash.commissions.yandere.core.common.socket.ISocketClient;
 import com.podcrash.commissions.yandere.core.spigot.Main;

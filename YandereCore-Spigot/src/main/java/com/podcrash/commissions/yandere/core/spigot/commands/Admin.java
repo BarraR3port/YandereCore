@@ -4,6 +4,7 @@ import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.menu.admin.AdminMenu;
+import com.podcrash.commissions.yandere.core.spigot.menu.settings.ServerSettings;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import com.podcrash.commissions.yandere.core.spigot.sounds.Sounds;
 import net.lymarket.lyapi.common.commands.*;
@@ -37,6 +38,12 @@ public class Admin implements ILyCommand {
                 Main.getInstance().getConfig().set("global.debug", Settings.DEBUG);
                 Main.getInstance().getConfig().saveData();
                 Utils.sendMessage(context.getSender(), "&c&lYandere &cDEBUG " + (Settings.DEBUG ? "&aEnabled" : "&cDisabled"));
+                return new CommandResponse();
+            } else if (context.getArg(0).equalsIgnoreCase("menu")){
+                if (context.getSender() instanceof Player){
+                    Player player = (Player) context.getSender();
+                    new ServerSettings(LyApi.getPlayerMenuUtility(player)).open();
+                }
                 return new CommandResponse();
             } else if (context.getArg(0).equalsIgnoreCase("refresh-plugins")){
                 Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for plugin updates");
@@ -87,11 +94,11 @@ public class Admin implements ILyCommand {
                 //list.add("test-reload");
                 return list;
             }
-            if (context.getArgs().length == 2){
+            /*if (context.getArgs().length == 2){
                 if (context.getArg(0).equalsIgnoreCase("menu") || context.getArg(0).equalsIgnoreCase("worlds") || context.getArg(0).equalsIgnoreCase("homes")){
                     list.addAll(Main.getInstance().getPlayers().getPlayersName(context.getSender().getName()));
                 }
-            }
+            }*/
         }
         
         return list;

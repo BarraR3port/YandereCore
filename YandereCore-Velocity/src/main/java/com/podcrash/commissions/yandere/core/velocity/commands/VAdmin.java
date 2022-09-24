@@ -19,6 +19,7 @@ public class VAdmin implements SimpleCommand {
                 if (invocation.arguments()[0].equalsIgnoreCase("reload")){
                     invocation.source().sendMessage(Utils.format("&aReloading config..."));
                     VMain.getConfig().forceReload();
+                    VMain.getInstance().getAnnouncementManager().init();
                 } else if (invocation.arguments()[0].equalsIgnoreCase("debug")){
                     boolean result = !VMain.getConfig().getBoolean("global.debug");
                     invocation.source().sendMessage(Utils.format("&aDebug mode is now " + (result ? "&aenabled" : "&cdisabled")));

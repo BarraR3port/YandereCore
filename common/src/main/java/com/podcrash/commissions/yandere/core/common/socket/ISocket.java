@@ -1,7 +1,7 @@
 package com.podcrash.commissions.yandere.core.common.socket;
 
 import com.google.gson.JsonObject;
-import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
+import com.podcrash.commissions.yandere.core.common.data.user.IPlayerRepository;
 
 import java.io.IOException;
 

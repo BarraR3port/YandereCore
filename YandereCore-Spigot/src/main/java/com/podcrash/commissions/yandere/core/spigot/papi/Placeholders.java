@@ -4,6 +4,7 @@ import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -147,22 +148,25 @@ public class Placeholders extends PlaceholderExpansion {
             case "address":{
                 return p.getAddress();
             }
-            case "rank_tab": {
+            case "rank_tab":{
                 return p.getRank().getTabPrefix();
             }
-            case "rank_score_board": {
+            case "rank_score_board":{
                 return p.getRank().getScoreBoardName();
             }
-            case "rank_prefix": {
+            case "rank_score_board_practice":{
+                return Utils.format(p.getRank().getScoreBoardName().replace("§l", ""));
+            }
+            case "rank_prefix":{
                 return p.getRank().getTagNamePrefix();
             }
-            case "suffix": {
+            case "suffix":{
                 return p.getSuffix();
             }
-            case "coins": {
+            case "coins":{
                 return p.getCoinsSemiFormatted();
             }
-            case "coins_formatted": {
+            case "coins_formatted":{
                 return p.getCoinsFormatted();
             }
             case "level": {

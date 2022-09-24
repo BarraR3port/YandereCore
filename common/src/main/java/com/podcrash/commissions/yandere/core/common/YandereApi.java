@@ -1,7 +1,7 @@
 package com.podcrash.commissions.yandere.core.common;
 
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
-import com.podcrash.commissions.yandere.core.common.db.IPlayerRepository;
+import com.podcrash.commissions.yandere.core.common.data.user.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.log.ILogRepository;
 import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import net.lymarket.lyapi.spigot.config.Config;

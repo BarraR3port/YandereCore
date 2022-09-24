@@ -81,24 +81,24 @@ public class LobbyMenu extends UpdatableMenu {
         inventory.setItem(11, new ItemBuilder(Items.SKY_WARS_BASE.clone())
                 .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isSkyWarsOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getSkyWarsPlayerSize())
+                .addLoreLine(proxyStats.isSkyWarsOnline() ? "" : null)
+                .addLoreLine(proxyStats.isSkyWarsOnline() ? "&7Jugadores en linea: &a" + proxyStats.getSkyWarsPlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomSkyWarsServer().getProxyName())
                 .build());
         
         inventory.setItem(13, new ItemBuilder(Items.BED_WARS_BASE.clone())
                 .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isBedWarsOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getBedWarsPlayerSize())
+                .addLoreLine(proxyStats.isBedWarsOnline() ? "" : null)
+                .addLoreLine(proxyStats.isBedWarsOnline() ? "&7Jugadores en linea: &a" + proxyStats.getBedWarsPlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomBedWarsServer().getProxyName())
                 .build());
     
         inventory.setItem(15, new ItemBuilder(Items.PRACTICE_BASE.clone())
                 .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isPracticeOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getPracticePlayerSize())
+                .addLoreLine(proxyStats.isPracticeOnline() ? "" : null)
+                .addLoreLine(proxyStats.isPracticeOnline() ? "&7Jugadores en linea: &a" + proxyStats.getPracticePlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomPracticeServer().getProxyName())
                 .build());
     
@@ -106,24 +106,24 @@ public class LobbyMenu extends UpdatableMenu {
                 .setDisplayName("&a&lLobbies")
                 .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isLobbyOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine("")
-                .addLoreLine("&7Click para ver la lista de Lobbies.")
+                .addLoreLine(proxyStats.isLobbyOnline() ? "" : null)
+                .addLoreLine(proxyStats.isLobbyOnline() ? "&7Click para ver la lista de Lobbies." : null)
                 .addTag("server-name", proxyStats.getRandomLobbyServer().getProxyName())
                 .build());
     
         inventory.setItem(30, new ItemBuilder(Items.TNT_TAG.clone())
                 .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isTNTTagOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getTNTTagPlayerSize())
+                .addLoreLine(proxyStats.isTNTTagOnline() ? "" : null)
+                .addLoreLine(proxyStats.isTNTTagOnline() ? "&7Jugadores en linea: &a" + proxyStats.getTNTTagPlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomTNTTagServer().getProxyName())
                 .build());
     
         inventory.setItem(32, new ItemBuilder(Items.SURVIVAL.clone())
                 .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isSurvivalOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine("")
-                .addLoreLine("&7Jugadores en linea: &a" + proxyStats.getSurvivalPlayerSize())
+                .addLoreLine(proxyStats.isSurvivalOnline() ? "" : null)
+                .addLoreLine(proxyStats.isSurvivalOnline() ? "&7Jugadores en linea: &a" + proxyStats.getSurvivalPlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomSurvivalGamesServer().getProxyName())
                 .build());
         

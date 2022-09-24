@@ -66,7 +66,7 @@ public class MultiLobbyMenu extends UpdatableMenu {
                             .clearLore()
                             .addLoreLine("")
                             .addLoreLine("&f&lEstado: " + (isOnline ? "&aAbierto" : "&cCerrado"))
-                            .addLoreLine("&f&lJugadores: " + (playersOnline > 0 ? "&a" : "&c") + playersOnline + "&7/&a" + serverType.getMaxPlayers())
+                            .addLoreLine("&f&lJugadores: " + (playersOnline > 0 ? "&a" : "&c") + playersOnline + "&7/&a" + Main.getInstance().getGlobalServerSettings().getOrCreate().getMax(serverType))
                             .addLoreLine(isOnline ? "" : null)
                             .addLoreLine(isSameLobby ? "&cYa estás en este servidor!" : isOnline ? "&7&lClick para entrar!" : null)
                             .addLoreLine("")

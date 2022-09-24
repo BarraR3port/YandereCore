@@ -3,9 +3,11 @@ package com.podcrash.commissions.yandere.core.velocity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
+import com.podcrash.commissions.yandere.core.common.data.server.IGlobalServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.IServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.log.Slf4jPluginLogger;
+import com.podcrash.commissions.yandere.core.velocity.announcements.AnnouncementManager;
 import com.podcrash.commissions.yandere.core.velocity.commands.Lobby;
 import com.podcrash.commissions.yandere.core.velocity.commands.Ping;
 import com.podcrash.commissions.yandere.core.velocity.commands.Stream;
@@ -15,6 +17,7 @@ import com.podcrash.commissions.yandere.core.velocity.listener.PlayerEvents;
 import com.podcrash.commissions.yandere.core.velocity.listener.ServerEvents;
 import com.podcrash.commissions.yandere.core.velocity.manager.PlayerRepository;
 import com.podcrash.commissions.yandere.core.velocity.manager.ServerSocketManager;
+import com.podcrash.commissions.yandere.core.velocity.server.GlobalServerRepository;
 import com.podcrash.commissions.yandere.core.velocity.server.ServerRepository;
 import com.podcrash.commissions.yandere.core.velocity.socketmanager.ProxySocketServer;
 import com.podcrash.commissions.yandere.core.velocity.socketmanager.ServerSocketTask;
@@ -41,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "yandere",
         name = "Yandere",
-        version = "1.0.9-ALPHA",
+        version = "1.1-ALPHA",
         authors = {"BarraR3port"},
         url = "https://podcrash.com/",
         dependencies = {@Dependency(id = "luckperms")})
@@ -54,10 +57,11 @@ public final class VMain extends LyApiVelocity {
     private final ProxyStats serverManager;
     private final ProxyServer proxy;
     private final Slf4jPluginLogger logger;
-    private final Path path;
     private final HashMap<UUID, ScheduledTask> streams = new HashMap<>();
     private PlayerRepository playersRepository;
     private IServerRepository serverRepository;
+    private IGlobalServerRepository globalServerRepository;
+    private AnnouncementManager announcementManager;
     
     /**
      * Constructor for ChatRegulator Plugin
@@ -71,7 +75,6 @@ public final class VMain extends LyApiVelocity {
     public VMain(final ProxyServer server, final Logger logger, final @DataDirectory Path path){
         super(server, "&cSin permisos");
         this.proxy = server;
-        this.path = path;
         this.logger = new Slf4jPluginLogger(logger);
         serverManager = new ProxyStats();
     }
@@ -109,7 +112,8 @@ public final class VMain extends LyApiVelocity {
         final MongoDBClient mongo = new MongoDBClient(url, config.getString("db.database"));
         playersRepository = new PlayerRepository(mongo, "players");
         serverRepository = new ServerRepository(mongo, "servers");
-    
+        globalServerRepository = new GlobalServerRepository(mongo, "server_settings");
+        announcementManager = new AnnouncementManager().init();
         VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), this::sendInfo).repeat(5, TimeUnit.SECONDS).schedule();
     
         new Lobby(proxy.getCommandManager());
@@ -167,5 +171,17 @@ public final class VMain extends LyApiVelocity {
     
     public void setStreams(UUID uuid, ScheduledTask task){
         streams.put(uuid, task);
+    }
+    
+    public IServerRepository getServerRepository(){
+        return serverRepository;
+    }
+    
+    public IGlobalServerRepository getGlobalServerRepository(){
+        return globalServerRepository;
+    }
+    
+    public AnnouncementManager getAnnouncementManager(){
+        return announcementManager;
     }
 }
