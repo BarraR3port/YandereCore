@@ -11,11 +11,10 @@ import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
 
-public final class Menu implements ILyCommand {
+public final class MenuCommand implements ILyCommand {
     
     @Command(name = "menu", permission = "yandere.menu", usage = "menu", description = "Menu", aliases = {"m", "ym"})
     public CommandResponse command(CommandContext context){
-        
         if (context.getSender() instanceof Player){
             final Player player = (Player) context.getSender();
             if (context.getArgs().length == 0){

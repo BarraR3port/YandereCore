@@ -3,7 +3,6 @@ package com.podcrash.commissions.yandere.core.velocity.server;
 import com.mongodb.client.model.Filters;
 import com.podcrash.commissions.yandere.core.common.data.server.GlobalServerSettings;
 import com.podcrash.commissions.yandere.core.common.data.server.IGlobalServerRepository;
-import com.podcrash.commissions.yandere.core.common.error.GlobalServerNotFoundException;
 import com.podcrash.commissions.yandere.core.velocity.VMain;
 import net.lymarket.lyapi.common.db.MongoDBClient;
 import org.bson.Document;
@@ -49,7 +48,7 @@ public class GlobalServerRepository extends IGlobalServerRepository {
     @Override
     public GlobalServerSettings fetch(){
         Document doc = database.findOneFast(TABLE_NAME, Filters.empty());
-        if (doc == null) throw new GlobalServerNotFoundException();
+        if (doc == null) return null;
         globalServerSettings = database.getGson().fromJson(doc.toJson(), GlobalServerSettings.class);
         return globalServerSettings;
     }

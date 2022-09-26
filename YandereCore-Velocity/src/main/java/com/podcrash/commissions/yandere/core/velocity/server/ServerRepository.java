@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.podcrash.commissions.yandere.core.common.data.plugin.LyPlugin;
 import com.podcrash.commissions.yandere.core.common.data.server.IServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.Server;
+import com.podcrash.commissions.yandere.core.common.data.server.repo.OutPlugin;
+import com.podcrash.commissions.yandere.core.common.data.server.repo.Response;
 import com.podcrash.commissions.yandere.core.velocity.VMain;
 import com.velocitypowered.api.plugin.PluginContainer;
 import net.lymarket.lyapi.common.db.MongoDBClient;
@@ -89,10 +91,10 @@ public class ServerRepository extends IServerRepository {
                 for ( LyPlugin plugin : pluginsSaved ){
                     for ( PluginContainer pluginBukkit : loadedPlugins ){
                         String bukkitPluginName = pluginBukkit.getDescription().getName().get();
-                        if(plugin.getName().contains(bukkitPluginName) ||
+                        if (plugin.getName().contains(bukkitPluginName) ||
                                 bukkitPluginName.contains(plugin.getName()) ||
                                 bukkitPluginName.equalsIgnoreCase(plugin.getName())){
-                            if(!pluginBukkit.getDescription().getVersion().get().equals(plugin.getVersion())){
+                            if (!pluginBukkit.getDescription().getVersion().get().equals(plugin.getVersion())){
                                 VMain.getInstance().getLogger().warn("[UPDATE MACHINE] There is a new version for the plugin " + plugin.getName() + " (" + plugin.getVersion() + ")");
                                 pluginsToUpdate.put(plugin, pluginBukkit);
                             }
@@ -107,7 +109,7 @@ public class ServerRepository extends IServerRepository {
                     pluginsToUpdate.forEach((plugin, pluginBukkit) -> {
                         try {
                             updatePlugin(plugin, pluginBukkit);
-                        } catch(IOException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                             VMain.getInstance().getLogger().warn("[UPDATE MACHINE] An error has occurred when trying to update");
                         }
@@ -128,8 +130,124 @@ public class ServerRepository extends IServerRepository {
         } catch (IOException | NullPointerException | ConcurrentModificationException ignored) {
             ignored.printStackTrace();
         }
-        
+    
     }
+    
+    /*public void checkForPluginsUpdates2(){
+        try {
+            pluginFilesGarbageCollector();
+            VMain.getInstance().getLogger().info("[UPDATE MACHINE] Initializing the ~Updating Machine~ ...");
+            
+            StringBuilder resultado = new StringBuilder();
+            URL url = new URL(VMain.getConfig().get("web.url") + "/api/lydark/server/checkPlugins");
+            HttpURLConnection connexion = (HttpURLConnection) url.openConnection();
+            ArrayList<OutPlugin> pluginsold = VMain.getInstance().getProxy().getPluginManager().getPlugins().stream().map(plugin -> new OutPlugin(plugin.getDescription().getName().get())).collect(Collectors.toCollection(ArrayList::new));
+            
+            ArrayList<OutPlugin> plugins = new ArrayList<>();
+            String absolutePath = VMain.getInstance().getPath().toAbsolutePath().toString();
+            Iterator<File> it = FileUtils.iterateFiles(new File(absolutePath.substring(0, absolutePath.length() - 7)), null, false);
+            ArrayList<LoadedPlugin> loadedPlugins = new ArrayList<>(); // estos son los plugins que están en el server.
+            while (it.hasNext()) {
+                File file = it.next();
+                String pl = file.getName();
+                
+                
+                if (file.getName().endsWith(".jar")){
+                    InputStream stream = new URLClassLoader(new URL[]{file.toURL()}).getResourceAsStream("module.json");
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+                    StringBuilder builder = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        builder.append(line);
+                    }
+                    
+                    System.out.println(builder.toString());
+                }
+                
+                
+                if (pl.endsWith(".jar")){
+                    String pluginName = pl.replace(".jar", "").split("-")[0];
+                    PluginContainer plugin = VMain.getInstance().getProxy().getPluginManager().getPlugin(pluginName).orElse(null);
+                    plugin.getDescription().get
+                    if (plugin != null){
+                        String hash = String.format(Locale.ROOT, "%032x", new BigInteger(1, MessageDigest.getInstance("MD5").digest(Files.readAllBytes(file.toPath()))));
+                        plugins.add(new OutPlugin(plugin.name(), plugin.id(), hash));
+                        loadedPlugins.add(new LoadedPlugin(plugin.name(), plugin.id(), hash, plugin.version()));
+                    } else {
+                        plugins.add(new OutPlugin(pluginName));
+                    }
+                }
+            }
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            String json = gson.toJson(plugins);
+            VMain.getInstance().getLogger().info("[UPDATE MACHINE] Sending the following plugins to the server: " + json);
+            connexion.setRequestMethod("GET");
+            connexion.setRequestProperty("Web-Api-Key", VMain.getConfig().getString("web.key"));
+            connexion.setDoOutput(true);
+            connexion.setRequestProperty("msg", json);
+            
+            BufferedReader rd = new BufferedReader(new InputStreamReader(connexion.getInputStream()));
+            String linea;
+            while ((linea = rd.readLine()) != null) {
+                resultado.append(linea);
+            }
+            rd.close();
+            
+            String response = resultado.toString();
+            
+            Response res = gson.fromJson(response, Response.class);
+            
+            ArrayList<PluginContainer> loadedPlugins = new ArrayList<>(VMain.getInstance().getProxy().getPluginManager().getPlugins());
+            
+            if (res.getType().equals("plugins")){
+                ArrayList<LyPlugin> pluginsSaved = res.getPlugins(); // estos son los plugins que están en el servidor y a la vez en el mongo
+                HashMap<LyPlugin, PluginContainer> pluginsToUpdate = new HashMap<>();
+                VMain.getInstance().getLogger().info("[UPDATE MACHINE] I have found " + pluginsSaved.size() + " plugins matches with the DB\n");
+                VMain.getInstance().getLogger().info("[UPDATE MACHINE] Checking if there is something to update...");
+                for ( LyPlugin plugin : pluginsSaved ){
+                    for ( PluginContainer pluginBukkit : loadedPlugins ){
+                        String bukkitPluginName = pluginBukkit.getDescription().getName().get();
+                        if (plugin.getName().contains(bukkitPluginName) ||
+                                bukkitPluginName.contains(plugin.getName()) ||
+                                bukkitPluginName.equalsIgnoreCase(plugin.getName())){
+                            if (!pluginBukkit.getDescription().getVersion().get().equals(plugin.getVersion())){
+                                VMain.getInstance().getLogger().warn("[UPDATE MACHINE] There is a new version for the plugin " + plugin.getName() + " (" + plugin.getVersion() + ")");
+                                pluginsToUpdate.put(plugin, pluginBukkit);
+                            }
+                        }
+                    }
+                    
+                }
+                if (pluginsToUpdate.size() > 0){
+                    VMain.getInstance().getLogger().warn("[UPDATE MACHINE] I have found " + pluginsToUpdate.size() + " plugins to update");
+                    VMain.getInstance().getLogger().info("[UPDATE MACHINE] Starting the update process...");
+                    
+                    pluginsToUpdate.forEach((plugin, pluginBukkit) -> {
+                        try {
+                            updatePlugin(plugin, pluginBukkit);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            VMain.getInstance().getLogger().warn("[UPDATE MACHINE] An error has occurred when trying to update");
+                        }
+                    });
+                    VMain.getInstance().getLogger().info("[UPDATE MACHINE] Every Plugin has successfully updated!");
+                    VMain.getInstance().getLogger().warn("[UPDATE MACHINE] Restarting...");
+                    VMain.getInstance().getProxy().shutdown();
+                    
+                } else {
+                    VMain.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
+                }
+                *//*VMain.getInstance( ).getConfig( ).getBoolean( "web.pluginsConfigured" );*//*
+            } else if (res.getType().equals("success")){
+                VMain.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
+            } else {
+                VMain.getInstance().getLogger().warn("[UPDATE MACHINE] There is something wrong with the server, please contact the AL TIO BARRAAAAAAAAAAAAAAAAAA");
+            }
+        } catch (IOException | NullPointerException | ConcurrentModificationException | NoSuchAlgorithmException err) {
+            err.printStackTrace();
+        }
+        
+    }*/
     
     public void pluginFilesGarbageCollector(){
         List<String> pluginsToDelete = VMain.getConfig().getStringList("web.pluginsToDelete");
@@ -210,34 +328,5 @@ public class ServerRepository extends IServerRepository {
         
     }
     
-    private static class OutPlugin {
-        private final String name;
-        
-        public OutPlugin(String name){
-            this.name = name;
-        }
-        
-        public String getName(){
-            return name;
-        }
-    }
-    
-    private static class Response {
-        private final String type;
-        private final ArrayList<LyPlugin> registeredPlugins;
-        
-        public Response(String type, ArrayList<LyPlugin> registeredPlugins){
-            this.type = type;
-            this.registeredPlugins = registeredPlugins;
-        }
-        
-        public String getType(){
-            return type;
-        }
-        
-        public ArrayList<LyPlugin> getPlugins(){
-            return registeredPlugins;
-        }
-    }
     
 }

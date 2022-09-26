@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
 
-public class Speed implements ILyCommand {
+public class SpeedCommand implements ILyCommand {
     
     @Command(name = "speed", permission = "yandere.speed", aliases = "s")
     public CommandResponse command(CommandContext context){

@@ -138,7 +138,7 @@ public class ProxySocketServer implements Runnable {
                                 if (!json.has("current_server")) continue;
                                 if (!json.has("key")) continue;
                                 final UUID target_uuid = UUID.fromString(json.get("target_uuid").getAsString());
-            
+    
                                 json.remove("type");
                                 json.addProperty("type", "SEND_MSG_TO_PLAYER_POST");
                                 VMain.getInstance().getProxy().getPlayer(target_uuid).flatMap(p -> p.getCurrentServer().flatMap(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName()))).ifPresent(socket -> socket.sendMessage(json));
@@ -147,7 +147,14 @@ public class ProxySocketServer implements Runnable {
                                 json.remove("type");
                                 json.addProperty("type", "CHECK_PLUGIN_UPDATES_POST");
                                 VMain.getInstance().getProxy().getAllServers().forEach(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName()).ifPresent(socket -> socket.sendMessage(json)));
-            
+        
+                                //socketManager.getSocketServers().forEach(socketServer -> socketServer.sendMessage(json));
+                            }
+                            case "GLOBAL_SERVER_FETCH" -> {
+                                json.remove("type");
+                                json.addProperty("type", "GLOBAL_SERVER_FETCH_POST");
+                                VMain.getInstance().getProxy().getAllServers().forEach(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName()).ifPresent(socket -> socket.sendMessage(json)));
+        
                                 //socketManager.getSocketServers().forEach(socketServer -> socketServer.sendMessage(json));
                             }
                             case "CONNECT_TO_SERVER" -> {

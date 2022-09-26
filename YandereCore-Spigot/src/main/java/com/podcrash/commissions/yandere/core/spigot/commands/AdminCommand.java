@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class Admin implements ILyCommand {
+public class AdminCommand implements ILyCommand {
     
     @Command(name = "admin", permission = "yandere.admin", usage = "admin", description = "Admin Command")
     public CommandResponse command(CommandContext context){
@@ -32,6 +32,7 @@ public class Admin implements ILyCommand {
                 Sounds.init(Main.getInstance().getSounds());
                 Main.getInstance().reconnectToProxy();
                 Utils.sendMessage(context.getSender(), "&c&lYandere reloaded Successfully!");
+                Main.getInstance().getGlobalServerSettings().fetch();
                 return new CommandResponse();
             } else if (context.getArg(0).equalsIgnoreCase("debug")){
                 Settings.DEBUG = !Settings.DEBUG;
@@ -44,6 +45,15 @@ public class Admin implements ILyCommand {
                     Player player = (Player) context.getSender();
                     new ServerSettings(LyApi.getPlayerMenuUtility(player)).open();
                 }
+                return new CommandResponse();
+            } else if (context.getArg(0).equalsIgnoreCase("fetch-global-settings")){
+                Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for Global Settings updates");
+                Main.getInstance().getGlobalServerSettings().fetch();
+                return new CommandResponse();
+            } else if (context.getArg(0).equalsIgnoreCase("fetch-global-settings-general")){
+                Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for Global Settings updates (General)");
+                Main.getInstance().getGlobalServerSettings().fetch();
+                Main.getInstance().getSocket().sendCheckGlobalServerStatsFetchData();
                 return new CommandResponse();
             } else if (context.getArg(0).equalsIgnoreCase("refresh-plugins")){
                 Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for plugin updates");
@@ -91,6 +101,8 @@ public class Admin implements ILyCommand {
                 list.add("menu");
                 list.add("refresh-plugins");
                 list.add("refresh-plugins-general");
+                list.add("fetch-global-settings");
+                list.add("fetch-global-settings-general");
                 //list.add("test-reload");
                 return list;
             }

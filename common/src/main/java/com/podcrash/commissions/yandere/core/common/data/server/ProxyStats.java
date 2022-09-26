@@ -84,7 +84,11 @@ public final class ProxyStats {
     }
     
     public boolean isBedWarsOnline(){
-        return servers.values().stream().anyMatch(server -> server.getServerType() == ServerType.BED_WARS || server.getServerType() == ServerType.LOBBY_BED_WARS);
+        return servers.values().stream().anyMatch(server -> server.getServerType() == ServerType.BED_WARS);
+    }
+    
+    public boolean isBedWarsLobbyOnline(){
+        return servers.values().stream().anyMatch(server -> server.getServerType() == ServerType.LOBBY_BED_WARS);
     }
     
     public boolean isPracticeOnline(){

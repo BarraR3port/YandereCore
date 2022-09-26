@@ -527,6 +527,12 @@
             <version>1.0-BETA</version>
             <scope>system</scope>
             <systemPath>/home/barra/Desktop/apis/bedwars-plugin-1.0-BETA.jar</systemPath>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -537,8 +543,8 @@
             <systemPath>/home/barra/Desktop/apis/BedWarsProxy-Plugin-1.2.7.jar</systemPath>
             <exclusions>
                 <exclusion>
-                    <groupId>net.lymarket.lyapi</groupId>
-                    <artifactId>*.*</artifactId>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -548,6 +554,12 @@
             <artifactId>UltraSkyWars-Spigot</artifactId>
             <version>9.0.0</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->

@@ -7,10 +7,10 @@ public enum JoinBedWarsArenaType {
     _4V4V4V4("4v4v4v4"),
     RANDOM("Random");
     
-    private final String bwName;
+    private final String formattedName;
     
-    JoinBedWarsArenaType(String bwName){
-        this.bwName = bwName;
+    JoinBedWarsArenaType(String formattedName){
+        this.formattedName = formattedName;
     }
     
     public JoinBedWarsArenaType getNext(){
@@ -42,11 +42,11 @@ public enum JoinBedWarsArenaType {
             default:
                 return _4V4V4V4;
         }
-        
+    
     }
     
-    public String getBwName(){
-        return bwName;
+    public String getFormattedName(){
+        return formattedName;
     }
     
 }

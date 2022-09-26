@@ -21,6 +21,8 @@ public abstract class ISocket implements SocketMSG {
     
     public abstract void sendCheckPluginUpdates();
     
+    public abstract void sendCheckGlobalServerStatsFetchData();
+    
     public abstract void sendDisconnectInfoToProxy();
     
     public abstract ISocket init() throws IOException;

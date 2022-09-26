@@ -39,12 +39,12 @@ public class PracticeGameEvents implements Listener {
         
         
         winners.forEach(winner -> {
-            Main.getInstance().getPlayers().addCoins(winner, 10);
+            Main.getInstance().getPlayers().addCoins(winner, 5);
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(winner, 20, Level.GainSource.GAME_WIN), 65L);
         });
         
         losers.forEach(looser -> {
-            Main.getInstance().getPlayers().addCoins(looser, 5);
+            Main.getInstance().getPlayers().addCoins(looser, 1);
             Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(looser, 7, Level.GainSource.GAME_WIN), 65L);
         });
         

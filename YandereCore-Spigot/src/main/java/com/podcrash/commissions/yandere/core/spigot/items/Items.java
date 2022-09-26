@@ -286,7 +286,7 @@ public final class Items {
             if (!name.startsWith("lobby-skywars-")) continue;
             p.getInventory().setItem(config.getInt("items." + name + ".slot"), config.getItem(name));
         }
-    
+        
         User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         PlayerVisibility playerVisibility = user.getPlayerVisibility();
         switch(playerVisibility){
@@ -324,7 +324,45 @@ public final class Items {
         p.setSaturation(20F);
         p.getInventory().setHeldItemSlot(0);
         p.updateInventory();
+        
+    }
     
+    public static void setPracticeLobbyItems(Player p){
+        p.getInventory().clear();
+        if (p.hasMetadata("NPC")){
+            throw new UserNotFoundException("Player is an NPC");
+        }
+        p.getInventory().setArmorContents(null);
+        p.getInventory().setItem(LOBBY_MENU.getSlot(), LOBBY_MENU.getItem());
+        p.getInventory().setItem(MULTI_LOBBY_MENU_HOT_BAR.getSlot(), MULTI_LOBBY_MENU_HOT_BAR.getItem());
+        for ( String name : config.getConfigurationSection("items").getKeys(false) ){
+            if (!name.startsWith("lobby-practice-")) continue;
+            p.getInventory().setItem(config.getInt("items." + name + ".slot"), config.getItem(name));
+        }
+        
+        User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
+        PlayerVisibility playerVisibility = user.getPlayerVisibility();
+        switch(playerVisibility){
+            case ALL:
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_ALL.getSlot(), LOBBY_PLAYER_VISIBILITY_ALL.getItem());
+                break;
+            case RANKS:
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_RANKS.getSlot(), LOBBY_PLAYER_VISIBILITY_RANKS.getItem());
+                break;
+            case NONE:
+                p.getInventory().setItem(LOBBY_PLAYER_VISIBILITY_NONE.getSlot(), LOBBY_PLAYER_VISIBILITY_NONE.getItem());
+                break;
+        }
+        p.setHealth(p.getMaxHealth());
+        p.setGameMode(GameMode.ADVENTURE);
+        p.setFoodLevel(20);
+        p.setFireTicks(0);
+        p.setExp(0);
+        p.setLevel(0);
+        p.setSaturation(20F);
+        p.getInventory().setHeldItemSlot(0);
+        p.updateInventory();
+        
     }
     
     public static void setBedWarsLobbyItems(Player p){

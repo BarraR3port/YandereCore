@@ -1,6 +1,7 @@
 package com.podcrash.commissions.yandere.core.spigot.menu.lobby;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.podcrash.commissions.yandere.core.common.data.server.GlobalServerSettings;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
@@ -20,15 +21,18 @@ import java.util.UUID;
 public class LobbyMenu extends UpdatableMenu {
     
     private final UUID targetUserUUID;
+    private final GlobalServerSettings globalServerSettings;
     
     public LobbyMenu(IPlayerMenuUtility playerMenuUtility){
         super(playerMenuUtility);
         this.targetUserUUID = getOwner().getUniqueId();
+        this.globalServerSettings = Main.getInstance().getGlobalServerSettings().getOrCreate();
     }
     
     public LobbyMenu(IPlayerMenuUtility playerMenuUtility, UUID targetUserUUID){
         super(playerMenuUtility);
         this.targetUserUUID = targetUserUUID;
+        this.globalServerSettings = Main.getInstance().getGlobalServerSettings().getOrCreate();
     }
     
     @Override
@@ -46,20 +50,27 @@ public class LobbyMenu extends UpdatableMenu {
         final ItemStack item = e.getCurrentItem();
         if (NBTItem.hasTag(item, "server-name")){
             final String proxy_server_name = NBTItem.getTag(item, "server-name");
+            final Player p = (Player) e.getWhoClicked();
             if (!proxy_server_name.equalsIgnoreCase(ServerType.EMPTY.getName())){
                 ServerType serverType = ServerType.match(proxy_server_name);
+                boolean isInDevelopment = NBTItem.getTag(item, "development").equalsIgnoreCase("true");
+                if (isInDevelopment && !p.hasPermission("yandere.development.access." + serverType.getPrefix().replaceAll("-", ""))){
+                    super.checkSomething(p, e.getSlot(), item, "&cEsta modalidad está en desarrollo.", "", this.getMenuUUID());
+                    return;
+                }
                 switch(serverType){
                     case TNT_TAG:
                     case SURVIVAL:
                     case PRACTICE:
-                    case EMPTY:
                         Main.getInstance().getSocket().sendJoinServer(getOwner().getUniqueId(), proxy_server_name);
+                        break;
+                    case EMPTY:
+                        super.checkSomething(p, e.getSlot(), item, "&cNo hay servers disponibles.", "", this.getMenuUUID());
                         break;
                     default:
                         new MultiLobbyMenu(playerMenuUtility, serverType).open();
                 }
             } else {
-                final Player p = (Player) e.getWhoClicked();
                 super.checkSomething(p, e.getSlot(), item, "&cNo hay servers disponibles.", "", this.getMenuUUID());
             }
         } else if (NBTItem.hasTag(item, "ly-menu-close")){
@@ -79,32 +90,31 @@ public class LobbyMenu extends UpdatableMenu {
         }
         final ProxyStats proxyStats = Main.getInstance().getProxyStats();
         inventory.setItem(11, new ItemBuilder(Items.SKY_WARS_BASE.clone())
-                .addLoreLine("")
-                .addLoreLine("&7Estado: " + (proxyStats.isSkyWarsOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine(proxyStats.isSkyWarsOnline() ? "" : null)
-                .addLoreLine(proxyStats.isSkyWarsOnline() ? "&7Jugadores en linea: &a" + proxyStats.getSkyWarsPlayerSize() : null)
+                .addLoreLine("&7Estado: " + (globalServerSettings.isSkyWarsInDevelopment() ? "&3En Desarrollo" : proxyStats.isSkyWarsOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : proxyStats.isSkyWarsOnline() ? "" : null)
+                .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : proxyStats.isSkyWarsOnline() ? "&7Jugadores en linea: &a" + proxyStats.getSkyWarsPlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomSkyWarsServer().getProxyName())
+                .addTag("development", globalServerSettings.isSkyWarsInDevelopment() ? "true" : "false")
                 .build());
         
         inventory.setItem(13, new ItemBuilder(Items.BED_WARS_BASE.clone())
-                .addLoreLine("")
-                .addLoreLine("&7Estado: " + (proxyStats.isBedWarsOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine(proxyStats.isBedWarsOnline() ? "" : null)
-                .addLoreLine(proxyStats.isBedWarsOnline() ? "&7Jugadores en linea: &a" + proxyStats.getBedWarsPlayerSize() : null)
+                .addLoreLine("&7Estado: " + (globalServerSettings.isBedWarsInDevelopment() ? "&3En Desarrollo" : proxyStats.isBedWarsLobbyOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : proxyStats.isBedWarsLobbyOnline() ? "" : null)
+                .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : proxyStats.isBedWarsLobbyOnline() ? "&7Jugadores en linea: &a" + proxyStats.getBedWarsPlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomBedWarsServer().getProxyName())
+                .addTag("development", globalServerSettings.isBedWarsInDevelopment() ? "true" : "false")
                 .build());
     
         inventory.setItem(15, new ItemBuilder(Items.PRACTICE_BASE.clone())
-                .addLoreLine("")
-                .addLoreLine("&7Estado: " + (proxyStats.isPracticeOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine(proxyStats.isPracticeOnline() ? "" : null)
-                .addLoreLine(proxyStats.isPracticeOnline() ? "&7Jugadores en linea: &a" + proxyStats.getPracticePlayerSize() : null)
+                .addLoreLine("&7Estado: " + (globalServerSettings.isPracticeInDevelopment() ? "&3En Desarrollo" : proxyStats.isPracticeOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : proxyStats.isPracticeOnline() ? "" : null)
+                .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : proxyStats.isPracticeOnline() ? "&7Jugadores en linea: &a" + proxyStats.getPracticePlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomPracticeServer().getProxyName())
+                .addTag("development", globalServerSettings.isPracticeInDevelopment() ? "true" : "false")
                 .build());
     
         inventory.setItem(26, new ItemBuilder(Material.NETHER_STAR)
                 .setDisplayName("&a&lLobbies")
-                .addLoreLine("")
                 .addLoreLine("&7Estado: " + (proxyStats.isLobbyOnline() ? "&aACTIVO" : "&cCERRADO"))
                 .addLoreLine(proxyStats.isLobbyOnline() ? "" : null)
                 .addLoreLine(proxyStats.isLobbyOnline() ? "&7Click para ver la lista de Lobbies." : null)
@@ -112,19 +122,19 @@ public class LobbyMenu extends UpdatableMenu {
                 .build());
     
         inventory.setItem(30, new ItemBuilder(Items.TNT_TAG.clone())
-                .addLoreLine("")
-                .addLoreLine("&7Estado: " + (proxyStats.isTNTTagOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine(proxyStats.isTNTTagOnline() ? "" : null)
-                .addLoreLine(proxyStats.isTNTTagOnline() ? "&7Jugadores en linea: &a" + proxyStats.getTNTTagPlayerSize() : null)
+                .addLoreLine("&7Estado: " + (globalServerSettings.isTntTagInDevelopment() ? "&3En Desarrollo" : proxyStats.isTNTTagOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine(globalServerSettings.isTntTagInDevelopment() ? null : proxyStats.isTNTTagOnline() ? "" : null)
+                .addLoreLine(globalServerSettings.isTntTagInDevelopment() ? null : proxyStats.isTNTTagOnline() ? "&7Jugadores en linea: &a" + proxyStats.getTNTTagPlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomTNTTagServer().getProxyName())
+                .addTag("development", globalServerSettings.isTntTagInDevelopment() ? "true" : "false")
                 .build());
     
         inventory.setItem(32, new ItemBuilder(Items.SURVIVAL.clone())
-                .addLoreLine("")
-                .addLoreLine("&7Estado: " + (proxyStats.isSurvivalOnline() ? "&aACTIVO" : "&cCERRADO"))
-                .addLoreLine(proxyStats.isSurvivalOnline() ? "" : null)
-                .addLoreLine(proxyStats.isSurvivalOnline() ? "&7Jugadores en linea: &a" + proxyStats.getSurvivalPlayerSize() : null)
+                .addLoreLine("&7Estado: " + (globalServerSettings.isSurvivalGamesInDevelopment() ? "&3En Desarrollo" : proxyStats.isSurvivalOnline() ? "&aACTIVO" : "&cCERRADO"))
+                .addLoreLine(globalServerSettings.isSurvivalGamesInDevelopment() ? null : proxyStats.isSurvivalOnline() ? "" : null)
+                .addLoreLine(globalServerSettings.isSurvivalGamesInDevelopment() ? null : proxyStats.isSurvivalOnline() ? "&7Jugadores en linea: &a" + proxyStats.getSurvivalPlayerSize() : null)
                 .addTag("server-name", proxyStats.getRandomSurvivalGamesServer().getProxyName())
+                .addTag("development", globalServerSettings.isSurvivalGamesInDevelopment() ? "true" : "false")
                 .build());
         
         inventory.setItem(44, new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())

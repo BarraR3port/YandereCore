@@ -22,6 +22,11 @@ public final class OfflineSocketClient extends ISocket {
     }
     
     @Override
+    public void sendCheckGlobalServerStatsFetchData(){
+    
+    }
+    
+    @Override
     public void sendDisconnectInfoToProxy(){
     
     }

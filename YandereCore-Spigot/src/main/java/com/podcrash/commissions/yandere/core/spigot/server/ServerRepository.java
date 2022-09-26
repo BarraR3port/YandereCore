@@ -6,6 +6,9 @@ import com.mongodb.client.model.Filters;
 import com.podcrash.commissions.yandere.core.common.data.plugin.LyPlugin;
 import com.podcrash.commissions.yandere.core.common.data.server.IServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.Server;
+import com.podcrash.commissions.yandere.core.common.data.server.repo.LoadedPlugin;
+import com.podcrash.commissions.yandere.core.common.data.server.repo.OutPlugin;
+import com.podcrash.commissions.yandere.core.common.data.server.repo.Response;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import net.lymarket.lyapi.common.Api;
@@ -331,85 +334,6 @@ public class ServerRepository extends IServerRepository {
         } catch(IOException | NullPointerException | ConcurrentModificationException ignored) {
         }
         return null;
-    }
-    
-    private static class OutPlugin {
-        private final String name;
-        private final String bukkitName;
-        private final String hash;
-        
-        public OutPlugin(String name, String bukkitName, String hash) {
-            this.name = name;
-            this.bukkitName = bukkitName;
-            this.hash = hash;
-        }
-        
-        public OutPlugin(String name) {
-            this.name = name;
-            this.bukkitName = name;
-            this.hash = null;
-        }
-        
-        public String getName() {
-            return name;
-        }
-        
-        public String getBukkitName() {
-            return bukkitName;
-        }
-        
-        public String getHash() {
-            return hash;
-        }
-    }
-    
-    private static class LoadedPlugin {
-        private final String name;
-        private final String bukkitName;
-        private final String hash;
-        private final String version;
-        
-        public LoadedPlugin(String name, String bukkitName, String hash, String version) {
-            this.name = name;
-            this.bukkitName = bukkitName;
-            this.hash = hash;
-            this.version = version;
-        }
-        
-        public String getName() {
-            return name;
-        }
-        
-        public String getBukkitName() {
-            return bukkitName;
-        }
-        
-        public String getHash() {
-            return hash;
-        }
-        
-        public String getVersion() {
-            return version;
-        }
-    }
-    
-    
-    private static class Response {
-        private final String type;
-        private final ArrayList<LyPlugin> registeredPlugins;
-    
-        public Response(String type, ArrayList<LyPlugin> registeredPlugins) {
-            this.type = type;
-            this.registeredPlugins = registeredPlugins;
-        }
-    
-        public String getType() {
-            return type;
-        }
-    
-        public ArrayList<LyPlugin> getPlugins() {
-            return registeredPlugins;
-        }
     }
     
 }

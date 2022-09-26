@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-public class Teleport implements ILyCommand {
+public class TeleportCommand implements ILyCommand {
     
     
     @Command(name = "teleport", permission = "yandere.tp", aliases = "tp")

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-public class Heal implements ILyCommand {
+public class HealCommand implements ILyCommand {
     
     @Command(name = "heal", permission = "yandere.heal")
     public CommandResponse command(CommandContext context){

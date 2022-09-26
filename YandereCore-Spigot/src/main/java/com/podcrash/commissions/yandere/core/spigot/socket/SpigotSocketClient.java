@@ -11,9 +11,11 @@ import com.podcrash.commissions.yandere.core.common.socket.ISocketClient;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.party.PartiesManager;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
+import com.podcrash.commissions.yandere.core.spigot.task.RepeatingTask;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -135,6 +137,14 @@ public class SpigotSocketClient extends ISocket {
     }
     
     @Override
+    public void sendCheckGlobalServerStatsFetchData(){
+        JsonObject js = new JsonObject();
+        js.addProperty("type", "GLOBAL_SERVER_FETCH");
+        js.addProperty("current_server", Settings.PROXY_SERVER_NAME);
+        sendMessage(js);
+    }
+    
+    @Override
     public void sendUpdate(){
         JsonObject js = new JsonObject();
         js.addProperty("type", "UPDATE");
@@ -218,88 +228,96 @@ public class SpigotSocketClient extends ISocket {
                 out = null;
                 return;
             }
-        
             try {
                 in = new Scanner(socket.getInputStream());
             } catch (IOException ignored) {
                 return;
             }
-            
-            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-                while (compute) {
-                    try {
-                        if (in.hasNext()){
-                            final String encrypted = in.nextLine();
-                            String decryptedMessage = decrypt(encrypted);
-                            if (decryptedMessage == null || decryptedMessage.isEmpty()){
-                                Main.debug("Received bad data from: " + socket.getInetAddress().toString() + "\nMsg: " + encrypted);
-                                continue;
-                            }
-                            final JsonObject json;
-                            try {
-                                json = new JsonParser().parse(decryptedMessage).getAsJsonObject();
-                            } catch (JsonSyntaxException e) {
-                                Main.debug("Received bad data from: " + socket.getInetAddress().toString());
-                                continue;
-                            }
-                            if (json == null) continue;
-                            if (!json.has("type")) continue;
-                            final String type = json.get("type").getAsString().toUpperCase();
-                            if (!type.equals("UPDATE_SERVER_STATS") && !type.equals("MSG_RECEIVED")){
-                                Main.debug("Received message from " + name + ": \n" + GSON.toJson(json));
-                            }
-                            switch(type){
-                                case "MSG_RECEIVED":{
+        
+            Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new BukkitRunnable() {
+                @Override
+                public void run(){
+                    while (compute) {
+                        try {
+                            if (in.hasNext()){
+                                final String encrypted = in.nextLine();
+                                String decryptedMessage = decrypt(encrypted);
+                                if (decryptedMessage == null || decryptedMessage.isEmpty()){
+                                    Main.debug("Received bad data from: " + socket.getInetAddress().toString() + "\nMsg: " + encrypted);
+                                    continue;
+                                }
+                                final JsonObject json;
+                                try {
+                                    json = new JsonParser().parse(decryptedMessage).getAsJsonObject();
+                                } catch (JsonSyntaxException e) {
+                                    Main.debug("Received bad data from: " + socket.getInetAddress().toString());
+                                    continue;
+                                }
+                                if (json == null) continue;
+                                if (!json.has("type")) continue;
+                                final String type = json.get("type").getAsString().toUpperCase();
+                                if (!type.equals("UPDATE_SERVER_STATS") && !type.equals("MSG_RECEIVED")){
                                     Main.debug("Received message from " + name + ": \n" + GSON.toJson(json));
-                                    continue;
                                 }
-                                case "UPDATE_SERVER_STATS":{
-                                    if (!json.has("stats")) continue;
-                                    Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> Main.getInstance().setProxyStats(GSON.fromJson(json.getAsJsonObject("stats"), ProxyStats.class)));
-                                    continue;
-                                }
-                                case "CHECK_PLUGIN_UPDATES":
-                                case "CHECK_PLUGIN_UPDATES_POST":{
-                                    Utils.sendMessage(Bukkit.getConsoleSender(), "&c&lYandere &7- Checking for plugin updates externally...");
-                                    Bukkit.getScheduler().runTask(Main.getInstance(), () -> Main.getInstance().getServerRepository().checkForPluginsUpdates());
-                                    continue;
-                                }
-                                case "SEND_MSG_TO_PLAYER_POST":{
-                                    if (!json.has("target_uuid")) continue;
-                                    if (!json.has("current_server")) continue;
-                                    if (!json.has("key")) continue;
-                                    final UUID target_uuid = UUID.fromString(json.get("target_uuid").getAsString());
-                                    final String key = json.get("key").getAsString();
-                                    final boolean hasReplacements = json.get("has-replacements").getAsBoolean();
-                
-                                    try {
-                                        final Player player = Bukkit.getPlayer(target_uuid);
-                                        if (player == null) continue;
-                                        if (hasReplacements){
-                                            final JsonObject replacements = json.get("replacements").getAsJsonObject();
-                                            final HashMap<String, String> replace = new HashMap<>();
-                        
-                                            for ( Map.Entry<String, JsonElement> entry : replacements.entrySet() ){
-                                                replace.put(entry.getKey(), entry.getValue().getAsString());
-                                            }
-                                            player.sendMessage(Main.getLang().getMSG(key, replace));
-                                        } else {
-                                            player.sendMessage(Main.getLang().getMSG(key));
-                                        }
-                    
-                                    } catch (NullPointerException e) {
-                                        e.printStackTrace();
+                                switch(type){
+                                    case "MSG_RECEIVED":{
+                                        Main.debug("Received message from " + name + ": \n" + GSON.toJson(json));
+                                        continue;
                                     }
-                                    continue;
+                                    case "UPDATE_SERVER_STATS":{
+                                        if (!json.has("stats")) continue;
+                                        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> Main.getInstance().setProxyStats(GSON.fromJson(json.getAsJsonObject("stats"), ProxyStats.class)));
+                                        continue;
+                                    }
+                                    case "CHECK_PLUGIN_UPDATES":
+                                    case "CHECK_PLUGIN_UPDATES_POST":{
+                                        Utils.sendMessage(Bukkit.getConsoleSender(), "&c&lYandere &7- Checking for plugin updates externally...");
+                                        Bukkit.getScheduler().runTask(Main.getInstance(), () -> Main.getInstance().getServerRepository().checkForPluginsUpdates());
+                                        continue;
+                                    }
+                                    case "GLOBAL_SERVER_FETCH_POST":{
+                                        Utils.sendMessage(Bukkit.getConsoleSender(), "&c&lYandere &7- Checking for Server Settings updates externally...");
+                                        Bukkit.getScheduler().runTask(Main.getInstance(), () -> Main.getInstance().getGlobalServerSettings().fetch());
+                                        continue;
+                                    }
+                                    case "SEND_MSG_TO_PLAYER_POST":{
+                                        if (!json.has("target_uuid")) continue;
+                                        if (!json.has("current_server")) continue;
+                                        if (!json.has("key")) continue;
+                                        final UUID target_uuid = UUID.fromString(json.get("target_uuid").getAsString());
+                                        final String key = json.get("key").getAsString();
+                                        final boolean hasReplacements = json.get("has-replacements").getAsBoolean();
+                                    
+                                        try {
+                                            final Player player = Bukkit.getPlayer(target_uuid);
+                                            if (player == null) continue;
+                                            if (hasReplacements){
+                                                final JsonObject replacements = json.get("replacements").getAsJsonObject();
+                                                final HashMap<String, String> replace = new HashMap<>();
+                                            
+                                                for ( Map.Entry<String, JsonElement> entry : replacements.entrySet() ){
+                                                    replace.put(entry.getKey(), entry.getValue().getAsString());
+                                                }
+                                                player.sendMessage(Main.getLang().getMSG(key, replace));
+                                            } else {
+                                                player.sendMessage(Main.getLang().getMSG(key));
+                                            }
+                                        
+                                        } catch (NullPointerException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
                                 }
+                            } else {
+                                reconnect("Server Closed Connection");
                             }
-                        } else {
-                            reconnect("Server Closed Connection");
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
+                
                 }
+            
             });
         }
     
@@ -345,24 +363,29 @@ public class SpigotSocketClient extends ISocket {
             if (!Main.getInstance().isEnabled()) return;
             disable("Reconnecting");
             reconnecting = true;
-            Bukkit.getScheduler().runTaskTimerAsynchronously(Main.getInstance(), () -> {
-                if (!reconnecting) return;
-                int currentAttempt = reconnect_attempts.getAndIncrement();
-                Main.debug("Reconnecting to Proxy Socket, attempt: " + currentAttempt + " of 10");
-                if (currentAttempt > 10){
-                    reconnecting = false;
-                    Bukkit.shutdown();
-                    return;
+            new RepeatingTask(Main.getInstance(), 20, 200) {
+                @Override
+                public void run(){
+                    if (!reconnecting) return;
+                    int currentAttempt = reconnect_attempts.getAndIncrement();
+                    Main.debug("Reconnecting to Proxy Socket, attempt: " + currentAttempt + " of 10");
+                    if (currentAttempt > 10){
+                        reconnecting = false;
+                        cancel(); // cancels itself
+                        Bukkit.shutdown();
+                        return;
+                    }
+                    try {
+                        init();
+                        Main.debug("Reconnected to Proxy Socket");
+                        sendUpdate();
+                        reconnecting = false;
+                        cancel(); // cancels itself
+                    } catch (IOException e) {
+                        Main.debug("Failed to reconnect to " + name + " attempt " + currentAttempt + " attempting again in 10 seconds");
+                    }
                 }
-                try {
-                    init();
-                    Main.debug("Reconnected to Proxy Socket");
-                    sendUpdate();
-                    reconnecting = false;
-                } catch (IOException e) {
-                    Main.debug("Failed to reconnect to " + name + " attempt " + currentAttempt);
-                }
-            }, 20, 150);
+            };
         
         }
     

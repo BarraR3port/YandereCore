@@ -15,7 +15,7 @@ public final class AnnouncementManager {
     
     public AnnouncementManager init(){
         Config config = VMain.getConfig();
-        for ( String key : config.getSection("announcement").keySet() ){
+        for ( String key : config.getSection("announcements").singleLayerKeySet() ){
             Announcement announcement = new Announcement(
                     config.getInt("announcements." + key + ".delay"),
                     config.getEnum("announcements." + key + ".timeType", TimeUnit.class),

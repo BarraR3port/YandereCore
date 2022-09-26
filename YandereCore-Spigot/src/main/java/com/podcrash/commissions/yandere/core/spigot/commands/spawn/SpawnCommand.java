@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
 
-public final class Spawn implements ILyCommand {
+public final class SpawnCommand implements ILyCommand {
     
     
     @Command(name = "spawn", description = "Teleports you to the spawn", usage = "spawn")

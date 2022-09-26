@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Locale;
 
-public class RankMenu implements ILyCommand {
+public class RankMenuCommand implements ILyCommand {
     
     @Command(name = "rank", permission = "yandere.rank")
     public CommandResponse command(CommandContext context){

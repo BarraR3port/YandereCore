@@ -194,6 +194,12 @@ public class Placeholders extends PlaceholderExpansion {
             case "level_formatted_required_xp":{
                 return p.getLevel().getFormattedRequiredXp();
             }
+            case "bw_join_type":{
+                return p.getJoinBedWarsArenaType().getFormattedName();
+            }
+            case "sw_join_type":{
+                return p.getJoinSkyWarsArenaType().getFormattedName();
+            }
         }
     
         return "&cJugador oo encontrado";

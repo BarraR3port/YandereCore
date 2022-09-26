@@ -102,7 +102,7 @@ public final class BWPlayerEvents extends MainEvents {
             TextComponent team = Utils.formatTC("");
             TextComponent rank = Utils.hoverOverMessageURL(isDefault ? " " : prefix,
                     Arrays.asList(
-                            "&7「&eYandere &5Rangos&7⏌",
+                            "&7「&eYandere &cRangos&7⏌",
                             "",
                             "&7► Este jugador tiene el rango " + prefix,
                             "&7► Puedes comprar más rangos en nuestra página web.",

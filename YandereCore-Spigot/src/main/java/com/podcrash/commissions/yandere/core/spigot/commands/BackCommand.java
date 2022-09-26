@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
 
-public class Back implements ILyCommand {
+public class BackCommand implements ILyCommand {
     
     @Command(name = "back", description = "Teleport to your previous location", permission = "yandere.back")
     public CommandResponse command(CommandContext context){

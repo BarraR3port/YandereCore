@@ -1,10 +1,16 @@
 package com.podcrash.commissions.yandere.core.common.data.lobby;
 
 public enum JoinSkyWarsArenaType {
-    SOLO,
-    TEAM,
-    RANKED,
-    RANDOM;
+    SOLO("Solo"),
+    TEAM("Equipo"),
+    RANKED("Ranked"),
+    RANDOM("Aleatorio");
+    
+    private final String formattedName;
+    
+    JoinSkyWarsArenaType(String formmattedName){
+        this.formattedName = formmattedName;
+    }
     
     public JoinSkyWarsArenaType getNext(){
         switch(this){
@@ -32,8 +38,10 @@ public enum JoinSkyWarsArenaType {
             default:
                 return RANKED;
         }
-        
+    
     }
     
-    
+    public String getFormattedName(){
+        return formattedName;
+    }
 }

@@ -6,22 +6,33 @@ import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-public class TpHere implements ILyCommand {
+public class TpAllCommand implements ILyCommand {
     
-    @Command(name = "tphere", permission = "yandere.tphere")
+    @Command(name = "tpall", permission = "yandere.tp.all")
     public CommandResponse command(CommandContext context){
-        
-        
+        if (context.getArgs().length == 1){
+            final Player target = Bukkit.getPlayer(context.getArg(0));
+            if (target != null && target.getType().equals(EntityType.PLAYER) && target.isOnline()){
+                TpManager.teleportAllToPlayer(target);
+            } else {
+                Utils.sendMessage(context.getSender(), "&8| &eComandos de TP &8|");
+                Utils.sendMessage(context.getSender(), " ");
+                Utils.sendMessage(context.getSender(), Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/tp &e<jugador>", Arrays.asList("&7Con este comando ", "&7teleport to a friend."), "/tp "));
+                Utils.sendMessage(context.getSender(), Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageRunCommand("&c/tp &ex y z", Arrays.asList("&7Con este comando ", "&7teleport an specific location."), "/tp "));
+                return new CommandResponse();
+            }
+        }
         if (context.getSender() instanceof Player){
             final Player p = (Player) context.getSender();
-            if (context.getArgs().length == 1){
-                TpManager.teleportPlayerToPlayer(p, context.getArg(0), p.getName());
+            if (context.getArgs().length == 0){
+                TpManager.teleportAllToPlayer(p);
             } else {
                 Utils.sendMessage(p, "&8| &eComandos de TP &8|");
                 Utils.sendMessage(p, " ");
@@ -45,8 +56,9 @@ public class TpHere implements ILyCommand {
         LinkedList<String> list = new LinkedList<>();
         if (context.getArgs().length == 1){
             list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(p -> !context.getSender().getName().equals(p)).collect(Collectors.toList()));
+        } else if (context.getArgs().length == 2){
+            list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
         }
         return list;
     }
-    
 }

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-public class Build implements ILyCommand {
+public class BuildCommand implements ILyCommand {
     @Command(name = "build", permission = "yandere.build")
     public CommandResponse command(CommandContext context){
         if (context.getArgLength() == 0){

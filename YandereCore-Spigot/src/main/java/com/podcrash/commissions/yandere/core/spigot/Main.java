@@ -22,12 +22,12 @@ import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSCommand
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSPCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.punish.EnderSeeCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.punish.InvSeeCommand;
-import com.podcrash.commissions.yandere.core.spigot.commands.spawn.DelSpawn;
-import com.podcrash.commissions.yandere.core.spigot.commands.spawn.SetSpawn;
-import com.podcrash.commissions.yandere.core.spigot.commands.spawn.Spawn;
-import com.podcrash.commissions.yandere.core.spigot.commands.tp.Teleport;
-import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpAll;
-import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpHere;
+import com.podcrash.commissions.yandere.core.spigot.commands.spawn.DelSpawnCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.spawn.SetSpawnCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.spawn.SpawnCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.tp.TeleportCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpAllCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.tp.TpHereCommand;
 import com.podcrash.commissions.yandere.core.spigot.config.ItemsConfig;
 import com.podcrash.commissions.yandere.core.spigot.config.SoundsConfig;
 import com.podcrash.commissions.yandere.core.spigot.config.YandereConfig;
@@ -188,7 +188,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         switch(Settings.SERVER_TYPE){
             case LOBBY: {
                 getServer().getPluginManager().registerEvents(new MainLobbyPlayerEvents(), this);
-                api.getCommandService().registerCommands(new Build());
+                api.getCommandService().registerCommands(new BuildCommand());
                 getLogger().info("\n------------------------");
                 getLogger().info("[YandereCore] Hooked into Lobby");
                 getLogger().info("------------------------\n");
@@ -196,7 +196,7 @@ public final class Main extends JavaPlugin implements YandereApi {
             }
             case LOBBY_BED_WARS: {
                 getServer().getPluginManager().registerEvents(new LBWPlayerEvents(), this);
-                api.getCommandService().registerCommands(new Build());
+                api.getCommandService().registerCommands(new BuildCommand());
                 getLogger().info("\n------------------------");
                 getLogger().info("[YandereCore] Hooked into Lobby BedWars");
                 getLogger().info("------------------------\n");
@@ -204,9 +204,10 @@ public final class Main extends JavaPlugin implements YandereApi {
             }
             case PRACTICE:{
                 if (Bukkit.getPluginManager().getPlugin("StrikePractice") != null){
-                    api.getCommandService().registerCommands(new Build());
+                    api.getCommandService().registerCommands(new BuildCommand());
                     getServer().getPluginManager().registerEvents(new PracticeGameEvents(), this);
                     getServer().getPluginManager().registerEvents(new PracticePlayerEvents(), this);
+                    api.getCommandService().registerCommands(new PracticeMenuCommand());
                     getLogger().info("\n------------------------");
                     getLogger().info("[YandereCore] Hooked into Practice");
                     getLogger().info("------------------------\n");
@@ -311,28 +312,29 @@ public final class Main extends JavaPlugin implements YandereApi {
     }
     
     private void registerCommands(){
-        api.getCommandService().registerCommands(new SetSpawn());
-        api.getCommandService().registerCommands(new DelSpawn());
-        api.getCommandService().registerCommands(new Spawn());
-        api.getCommandService().registerCommands(new Menu());
-        api.getCommandService().registerCommands(new Admin());
-        api.getCommandService().registerCommands(new RankMenu());
+        api.getCommandService().registerCommands(new SetSpawnCommand());
+        api.getCommandService().registerCommands(new DelSpawnCommand());
+        api.getCommandService().registerCommands(new SpawnCommand());
+        api.getCommandService().registerCommands(new MenuCommand());
+        api.getCommandService().registerCommands(new LobbiesCommand());
+        api.getCommandService().registerCommands(new AdminCommand());
+        api.getCommandService().registerCommands(new RankMenuCommand());
         api.getCommandService().registerCommands(new EnderSeeCommand());
         api.getCommandService().registerCommands(new InvSeeCommand());
-        api.getCommandService().registerCommands(new SetSpawn());
-        api.getCommandService().registerCommands(new Spawn());
-        api.getCommandService().registerCommands(new DelSpawn());
-        api.getCommandService().registerCommands(new Teleport());
-        api.getCommandService().registerCommands(new TpAll());
-        api.getCommandService().registerCommands(new TpHere());
-        api.getCommandService().registerCommands(new Back());
-        api.getCommandService().registerCommands(new ChatClear());
+        api.getCommandService().registerCommands(new SetSpawnCommand());
+        api.getCommandService().registerCommands(new SpawnCommand());
+        api.getCommandService().registerCommands(new DelSpawnCommand());
+        api.getCommandService().registerCommands(new TeleportCommand());
+        api.getCommandService().registerCommands(new TpAllCommand());
+        api.getCommandService().registerCommands(new TpHereCommand());
+        api.getCommandService().registerCommands(new BackCommand());
+        api.getCommandService().registerCommands(new ChatClearCommand());
         api.getCommandService().registerCommands(new CoinsCommand());
         api.getCommandService().registerCommands(new EconomyCommand());
         api.getCommandService().registerCommands(new LevelCommand());
         api.getCommandService().registerCommands(new OPCommand());
         api.getCommandService().registerCommands(new DeOpCommand());
-        api.getCommandService().registerCommands(new Speed());
+        api.getCommandService().registerCommands(new SpeedCommand());
         api.getCommandService().registerCommands(new VanishCommand());
         api.getCommandService().registerCommands(new XPCommand());
         api.getCommandService().registerCommands(new GamemodeCommand());
@@ -340,8 +342,8 @@ public final class Main extends JavaPlugin implements YandereApi {
         api.getCommandService().registerCommands(new GMCCommand());
         api.getCommandService().registerCommands(new GMACommand());
         api.getCommandService().registerCommands(new GMSPCommand());
-        api.getCommandService().registerCommands(new Fly());
-        api.getCommandService().registerCommands(new Heal());
+        api.getCommandService().registerCommands(new FlyCommand());
+        api.getCommandService().registerCommands(new HealCommand());
         api.getCommandService().registerCommands(new NbtInfoCommand());
     }
     
@@ -422,7 +424,7 @@ public final class Main extends JavaPlugin implements YandereApi {
                 getLogger().info("[YandereCore] Loading SkyWars Events...");
                 getServer().getPluginManager().registerEvents(new SWGameEvents(), this);
                 getServer().getPluginManager().registerEvents(new SWPlayerEvents(), this);
-                api.getCommandService().registerCommands(new Build());
+                api.getCommandService().registerCommands(new BuildCommand());
                 hockedIntoSkyWars = true;
                 getLogger().info("[YandereCore] Done!");
                 getLogger().info("------------------------\n");

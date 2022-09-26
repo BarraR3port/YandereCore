@@ -53,6 +53,17 @@ items:
       - "command:sw_lobby"
       - "item-prop:no-move"
 
+  lobby-practice-menu-lobby:
+    name: "&6Practice Menu &8╏ &7Click derecho"
+    material: "DIAMOND_SWORD"
+    slot: 4
+    description:
+      - ""
+      - "&7Click para abrir el menu de &6Practice."
+    nbt:
+      - "command:practicemenu"
+      - "item-prop:no-move"
+
   lobby-player-visibility-all-item:
     name: "&aTodos &8╏ &7Click derecho"
     material: "INK_SACK"

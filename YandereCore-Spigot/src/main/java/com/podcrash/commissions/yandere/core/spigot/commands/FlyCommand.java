@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-public class Fly implements ILyCommand {
+public class FlyCommand implements ILyCommand {
     
     @Command(name = "fly", permission = "yandere.fly")
     public CommandResponse command(CommandContext context){

@@ -43,7 +43,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "yandere",
-        name = "Yandere",
+        name = "YandereCore",
         version = "1.1-ALPHA",
         authors = {"BarraR3port"},
         url = "https://podcrash.com/",
@@ -62,6 +62,7 @@ public final class VMain extends LyApiVelocity {
     private IServerRepository serverRepository;
     private IGlobalServerRepository globalServerRepository;
     private AnnouncementManager announcementManager;
+    private final Path path;
     
     /**
      * Constructor for ChatRegulator Plugin
@@ -77,6 +78,7 @@ public final class VMain extends LyApiVelocity {
         this.proxy = server;
         this.logger = new Slf4jPluginLogger(logger);
         serverManager = new ProxyStats();
+        this.path = path;
     }
     
     @Internal
@@ -113,7 +115,6 @@ public final class VMain extends LyApiVelocity {
         playersRepository = new PlayerRepository(mongo, "players");
         serverRepository = new ServerRepository(mongo, "servers");
         globalServerRepository = new GlobalServerRepository(mongo, "server_settings");
-        announcementManager = new AnnouncementManager().init();
         VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), this::sendInfo).repeat(5, TimeUnit.SECONDS).schedule();
     
         new Lobby(proxy.getCommandManager());
@@ -121,6 +122,7 @@ public final class VMain extends LyApiVelocity {
         new Stream(proxy.getCommandManager());
         new Ping(proxy.getCommandManager());
         serverRepository.checkForPluginsUpdates();
+        announcementManager = new AnnouncementManager().init();
     
     }
     
@@ -159,6 +161,10 @@ public final class VMain extends LyApiVelocity {
     @Internal
     public Slf4jPluginLogger getLogger(){
         return logger;
+    }
+    
+    public Path getPath(){
+        return path;
     }
     
     public PlayerRepository getPlayers(){

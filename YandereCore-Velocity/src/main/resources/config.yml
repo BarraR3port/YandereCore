@@ -16,16 +16,16 @@ db:
 
 announcements:
   1:
-    delay: 15
     timeType: MINUTES
+    delay: 15
     sound: true
     messages:
-      - "&7&m-------------&e&lYandere&c&lRangos&7&m-------------"
+      - "&7&m-------------&e&l Yandere &c&lRangos &7&m-------------"
       - ""
-      - "&f&l   Compra rangos para obtener mejoras visuales, "
-      - "&f&l   mayor prioridad, partículas, y mucho más"
-      - "&f&l   dentro de nuestras diferentes modalidades."
+      - "&f   Compra rangos para obtener mejoras visuales, "
+      - "&f   mayor prioridad, partículas, y mucho más"
+      - "&f   dentro de nuestras diferentes modalidades."
       - ""
-      - "  &e&l¡Compra tu rango en &c&lstore.yandere.es&f&l!"
+      - "  &e¡Compra tu rango en &c&lstore.yandere.es&f!"
       - ""
       - "&7&m--------------------------------------------"

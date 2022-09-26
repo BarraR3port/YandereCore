@@ -138,7 +138,7 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
                         user.getLevel().getProgressBar()/* ,
                             "&7Clan: &c" + clanTag*/));
         TextComponent rank = Utils.hoverOverMessageURL(isDefault ? " " : prefix,
-                Arrays.asList("&7「&eYandere &5Rangos&7⏌",
+                Arrays.asList("&7「&eYandere &cRangos&7⏌",
                         "",
                         "&7► Este jugador tiene el rango " + prefix,
                         "&7► Puedes comprar más rangos en nuestra página web.",
@@ -180,8 +180,8 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
                     p.teleport(Settings.SPAWN_LOCATION);
                 }
             } else {
-                if (!ArenaManager.getInstance().joinRandomFromGroup(p, currentJoinArenaType.getBwName())){
-                    p.sendMessage(Utils.format("&cNo se ha encontrado una partida de BedWars en modo &e" + currentJoinArenaType.getBwName() + "."));
+                if (!ArenaManager.getInstance().joinRandomFromGroup(p, currentJoinArenaType.getFormattedName())){
+                    p.sendMessage(Utils.format("&cNo se ha encontrado una partida de BedWars en modo &e" + currentJoinArenaType.getFormattedName() + "."));
                     p.teleport(Settings.SPAWN_LOCATION);
                 }
             }
