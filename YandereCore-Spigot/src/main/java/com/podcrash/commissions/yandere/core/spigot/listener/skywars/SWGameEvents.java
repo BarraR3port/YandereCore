@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 public class SWGameEvents implements Listener {
     
     @EventHandler
-    public void onPlayerKill(USWGameKillEvent event) {
+    public void onPlayerKill(USWGameKillEvent event){
         User user = Main.getInstance().getPlayers().getCachedPlayer(event.getPlayer().getUniqueId());
         Main.getInstance().getPlayers().addCoins(user, 1);
         Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(user, 5, Level.GainSource.PER_KILL), 65L);

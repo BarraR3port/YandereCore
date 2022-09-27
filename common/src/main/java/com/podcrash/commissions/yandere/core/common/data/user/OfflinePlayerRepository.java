@@ -15,9 +15,9 @@ public final class OfflinePlayerRepository extends IPlayerRepository {
     
     
     @Override
-    public User getCachedPlayer(String name) {
+    public User getCachedPlayer(String name){
         for ( User user : list.values() ){
-            if(user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
                 return user;
             }
         }
@@ -25,7 +25,7 @@ public final class OfflinePlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public User getCachedPlayer(UUID uuid) {
+    public User getCachedPlayer(UUID uuid){
         return list.get(uuid);
     }
     

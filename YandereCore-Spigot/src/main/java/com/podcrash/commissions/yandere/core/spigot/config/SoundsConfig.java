@@ -8,12 +8,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class SoundsConfig extends Config {
     
     
-    public SoundsConfig(JavaPlugin plugin, String name) {
+    public SoundsConfig(JavaPlugin plugin, String name){
         super(plugin, name);
     }
     
     
-    public SoundsConfig(JavaPlugin plugin, String name, String resourcePath, String filePath) {
+    public SoundsConfig(JavaPlugin plugin, String name, String resourcePath, String filePath){
         super(plugin, name, resourcePath, filePath);
     }
 }

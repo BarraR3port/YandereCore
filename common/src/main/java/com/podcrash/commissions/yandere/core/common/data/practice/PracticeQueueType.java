@@ -5,13 +5,14 @@ public enum PracticeQueueType {
     RANKED("&aRanked"),
     PREMIUM("&5Premium"),
     BOT("&4Bot"),
-    EDIT_KIT("&2Editar Kits");
+    EDIT_KIT("&2Editar Kits"),
+    PARTY_UNRANKED("&3Unranked Party"),
+    PARTY_RANKED("&aRanked Party");
     
     private final String displayName;
     
     PracticeQueueType(String displayName){
         this.displayName = displayName;
-        
     }
     
     public String getDisplayName(){

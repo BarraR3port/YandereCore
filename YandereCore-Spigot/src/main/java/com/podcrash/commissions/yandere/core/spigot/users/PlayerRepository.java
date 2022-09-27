@@ -24,16 +24,16 @@ import java.util.stream.Collectors;
 
 public final class PlayerRepository extends IPlayerRepository {
     
-    public PlayerRepository(MongoDBClient database, String tableName) {
+    public PlayerRepository(MongoDBClient database, String tableName){
         super(database, tableName);
     }
     
     @Override
-    public User getPlayer(String name) {
+    public User getPlayer(String name){
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("name", name));
-        if(doc == null) throw new UserNotFoundException(name);
+        if (doc == null) throw new UserNotFoundException(name);
         User user = database.getGson().fromJson(doc.toJson(), User.class);
-        if(user == null){
+        if (user == null){
             throw new UserNotFoundException(name);
         }
         list.put(user.getUUID(), user);
@@ -41,16 +41,16 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public User getCachedPlayer(String name) {
+    public User getCachedPlayer(String name){
         for ( User user : list.values() ){
-            if(user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
                 return user;
             }
         }
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("name", name));
-        if(doc == null) throw new UserNotFoundException(name);
+        if (doc == null) throw new UserNotFoundException(name);
         User user = database.getGson().fromJson(doc.toJson(), User.class);
-        if(user == null){
+        if (user == null){
             throw new UserNotFoundException(name);
         }
         list.put(user.getUUID(), user);
@@ -58,20 +58,20 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public User getPlayer(UUID uuid) {
+    public User getPlayer(UUID uuid){
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()));
-        if(doc == null) throw new UserNotFoundException(uuid.toString());
+        if (doc == null) throw new UserNotFoundException(uuid.toString());
         final User user = database.getGson().fromJson(doc.toJson(), User.class);
         list.put(uuid, user);
         return user;
     }
     
     @Override
-    public User getPlayer(UUID uuid, String name) {
+    public User getPlayer(UUID uuid, String name){
         Document docUUID = database.findOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()));
-        if(docUUID == null){
+        if (docUUID == null){
             Document docName = database.findOneFast(TABLE_NAME, Filters.eq("name", name));
-            if(docName == null){
+            if (docName == null){
                 return null;
             } else {
                 User user = database.getGson().fromJson(docName.toJson(), User.class);
@@ -87,7 +87,7 @@ public final class PlayerRepository extends IPlayerRepository {
     
     
     @Override
-    public void createPlayer(String name, UUID uuid, String address) {
+    public void createPlayer(String name, UUID uuid, String address){
         SpigotUser user = new SpigotUser(name, uuid);
         user.setAddress(address);
         user.setOption("allow-pm", true);
@@ -95,7 +95,7 @@ public final class PlayerRepository extends IPlayerRepository {
         user.addProperty("lobby-sw-join-type", "RANDOM");
         user.addProperty("lobby-bw-join-type", "RANDOM");
         final net.luckperms.api.model.user.User luckPermsUser = LuckPermsProvider.get().getUserManager().getUser(uuid);
-        if(luckPermsUser != null){
+        if (luckPermsUser != null){
             user.setRank(Rank.fromString(luckPermsUser.getPrimaryGroup()));
         }
         database.insertOne(TABLE_NAME, user);
@@ -103,11 +103,11 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public User savePlayer(User user) {
-        if(database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", user.getUUID().toString()), user)){
+    public User savePlayer(User user){
+        if (database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", user.getUUID().toString()), user)){
             list.replace(user.getUUID(), user);
         } else {
-            if(database.insertOne(TABLE_NAME, user)){
+            if (database.insertOne(TABLE_NAME, user)){
                 list.put(user.getUUID(), user);
             } else {
                 Bukkit.getLogger().severe("[YandereCore] Error while saving player " + user.getUUID() + " to database");
@@ -118,7 +118,7 @@ public final class PlayerRepository extends IPlayerRepository {
     
     
     @Override
-    public User savePlayer(User user, UUID prevUUID) {
+    public User savePlayer(User user, UUID prevUUID){
         database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", prevUUID.toString()), user);
         list.put(user.getUUID(), user);
         return user;
@@ -126,14 +126,14 @@ public final class PlayerRepository extends IPlayerRepository {
     
     
     @Override
-    public void updatePlayer(UUID uuid) {
+    public void updatePlayer(UUID uuid){
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()));
-        if(doc == null) return;
+        if (doc == null) return;
         database.getGson().fromJson(doc.toJson(), User.class);
     }
     
     @Override
-    public User getUpdatedPlayer(UUID uuid) {
+    public User getUpdatedPlayer(UUID uuid){
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()));
         final User user = database.getGson().fromJson(doc.toJson(), User.class);
         list.put(uuid, user);
@@ -141,23 +141,23 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void addProperty(User user, String key, String value) {
+    public void addProperty(User user, String key, String value){
         user.addProperty(key, value);
         savePlayer(user);
     }
     
     @Override
-    public HashMap<String, String> getProperties(User user) {
+    public HashMap<String, String> getProperties(User user){
         return user.getProperties();
     }
     
     @Override
-    public ArrayList<String> getPlayersName(String playerName) {
+    public ArrayList<String> getPlayersName(String playerName){
         return database.findMany(TABLE_NAME, User.class).stream().map(User::getName).filter(name -> !name.equalsIgnoreCase(playerName)).collect(Collectors.toCollection(ArrayList::new));
     }
     
     @Override
-    public ArrayList<String> getPlayersUUID(ArrayList<UUID> playersUUID) {
+    public ArrayList<String> getPlayersUUID(ArrayList<UUID> playersUUID){
         final ArrayList<String> players = new ArrayList<>();
         for ( UUID uuid : playersUUID ){
             players.add(getCachedPlayer(uuid).getName());
@@ -166,9 +166,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public UUID getUUIDByName(String name) {
+    public UUID getUUIDByName(String name){
         for ( User user : list.values() ){
-            if(user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
                 return user.getUUID();
             }
         }
@@ -176,16 +176,16 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public ArrayList<String> getPlayersName() {
+    public ArrayList<String> getPlayersName(){
         return database.findMany(TABLE_NAME, User.class).stream().map(User::getName).collect(Collectors.toCollection(ArrayList::new));
     }
     
     
     @Override
-    public void addCoins(User player, long amount) {
-        if(amount <= 0) return;
+    public void addCoins(User player, long amount){
+        if (amount <= 0) return;
         PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, Level.GainSource.COMMAND, ChangeType.ADD);
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
         player.addCoins(amount);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -193,11 +193,11 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void removeCoins(User player, long amount) {
-        if(amount <= 0) return;
+    public void removeCoins(User player, long amount){
+        if (amount <= 0) return;
         PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, Level.GainSource.COMMAND, ChangeType.REMOVE);
-        if(event.isCancelled()) return;
-        if(player.getCoins() - amount <= 0){
+        if (event.isCancelled()) return;
+        if (player.getCoins() - amount <= 0){
             player.setCoins(0);
         } else {
             player.removeCoins(amount);
@@ -208,9 +208,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void setCoins(User player, long amount) {
+    public void setCoins(User player, long amount){
         PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, Level.GainSource.COMMAND, ChangeType.SET);
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
         player.setCoins(Math.max(amount, 0));
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -218,9 +218,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void setPlayerLevel(User player, int level) {
+    public void setPlayerLevel(User player, int level){
         PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(Bukkit.getPlayer(player.getName()), player.getLevel(), ChangeType.SET);
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
         player.getLevel().setLevel(level);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
@@ -228,10 +228,10 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void addPlayerLevel(User player, int level) {
-        if(level <= 0) return;
+    public void addPlayerLevel(User player, int level){
+        if (level <= 0) return;
         PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(Bukkit.getPlayer(player.getName()), player.getLevel(), ChangeType.ADD);
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
         player.getLevel().addLevels(level);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
@@ -239,9 +239,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void removePlayerLevel(User player, int level) {
+    public void removePlayerLevel(User player, int level){
         PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(Bukkit.getPlayer(player.getName()), player.getLevel(), ChangeType.REMOVE);
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
         player.getLevel().removeLevels(level);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
@@ -249,9 +249,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void setPlayerXp(User player, int xp, Level.GainSource source) {
+    public void setPlayerXp(User player, int xp, Level.GainSource source){
         PlayerXpChangeEvent event = new PlayerXpChangeEvent(Bukkit.getPlayer(player.getName()), xp, source, ChangeType.SET);
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
         player.getLevel().setXp(xp);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -259,10 +259,10 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void addPlayerXp(User player, int xp, Level.GainSource source) {
-        if(xp <= 0) return;
+    public void addPlayerXp(User player, int xp, Level.GainSource source){
+        if (xp <= 0) return;
         PlayerXpChangeEvent event = new PlayerXpChangeEvent(Bukkit.getPlayer(player.getName()), xp, source, ChangeType.SET);
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
         player.getLevel().addXp(xp);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -270,10 +270,10 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void removePlayerXp(User player, int xp, Level.GainSource source) {
-        if(xp <= 0) return;
+    public void removePlayerXp(User player, int xp, Level.GainSource source){
+        if (xp <= 0) return;
         PlayerXpChangeEvent event = new PlayerXpChangeEvent(Bukkit.getPlayer(player.getName()), xp, source, ChangeType.REMOVE);
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
         player.getLevel().removeXp(xp);
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -281,9 +281,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void setPlayerRank(User player, Rank rank) {
+    public void setPlayerRank(User player, Rank rank){
         PlayerRankChangeEvent event = new PlayerRankChangeEvent(Bukkit.getPlayer(player.getName()), rank, ChangeType.SET);
-        if(event.isCancelled()) return;
+        if (event.isCancelled()) return;
         player.setRank(event.getRank());
         savePlayer(player);
         Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");

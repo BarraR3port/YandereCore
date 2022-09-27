@@ -26,9 +26,9 @@ public class Lobby implements SimpleCommand {
                 final String serverName = player.getCurrentServer().get().getServerInfo().getName();
                 Server server;
                 if (ServerType.matchServerType(serverName, ServerType.BED_WARS)){
-                    server = VMain.getInstance().getServerManager().getRandomBedWarsLobbyServer();
+                    server = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.LOBBY_BED_WARS);
                 } else {
-                    server = VMain.getInstance().getServerManager().getRandomLobbyServer();
+                    server = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.LOBBY);
                 }
                 if (VMain.getInstance().getProxy().getServer(server.getProxyName()).isPresent()){
                     RegisteredServer bedWarsLobby = VMain.getInstance().getProxy().getServer(server.getProxyName()).get();

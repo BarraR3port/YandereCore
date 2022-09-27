@@ -28,13 +28,15 @@ public class ArenaSelector extends Menu {
     private final BattleKit kit;
     private final PracticeQueueType type;
     private final BotDuel botDuel;
+    private final boolean party;
     
-    public ArenaSelector(IPlayerMenuUtility playerMenuUtility, StrikePracticeAPI api, BattleKit kit, PracticeQueueType type, BotDuel botDuel){
+    public ArenaSelector(IPlayerMenuUtility playerMenuUtility, StrikePracticeAPI api, BattleKit kit, PracticeQueueType type, BotDuel botDuel, boolean party){
         super(playerMenuUtility, true);
         this.api = api;
         this.kit = kit;
         this.type = type;
         this.botDuel = botDuel;
+        this.party = party;
     }
     
     @Override
@@ -77,9 +79,9 @@ public class ArenaSelector extends Menu {
             Arena arena = api.getArena(NBTItem.getTag(item, "arena-name"));
             if (arena == null) return;
             botDuel.setArena(arena);
-            new BotDifficultySelector(playerMenuUtility, api, kit, type, botDuel).open();
+            new BotDifficultySelector(playerMenuUtility, api, kit, type, botDuel, party).open();
         } else if (NBTItem.hasTag(item, "ly-menu-close")){
-            new PracticeQueueMenu(playerMenuUtility, type).open();
+            new PracticeQueueMenu(playerMenuUtility, type, party).open();
         }
     }
 }

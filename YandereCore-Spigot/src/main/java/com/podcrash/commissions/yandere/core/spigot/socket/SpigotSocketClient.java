@@ -42,7 +42,7 @@ public class SpigotSocketClient extends ISocket {
     @Override
     public void sendJoinServer(UUID owner, String serverTarget){
         if (serverTarget.equals(Settings.PROXY_SERVER_NAME)){
-            Bukkit.getPlayer(owner).sendMessage(Utils.format("&cYa estás conectado en el server " + serverTarget));
+            Bukkit.getPlayer(owner).sendMessage(Utils.format("&cYa estás conectado en este server."));
             return;
         }
         getPlayers().savePlayer(owner);
@@ -66,7 +66,7 @@ public class SpigotSocketClient extends ISocket {
     @Override
     public void sendJoinServer(UUID owner, String serverTarget, String msg){
         if (serverTarget.equals(Settings.PROXY_SERVER_NAME)){
-            Bukkit.getPlayer(owner).sendMessage(Utils.format("&cYa estás conectado en el server " + serverTarget));
+            Bukkit.getPlayer(owner).sendMessage(Utils.format("&cYa estás conectado en este server."));
             return;
         }
         getPlayers().savePlayer(owner);
@@ -287,14 +287,14 @@ public class SpigotSocketClient extends ISocket {
                                         final UUID target_uuid = UUID.fromString(json.get("target_uuid").getAsString());
                                         final String key = json.get("key").getAsString();
                                         final boolean hasReplacements = json.get("has-replacements").getAsBoolean();
-                                    
+    
                                         try {
                                             final Player player = Bukkit.getPlayer(target_uuid);
                                             if (player == null) continue;
                                             if (hasReplacements){
                                                 final JsonObject replacements = json.get("replacements").getAsJsonObject();
                                                 final HashMap<String, String> replace = new HashMap<>();
-                                            
+    
                                                 for ( Map.Entry<String, JsonElement> entry : replacements.entrySet() ){
                                                     replace.put(entry.getKey(), entry.getValue().getAsString());
                                                 }
@@ -302,7 +302,7 @@ public class SpigotSocketClient extends ISocket {
                                             } else {
                                                 player.sendMessage(Main.getLang().getMSG(key));
                                             }
-                                        
+        
                                         } catch (NullPointerException e) {
                                             e.printStackTrace();
                                         }
@@ -315,7 +315,7 @@ public class SpigotSocketClient extends ISocket {
                             e.printStackTrace();
                         }
                     }
-                
+    
                 }
             
             });

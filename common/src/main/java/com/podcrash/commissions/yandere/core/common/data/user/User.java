@@ -267,15 +267,15 @@ public class User {
         return Utils.format(coins + "&e⛂");
     }
     
-    public String getCoinsSemiFormatted() {
+    public String getCoinsSemiFormatted(){
         return Utils.format(new DecimalFormat("###,###,###").format(coins) + "&e⛃");
     }
     
-    public String getSuffix() {
+    public String getSuffix(){
         return suffix;
     }
     
-    public void setSuffix(String suffix) {
+    public void setSuffix(String suffix){
         this.suffix = suffix;
     }
 }

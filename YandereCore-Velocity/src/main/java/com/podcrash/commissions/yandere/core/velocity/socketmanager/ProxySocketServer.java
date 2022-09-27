@@ -130,7 +130,7 @@ public class ProxySocketServer implements Runnable {
                                 final String server_name = json.get("server_name").getAsString();
                                 VMain.getInstance().getServerManager().removeServer(server_name);
                                 if (VMain.getInstance().getProxy().getServer(server_name).isPresent()){
-                                    VMain.getInstance().getProxy().getServer(server_name).get().getPlayersConnected().forEach(player -> player.createConnectionRequest(VMain.getInstance().getProxy().getServer(VMain.getInstance().getServerManager().getRandomLobbyServer().getProxyName()).get()).connect());
+                                    VMain.getInstance().getProxy().getServer(server_name).get().getPlayersConnected().forEach(player -> player.createConnectionRequest(VMain.getInstance().getProxy().getServer(VMain.getInstance().getServerManager().getRandomServerByType(ServerType.LOBBY).getProxyName()).get()).connect());
                                 }
                             }
                             case "SEND_MSG_TO_PLAYER" -> {
@@ -147,14 +147,14 @@ public class ProxySocketServer implements Runnable {
                                 json.remove("type");
                                 json.addProperty("type", "CHECK_PLUGIN_UPDATES_POST");
                                 VMain.getInstance().getProxy().getAllServers().forEach(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName()).ifPresent(socket -> socket.sendMessage(json)));
-        
+    
                                 //socketManager.getSocketServers().forEach(socketServer -> socketServer.sendMessage(json));
                             }
                             case "GLOBAL_SERVER_FETCH" -> {
                                 json.remove("type");
                                 json.addProperty("type", "GLOBAL_SERVER_FETCH_POST");
                                 VMain.getInstance().getProxy().getAllServers().forEach(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName()).ifPresent(socket -> socket.sendMessage(json)));
-        
+    
                                 //socketManager.getSocketServers().forEach(socketServer -> socketServer.sendMessage(json));
                             }
                             case "CONNECT_TO_SERVER" -> {
@@ -183,7 +183,7 @@ public class ProxySocketServer implements Runnable {
                                             p.sendMessage(Utils.format("&cEste server está cerrado."));
                                             continue;
                                         }
-                    
+    
                                         VMain.getInstance().getProxy().getServer(serverName).ifPresent(server -> {
                                             try {
                                                 ConnectionRequestBuilder.Result result = p.createConnectionRequest(server).connect().get(5, TimeUnit.SECONDS);
@@ -200,7 +200,7 @@ public class ProxySocketServer implements Runnable {
                                         }
                                     }
                                 }
-            
+    
                             }
                             case "ERROR" -> {
                                 if (!json.has("error")) continue;
@@ -213,9 +213,9 @@ public class ProxySocketServer implements Runnable {
                                         if (!json.has("server_target")) continue;
                                         if (!json.has("world_uuid")) continue;
                                         final String current_server = json.get("current_server").getAsString();
-            
+    
                                         ServerSocketManager.getSocketByServer(current_server).ifPresent(socket -> socket.sendMessage(json));
-            
+    
                                     }
                                     case "SERVER_NOT_ONLINE":{
                                         if (!json.has("owner_uuid")) continue;

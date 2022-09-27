@@ -20,8 +20,8 @@ public abstract class IPlayerRepository extends MongoDB<UUID, User> {
     public void trashFinder(){
     }
     
-    public User getCachedPlayer(UUID uuid) {
-        if(list.containsKey(uuid)){
+    public User getCachedPlayer(UUID uuid){
+        if (list.containsKey(uuid)){
             return list.get(uuid);
         } else {
             User user = getPlayer(uuid);

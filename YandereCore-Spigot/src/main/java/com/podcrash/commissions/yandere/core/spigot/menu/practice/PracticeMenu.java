@@ -13,8 +13,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class PracticeMenu extends Menu {
     
-    public PracticeMenu(IPlayerMenuUtility playerMenuUtility){
+    private final boolean party;
+    
+    public PracticeMenu(IPlayerMenuUtility playerMenuUtility, boolean party){
         super(playerMenuUtility);
+        this.party = party;
     }
     
     @Override
@@ -31,13 +34,13 @@ public class PracticeMenu extends Menu {
     public void setMenuItems(){
         
         inventory.setItem(11, new ItemBuilder(Material.STONE_SWORD)
-                .setDisplayName("&3&lUnranked Queue")
+                .setDisplayName(party ? "&3&lUnranked Queue vs Party" : "&3&lUnranked Queue")
                 .addLoreLine("")
                 .addLoreLine(" &a⋆ &fEn cola: &c" + PlaceholderAPI.setPlaceholders(this.getOwner(), "%strikepractice_in_unranked_queue%"))
                 .addLoreLine(" &a⋆ &fJugando: &c" + PlaceholderAPI.setPlaceholders(this.getOwner(), "%strikepractice_in_fight%"))
                 .addLoreLine("")
                 .addLoreLine(" &a⋆ &fHaz click para abrir la lista de colas")
-                .addTag("queue-type", PracticeQueueType.UNRANKED.name())
+                .addTag("queue-type", party ? PracticeQueueType.PARTY_UNRANKED.name() : PracticeQueueType.UNRANKED.name())
                 .build());
         
         inventory.setItem(13, new ItemBuilder(Material.EMERALD)
@@ -60,14 +63,14 @@ public class PracticeMenu extends Menu {
         
         
         inventory.setItem(20, new ItemBuilder(Material.DIAMOND_SWORD)
-                .setDisplayName("&a&lRanked Queue")
+                .setDisplayName(party ? "&a&lRanked Queue vs Party" : "&a&lRanked Queue")
                 .addLoreLine("")
                 .addLoreLine(" &a⋆ &fEn cola: &c" + PlaceholderAPI.setPlaceholders(this.getOwner(), "%strikepractice_in_ranked_queue%"))
                 .addLoreLine(" &a⋆ &fJugando: &c" + PlaceholderAPI.setPlaceholders(this.getOwner(), "%strikepractice_in_fight%"))
                 .addLoreLine(" &a⋆ &fRankeds Restantes: &c" + PlaceholderAPI.setPlaceholders(this.getOwner(), "%strikepractice_rankeds_left%"))
                 .addLoreLine("")
                 .addLoreLine("&7Haz click para abrir la lista de colas")
-                .addTag("queue-type", PracticeQueueType.RANKED.name())
+                .addTag("queue-type", party ? PracticeQueueType.PARTY_RANKED.name() : PracticeQueueType.RANKED.name())
                 .build());
         
         inventory.setItem(22, new ItemBuilder(Material.BOOK)
@@ -79,7 +82,7 @@ public class PracticeMenu extends Menu {
         
         inventory.setItem(24, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODkwYjFjZDBjYjEwZGNjM2U5OWJmNDEwNGIxMDM2MGM5Mjc5ZmEwYTJhYTdiZGVkMTQ4MzM1OWIwNDc0ZTExZSJ9fX0=")
-                .setDisplayName("&a&lBots")
+                .setDisplayName(party ? "&a&lBots vs Party" : "&a&lBots")
                 .addLoreLine("")
                 .addLoreLine("&fPon a prueba tus habilidades y entrena")
                 .addLoreLine("&fcontra bots de distintos niveles.")
@@ -100,7 +103,11 @@ public class PracticeMenu extends Menu {
         }
         if (NBTItem.hasTag(item, "queue-type")){
             PracticeQueueType queueType = PracticeQueueType.valueOf(NBTItem.getTag(item, "queue-type"));
-            new PracticeQueueMenu(playerMenuUtility, queueType).open();
+            if (party && queueType.equals(PracticeQueueType.PREMIUM)){
+                this.checkSomething(getOwner(), e.getSlot(), item, "&7No puedes entrar a esta cola en modo party.", "", this.getMenuUUID());
+                return;
+            }
+            new PracticeQueueMenu(playerMenuUtility, queueType, party).open();
         }
     }
 }

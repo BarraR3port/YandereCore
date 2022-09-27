@@ -20,13 +20,15 @@ public class BotDifficultySelector extends Menu {
     private final BattleKit kit;
     private final PracticeQueueType type;
     private final BotDuel botDuel;
+    private final boolean party;
     
-    public BotDifficultySelector(IPlayerMenuUtility playerMenuUtility, StrikePracticeAPI api, BattleKit kit, PracticeQueueType type, BotDuel botDuel){
+    public BotDifficultySelector(IPlayerMenuUtility playerMenuUtility, StrikePracticeAPI api, BattleKit kit, PracticeQueueType type, BotDuel botDuel, boolean party){
         super(playerMenuUtility, true);
         this.api = api;
         this.kit = kit;
         this.type = type;
         this.botDuel = botDuel;
+        this.party = party;
     }
     
     @Override
@@ -106,7 +108,7 @@ public class BotDifficultySelector extends Menu {
             ga.strikepractice.arena.d.c(getOwner());
             
         } else if (NBTItem.hasTag(item, "ly-menu-close")){
-            new ArenaSelector(playerMenuUtility, api, kit, type, botDuel).open();
+            new ArenaSelector(playerMenuUtility, api, kit, type, botDuel, party).open();
         }
     }
 }

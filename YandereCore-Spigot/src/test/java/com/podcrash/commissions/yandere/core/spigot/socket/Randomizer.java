@@ -8,7 +8,7 @@ public class Randomizer {
     private final Integer[][] randomizers = new Integer[30][25];
     private final Integer[][] selectors = new Integer[30][6];
     
-    public Randomizer() {
+    public Randomizer(){
         for ( int i = 0; i < randomizers.length; i++ ){
             HashSet<Integer> selected = new HashSet<>();
             while (selected.size() < randomizers[i].length) {
@@ -23,11 +23,11 @@ public class Randomizer {
         }
     }
     
-    public Integer[] getSelectors() {
+    public Integer[] getSelectors(){
         return selectors[ThreadLocalRandom.current().nextInt(0, 30)];
     }
     
-    public Integer[] getRandomizer() {
+    public Integer[] getRandomizer(){
         return randomizers[ThreadLocalRandom.current().nextInt(0, 30)];
     }
     

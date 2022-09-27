@@ -120,7 +120,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     }
     
     @Override
-    public void onEnable() {
+    public void onEnable(){
         instance = this;
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "podcrash:yandere", new PluginMessage());
@@ -130,7 +130,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         sounds = new SoundsConfig(this, "sounds.yml");
         try {
             api = new LyApi(this, "Yandere", "&c[&4ERROR&c] &cNo tienes el siguiente permiso:&e permission", new ESLang(new Config(this, "es.yml"), config.getString("global.prefix"), "&c[&4ERROR&c]"), true);
-        } catch(LyApiInitializationError e) {
+        } catch (LyApiInitializationError e) {
             e.printStackTrace();
             getServer().shutdown();
         }
@@ -186,7 +186,7 @@ public final class Main extends JavaPlugin implements YandereApi {
             socket = new OfflineSocketClient();
         }
         switch(Settings.SERVER_TYPE){
-            case LOBBY: {
+            case LOBBY:{
                 getServer().getPluginManager().registerEvents(new MainLobbyPlayerEvents(), this);
                 api.getCommandService().registerCommands(new BuildCommand());
                 getLogger().info("\n------------------------");
@@ -194,7 +194,7 @@ public final class Main extends JavaPlugin implements YandereApi {
                 getLogger().info("------------------------\n");
                 break;
             }
-            case LOBBY_BED_WARS: {
+            case LOBBY_BED_WARS:{
                 getServer().getPluginManager().registerEvents(new LBWPlayerEvents(), this);
                 api.getCommandService().registerCommands(new BuildCommand());
                 getLogger().info("\n------------------------");
@@ -236,7 +236,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         }, 0L, 60L);
         getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
             for ( Player p : Bukkit.getOnlinePlayers() ){
-                if(p.getOpenInventory().getTopInventory().getHolder() instanceof InventoryMenu){
+                if (p.getOpenInventory().getTopInventory().getHolder() instanceof InventoryMenu){
                     ((InventoryMenu) p.getOpenInventory().getTopInventory().getHolder()).reOpen();
                 }
             }
@@ -277,11 +277,11 @@ public final class Main extends JavaPlugin implements YandereApi {
         return config;
     }
     
-    public ItemsConfig getItems() {
+    public ItemsConfig getItems(){
         return items;
     }
     
-    public SoundsConfig getSounds() {
+    public SoundsConfig getSounds(){
         return sounds;
     }
     
@@ -399,9 +399,9 @@ public final class Main extends JavaPlugin implements YandereApi {
         return coolDownManager;
     }
     
-    public boolean hookPodBedWars() {
+    public boolean hookPodBedWars(){
         try {
-            if(!hockedIntoBedWars){
+            if (!hockedIntoBedWars){
                 getLogger().info("\n------------------------");
                 getLogger().info("[YandereCore] Loading BedWars Events...");
                 Bukkit.getPluginManager().registerEvents(new BWPlayerEvents(), Main.getInstance());
@@ -412,14 +412,14 @@ public final class Main extends JavaPlugin implements YandereApi {
             } else {
                 return false;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
     
-    public boolean hookSkyWars() {
+    public boolean hookSkyWars(){
         try {
-            if(!hockedIntoSkyWars){
+            if (!hockedIntoSkyWars){
                 getLogger().info("\n------------------------");
                 getLogger().info("[YandereCore] Loading SkyWars Events...");
                 getServer().getPluginManager().registerEvents(new SWGameEvents(), this);
@@ -432,16 +432,16 @@ public final class Main extends JavaPlugin implements YandereApi {
             } else {
                 return false;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
     
-    public boolean isHookedIntoBedWars() {
+    public boolean isHookedIntoBedWars(){
         return hockedIntoBedWars;
     }
     
-    public boolean isHookedIntoSkyWars() {
+    public boolean isHookedIntoSkyWars(){
         return hockedIntoSkyWars;
     }
     

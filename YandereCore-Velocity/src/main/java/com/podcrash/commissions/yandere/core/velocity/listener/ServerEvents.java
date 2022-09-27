@@ -14,9 +14,9 @@ public class ServerEvents {
         final String serverName = e.getServer().getServerInfo().getName();
         final ServerType serverType = ServerType.match(serverName);
         if (serverType.equals(ServerType.BED_WARS)){
-            String lobby = VMain.getInstance().getServerManager().getRandomBedWarsLobbyServer().getProxyName();
+            String lobby = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.LOBBY_BED_WARS).getProxyName();
             if (lobby.equalsIgnoreCase("EMPTY")){
-                lobby = VMain.getInstance().getServerManager().getRandomLobbyServer().getProxyName();
+                lobby = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.LOBBY).getProxyName();
                 e.getPlayer().sendMessage(Utils.format("&cNo hay Lobbies de SkyWars disponibles!"));
                 e.getPlayer().sendMessage(Utils.format("&cTe estamos redirigiendo a un Lobby Principal!"));
             }
@@ -25,9 +25,9 @@ public class ServerEvents {
                 return;
             }
         } else if (serverType.equals(ServerType.SKY_WARS)){
-            String lobby = VMain.getInstance().getServerManager().getRandomSkyWarsServer().getProxyName();
+            String lobby = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.SKY_WARS).getProxyName();
             if (lobby.equalsIgnoreCase("EMPTY")){
-                lobby = VMain.getInstance().getServerManager().getRandomLobbyServer().getProxyName();
+                lobby = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.LOBBY).getProxyName();
                 e.getPlayer().sendMessage(Utils.format("&cNo hay Lobbies de SkyWars disponibles!"));
                 e.getPlayer().sendMessage(Utils.format("&cTe estamos redirigiendo a un Lobby Principal!"));
             }
@@ -35,8 +35,19 @@ public class ServerEvents {
                 e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(lobby).get()));
                 return;
             }
+        } else if (serverType.equals(ServerType.PRACTICE)){
+            String lobby = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.PRACTICE).getProxyName();
+            if (lobby.equalsIgnoreCase("EMPTY")){
+                lobby = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.LOBBY).getProxyName();
+                e.getPlayer().sendMessage(Utils.format("&cNo hay servers de Practice disponibles!"));
+                e.getPlayer().sendMessage(Utils.format("&cTe estamos redirigiendo a un Lobby Principal!"));
+            }
+            if (VMain.getInstance().getProxy().getServer(lobby).isPresent()){
+                e.setResult(KickedFromServerEvent.RedirectPlayer.create(VMain.getInstance().getProxy().getServer(lobby).get()));
+                return;
+            }
         }
-        final String randomLobbyServer = VMain.getInstance().getServerManager().getRandomLobbyServer().getProxyName();
+        final String randomLobbyServer = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.LOBBY).getProxyName();
         if (VMain.getInstance().getProxy().getServer(randomLobbyServer).isPresent()){
             RegisteredServer server = VMain.getInstance().getProxy().getServer(randomLobbyServer).get();
             e.setResult(KickedFromServerEvent.RedirectPlayer.create(server));

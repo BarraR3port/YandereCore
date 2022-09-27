@@ -8,12 +8,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ItemsConfig extends Config {
     
     
-    public ItemsConfig(JavaPlugin plugin, String name) {
+    public ItemsConfig(JavaPlugin plugin, String name){
         super(plugin, name);
     }
     
     
-    public ItemsConfig(JavaPlugin plugin, String name, String resourcePath, String filePath) {
+    public ItemsConfig(JavaPlugin plugin, String name, String resourcePath, String filePath){
         super(plugin, name, resourcePath, filePath);
     }
 }

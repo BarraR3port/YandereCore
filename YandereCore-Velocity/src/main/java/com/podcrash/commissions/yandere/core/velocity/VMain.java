@@ -51,18 +51,18 @@ import java.util.concurrent.TimeUnit;
 public final class VMain extends LyApiVelocity {
     
     public final static Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-    private static VMain instance;
     private static final Config config = new Config("config", "plugins/YandereCore");
+    private static VMain instance;
     private final ServerSocketManager serverSocketManager = new ServerSocketManager();
     private final ProxyStats serverManager;
     private final ProxyServer proxy;
     private final Slf4jPluginLogger logger;
     private final HashMap<UUID, ScheduledTask> streams = new HashMap<>();
+    private final Path path;
     private PlayerRepository playersRepository;
     private IServerRepository serverRepository;
     private IGlobalServerRepository globalServerRepository;
     private AnnouncementManager announcementManager;
-    private final Path path;
     
     /**
      * Constructor for ChatRegulator Plugin

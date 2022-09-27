@@ -33,20 +33,19 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class ServerRepository extends IServerRepository {
+    private final OkHttpClient httpClient = new OkHttpClient();
     private Server server;
     
-    private final OkHttpClient httpClient = new OkHttpClient();
-    
-    public ServerRepository(MongoDBClient database, String tableName) {
+    public ServerRepository(MongoDBClient database, String tableName){
         super(database, tableName);
         this.server = initializeServer();
     }
     
     @Override
-    public Server initializeServer() {
-        if(server == null){
+    public Server initializeServer(){
+        if (server == null){
             String serverID = Settings.WEB_UUID;
-            if(serverID == null && Main.getInstance().getConfig().getConfigVersion() < 1.1){
+            if (serverID == null && Main.getInstance().getConfig().getConfigVersion() < 1.1){
                 Server server = new Server(getUUIDFromPterodactyl(), Settings.PROXY_SERVER_NAME, Bukkit.getOnlinePlayers().size(), Settings.SERVER_TYPE);
                 database.insertOne(TABLE_NAME, server);
                 this.server = server;
@@ -54,7 +53,7 @@ public class ServerRepository extends IServerRepository {
                 Main.getInstance().saveConfig();
             } else {
                 Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", serverID));
-                if(doc != null){
+                if (doc != null){
                     server = Api.getGson().fromJson(doc.toJson(), Server.class);
                     Main.getInstance().getConfig().set("web.uuid", server.getUuid().toString());
                     Main.getInstance().saveConfig();
@@ -70,17 +69,17 @@ public class ServerRepository extends IServerRepository {
     }
     
     @Override
-    public Server getServer() {
+    public Server getServer(){
         return server;
     }
     
     @Override
-    public boolean isServerRegistered() {
+    public boolean isServerRegistered(){
         return false;
     }
     
     @Override
-    public void checkForPluginsUpdates() {
+    public void checkForPluginsUpdates(){
         pluginFilesGarbageCollector();
         try {
             Main.getInstance().getLogger().info("[UPDATE MACHINE] Initializing the ~Updating Machine~ ...");
@@ -93,10 +92,10 @@ public class ServerRepository extends IServerRepository {
             while (it.hasNext()) {
                 File file = it.next();
                 String pl = file.getName();
-                if(pl.endsWith(".jar")){
+                if (pl.endsWith(".jar")){
                     String pluginName = pl.replace(".jar", "").split("-")[0];
                     Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
-                    if(plugin != null){
+                    if (plugin != null){
                         String hash = String.format(Locale.ROOT, "%032x", new BigInteger(1, MessageDigest.getInstance("MD5").digest(Files.readAllBytes(file.toPath()))));
                         plugins.add(new OutPlugin(plugin.getName(), plugin.getName(), hash));
                         loadedPlugins.add(new LoadedPlugin(plugin.getName(), plugin.getName(), hash, plugin.getDescription().getVersion()));
@@ -116,7 +115,7 @@ public class ServerRepository extends IServerRepository {
                     .build();
             
             try (okhttp3.Response rs = httpClient.newCall(request).execute()) {
-                if(!rs.isSuccessful()){
+                if (!rs.isSuccessful()){
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Failed to Check the plugins.");
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR MSG: " + rs);
                     return;
@@ -133,7 +132,7 @@ public class ServerRepository extends IServerRepository {
     
                 /*JsonElement jElement = new JsonParser( ).parse( resultado.toString( ) );*/
                 Response res = Api.getGson().fromJson(response, Response.class);
-                if(res.getType().equals("plugins")){
+                if (res.getType().equals("plugins")){
                     ArrayList<LyPlugin> pluginsFounded = res.getPlugins(); // estos son los plugins que están en el servidor y a la vez en el mongo
                     HashMap<LyPlugin, LoadedPlugin> pluginsToUpdate = new HashMap<>();
                     Main.getInstance().getLogger().warning("[UPDATE MACHINE] I have found " + pluginsFounded.size() + " plugins matches with the DB");
@@ -144,26 +143,26 @@ public class ServerRepository extends IServerRepository {
                             server.addPlugin(plugin.getUuid());
                             try {
                                 for ( LoadedPlugin pluginLoaded : loadedPlugins ){
-                                    if(plugin.getBukkitName().equalsIgnoreCase(pluginLoaded.getBukkitName())){
+                                    if (plugin.getBukkitName().equalsIgnoreCase(pluginLoaded.getBukkitName())){
                                         System.out.println("Comparando " + plugin.getBukkitName() + " hash " + pluginLoaded.getBukkitName());
                                         System.out.println("---------- " + plugin.getHash() + " ------> " + pluginLoaded.getHash());
-                                        if(!plugin.getHash().equals(pluginLoaded.getHash()) || !plugin.getVersion().equals(pluginLoaded.getVersion())){
+                                        if (!plugin.getHash().equals(pluginLoaded.getHash()) || !plugin.getVersion().equals(pluginLoaded.getVersion())){
                                             Main.getInstance().getLogger().log(Level.WARNING, "[UPDATE MACHINE] There is a new version of the plugin " + plugin.getBukkitName() + " (" + plugin.getVersion() + "#" + plugin.getHash());
                                             pluginsToUpdate.put(plugin, pluginLoaded);
                                         }
                                     }
                                 }
                     
-                            } catch(Exception e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                 
                         }
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     saveServer();
-                    if(pluginsToUpdate.size() > 0){
+                    if (pluginsToUpdate.size() > 0){
                         Main.getInstance().getLogger().warning("[UPDATE MACHINE] I have found " + pluginsToUpdate.size() + " plugins to update");
                         Main.getInstance().getLogger().warning("[UPDATE MACHINE] Starting the update process...");
                         pluginsToUpdate.forEach(this::updatePlugin);
@@ -174,36 +173,36 @@ public class ServerRepository extends IServerRepository {
                         Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting....");
                         Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting.....");
                         Bukkit.shutdown();
-    
+            
                     } else {
                         Main.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
                     }
-                } else if(res.getType().equals("success")){
+                } else if (res.getType().equals("success")){
                     Main.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
                 } else {
                     Main.getInstance().getLogger().severe("[UPDATE MACHINE] There is something wrong with the server, please contact the AL TIO BARRAAAAAAAAAAAAAAAAAA");
                 }
             }
-        } catch(IOException | NullPointerException | ConcurrentModificationException |
-                NoSuchAlgorithmException ignored) {
+        } catch (IOException | NullPointerException | ConcurrentModificationException |
+                 NoSuchAlgorithmException ignored) {
         }
-    
+        
     }
     
-    public void pluginFilesGarbageCollector() {
+    public void pluginFilesGarbageCollector(){
         List<String> pluginsToDelete = Main.getInstance().getConfig().getStringList("web.pluginsToDelete");
-        if(pluginsToDelete.size() > 0){
+        if (pluginsToDelete.size() > 0){
             Main.getInstance().getLogger().info("[UPDATE MACHINE] Found " + pluginsToDelete.size() + " old plugins files pending to be deleted!");
             for ( String path : pluginsToDelete ){
                 String plugin = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
                 Main.getInstance().getLogger().info("[UPDATE MACHINE] Deleting Plugin: " + plugin);
                 try {
                     FileUtils.forceDelete(FileUtils.getFile(path));
-                } catch(IOException ignored) {
-                    if(path.contains("LyBedWars")){
+                } catch (IOException ignored) {
+                    if (path.contains("LyBedWars")){
                         try {
                             FileUtils.forceDelete(FileUtils.getFile(path));
-                        } catch(IOException ignored1) {
+                        } catch (IOException ignored1) {
                         }
                     }
                 }
@@ -213,14 +212,14 @@ public class ServerRepository extends IServerRepository {
         }
     }
     
-    public void saveServer() {
+    public void saveServer(){
         database.replaceOneFast(TABLE_NAME, Filters.eq("uuid", server.getUuid().toString()), server);
         Main.getInstance().getConfig().set("web.uuid", server.getUuid().toString());
         Main.getInstance().getConfig().set("web.plugins", server.getPluginsFormatted());
         Main.getInstance().saveConfig();
     }
     
-    public void updatePlugin(LyPlugin plugin, LoadedPlugin outdatedPlugin) {
+    public void updatePlugin(LyPlugin plugin, LoadedPlugin outdatedPlugin){
         boolean isMainPlugin = plugin.getBukkitName().equals("YandereCore");
         Main.getInstance().getLogger().info("[UPDATE MACHINE] Updating " + plugin.getBukkitName() + "V:" + outdatedPlugin.getVersion() + " -> " + plugin.getVersion());
         Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 1/5 -> Downloading the Plugin");
@@ -235,12 +234,12 @@ public class ServerRepository extends IServerRepository {
                     .build();
             
             try (okhttp3.Response rs = httpClient.newCall(request).execute()) {
-                if(!rs.isSuccessful()){
+                if (!rs.isSuccessful()){
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Failed to Download the plugin: " + plugin.getName() + " !");
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR MSG: " + rs);
                     return;
                 }
-                if(!isMainPlugin){
+                if (!isMainPlugin){
                     Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 2/5 -> Disabling the Plugin " + outdatedPlugin.getBukkitName());
                     Bukkit.getPluginManager().disablePlugin(Bukkit.getPluginManager().getPlugin(outdatedPlugin.getBukkitName()));
                 } else {
@@ -252,17 +251,17 @@ public class ServerRepository extends IServerRepository {
                 String plugin_to_delete = outdatedPlugin.getName() + "-" + outdatedPlugin.getVersion() + ".jar";
                 try {
                     path = Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/" + new File(Bukkit.getPluginManager().getPlugin(outdatedPlugin.getName()).getClass().getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
-                } catch(Exception e) {
+                } catch (Exception e) {
                     path = Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/" + plugin_to_delete;
                 }
                 try {
-                    if(!isMainPlugin){
+                    if (!isMainPlugin){
                         Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 3/5 -> Deleting the file");
                         FileUtils.forceDelete(FileUtils.getFile(path));
                     } else {
                         throw new IOException();
                     }
-                } catch(IOException e) {
+                } catch (IOException e) {
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Couldn't delete the file with the normal way, trying with the panel api!");
         
                     RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "{\"root\":\"/plugins\",\"files\":[\"" + plugin_to_delete + "\"]}");
@@ -276,7 +275,7 @@ public class ServerRepository extends IServerRepository {
                             .post(body)
                             .build();
                     try (okhttp3.Response response = httpClient.newCall(requestToDelete).execute()) {
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()){
                             Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 3/5 -> Successfully deleted the old plugin file: " + plugin_to_delete);
                         } else {
                             Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Couldn't delete the file, don't worry, it will be deleted when the server restarts!");
@@ -298,13 +297,13 @@ public class ServerRepository extends IServerRepository {
     
             }
             
-        } catch(IOException e) {
+        } catch (IOException e) {
             Main.getInstance().getLogger().log(Level.WARNING, "[UPDATE MACHINE] ERROR -> Couldn't download the plugin");
         }
         
     }
     
-    public UUID getUUIDFromPterodactyl() {
+    public UUID getUUIDFromPterodactyl(){
         try {
             OkHttpClient httpClient = new OkHttpClient();
             Request request = new Request.Builder()
@@ -314,7 +313,7 @@ public class ServerRepository extends IServerRepository {
                     .addHeader("Authorization", "Bearer ptlc_MW0HtBp99Ln1khIgRevctUK50pOGPwBWo4mAZysUelS")
                     .build();
             try (okhttp3.Response rs = httpClient.newCall(request).execute()) {
-                if(!rs.isSuccessful()){
+                if (!rs.isSuccessful()){
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Failed to get the UUID.");
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR MSG: " + rs);
                     throw new IOException("Unexpected code " + rs);
@@ -331,7 +330,7 @@ public class ServerRepository extends IServerRepository {
                 return UUID.fromString(jObject.get("attributes").getAsJsonObject().get("uuid").getAsString());
                 
             }
-        } catch(IOException | NullPointerException | ConcurrentModificationException ignored) {
+        } catch (IOException | NullPointerException | ConcurrentModificationException ignored) {
         }
         return null;
     }

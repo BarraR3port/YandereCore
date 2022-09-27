@@ -12,7 +12,7 @@ public class Server {
     private final UUID uuid;
     private final ArrayList<UUID> plugins;
     
-    public Server(String proxyName, int onlinePlayers, ServerType serverType) {
+    public Server(String proxyName, int onlinePlayers, ServerType serverType){
         this.uuid = UUID.randomUUID();
         this.proxyName = proxyName;
         this.onlinePlayers = onlinePlayers;
@@ -20,7 +20,7 @@ public class Server {
         this.plugins = new ArrayList<>();
     }
     
-    public Server(UUID uuid, String proxyName, int onlinePlayers, ServerType serverType) {
+    public Server(UUID uuid, String proxyName, int onlinePlayers, ServerType serverType){
         this.uuid = uuid;
         this.proxyName = proxyName;
         this.onlinePlayers = onlinePlayers;
@@ -28,41 +28,41 @@ public class Server {
         this.plugins = new ArrayList<>();
     }
     
-    public String getProxyName() {
+    public String getProxyName(){
         return proxyName;
     }
     
-    public int getOnlinePlayers() {
+    public int getOnlinePlayers(){
         return onlinePlayers;
     }
     
-    public ServerType getServerType() {
+    public ServerType getServerType(){
         return serverType;
     }
     
-    public ArrayList<UUID> getPlugins() {
+    public ArrayList<UUID> getPlugins(){
         return plugins;
     }
     
-    public LinkedList<String> getPluginsFormatted() {
+    public LinkedList<String> getPluginsFormatted(){
         return plugins.stream().map(UUID::toString).collect(Collectors.toCollection(LinkedList::new));
     }
     
-    public void addPlugin(UUID plugin) {
-        if(!plugins.contains(plugin)){
+    public void addPlugin(UUID plugin){
+        if (!plugins.contains(plugin)){
             plugins.add(plugin);
         }
     }
     
-    public void removePlugin(UUID plugin) {
+    public void removePlugin(UUID plugin){
         plugins.remove(plugin);
     }
     
-    public UUID getUuid() {
+    public UUID getUuid(){
         return uuid;
     }
     
-    public void clearPlugins() {
+    public void clearPlugins(){
         plugins.clear();
     }
 }

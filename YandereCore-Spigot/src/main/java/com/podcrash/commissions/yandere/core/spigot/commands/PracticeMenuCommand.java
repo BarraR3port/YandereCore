@@ -19,7 +19,13 @@ public class PracticeMenuCommand implements ILyCommand {
     public CommandResponse command(CommandContext context){
         if (context.getSender() instanceof Player){
             Player p = (Player) context.getSender();
-            new PracticeMenu(LyApi.getPlayerMenuUtility(p)).open();
+            if (context.getArgLength() == 0){
+                new PracticeMenu(LyApi.getPlayerMenuUtility(p), false).open();
+            } else if (context.getArgLength() == 1){
+                if (context.getArg(0).equalsIgnoreCase("party")){
+                    new PracticeMenu(LyApi.getPlayerMenuUtility(p), true).open();
+                }
+            }
         }
         return new CommandResponse();
     }

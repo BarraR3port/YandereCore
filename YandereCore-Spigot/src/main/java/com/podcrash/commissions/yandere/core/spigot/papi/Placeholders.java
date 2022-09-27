@@ -169,7 +169,7 @@ public class Placeholders extends PlaceholderExpansion {
             case "coins_formatted":{
                 return p.getCoinsFormatted();
             }
-            case "level": {
+            case "level":{
                 return String.valueOf(p.getLevel().getLevel());
             }
             case "level_next_cost":

@@ -35,17 +35,17 @@ public class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public User getCachedPlayer(String name) {
+    public User getCachedPlayer(String name){
         for ( User user : list.values() ){
-            if(user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
                 return user;
             }
         }
     
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("name", name));
-        if(doc == null) throw new UserNotFoundException(name);
+        if (doc == null) throw new UserNotFoundException(name);
         User user = Api.getGson().fromJson(doc.toJson(), User.class);
-        if(user == null){
+        if (user == null){
             throw new UserNotFoundException(name);
         }
         list.put(user.getUUID(), user);

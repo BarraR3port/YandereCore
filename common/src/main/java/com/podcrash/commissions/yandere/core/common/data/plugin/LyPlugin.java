@@ -12,7 +12,7 @@ public class LyPlugin {
     private final String fileName;
     private final String hash;
     
-    public LyPlugin(String name, String bukkitName, String version, String fileExtension, String hash) {
+    public LyPlugin(String name, String bukkitName, String version, String fileExtension, String hash){
         this.name = name;
         this.bukkitName = bukkitName;
         this.version = version;
@@ -38,15 +38,15 @@ public class LyPlugin {
         return fileExtension;
     }
     
-    public String getFileName() {
+    public String getFileName(){
         return fileName;
     }
     
-    public String getBukkitName() {
+    public String getBukkitName(){
         return bukkitName;
     }
     
-    public String getHash() {
+    public String getHash(){
         return hash;
     }
 }
