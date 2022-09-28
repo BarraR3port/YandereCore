@@ -11,7 +11,7 @@ import com.podcrash.commissions.yandere.core.common.socket.ISocketClient;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.party.PartiesManager;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
-import com.podcrash.commissions.yandere.core.spigot.task.RepeatingTask;
+import com.podcrash.commissions.yandere.core.spigot.task.RepeatingTaskSync;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -363,7 +363,7 @@ public class SpigotSocketClient extends ISocket {
             if (!Main.getInstance().isEnabled()) return;
             disable("Reconnecting");
             reconnecting = true;
-            new RepeatingTask(Main.getInstance(), 20, 200) {
+            new RepeatingTaskSync(Main.getInstance(), 20, 200) {
                 @Override
                 public void run(){
                     if (!reconnecting) return;

@@ -1,4 +1,4 @@
-package com.podcrash.commissions.yandere.core.spigot.commands;
+package com.podcrash.commissions.yandere.core.spigot.commands.practice;
 
 
 import com.podcrash.commissions.yandere.core.spigot.menu.practice.PracticeMenu;

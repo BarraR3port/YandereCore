@@ -309,7 +309,6 @@ public class ServerRepository extends IServerRepository {
                     VMain.getInstance().getLogger().severe("[UPDATE MACHINE] STEP 5/5 -> Failed to delete the old plugin file: " + plugin_to_delete);
     
                 }
-                System.out.println(response.body().string());
                 VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 5/5 -> Successfully deleted the old plugin file: " + plugin_to_delete);
                 
                 // Get response body

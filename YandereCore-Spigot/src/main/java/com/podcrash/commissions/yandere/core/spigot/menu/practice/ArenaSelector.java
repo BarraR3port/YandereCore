@@ -52,13 +52,18 @@ public class ArenaSelector extends Menu {
     @Override
     public void setMenuItems(){
         List<d> arenas = kit.isBuild() ? d.a(getOwner(), kit) : d.c(getOwner(), kit);
-        List<String> arenasAdded = new ArrayList<>();
-        List<String> arenasAddedDisplay = new ArrayList<>();
-        for ( int i = 0; i < arenas.size() && i < slots.length; i++ ){
-            d arena = arenas.get(i);
-            if (arenasAdded.contains(arena.getName())) continue;
-            if (arenasAddedDisplay.contains(arena.getDisplayName())) continue;
-            
+        List<Arena> arenaList = new ArrayList<>();
+        List<String> arenasNames = new ArrayList<>();
+        for ( d arena : arenas ){
+            if (arena != null && !arenasNames.contains(arena.getName()) && !arenasNames.contains(arena.getDisplayName())){
+                arenaList.add(arena);
+                arenasNames.add(arena.getName());
+                arenasNames.add(arena.getDisplayName());
+            }
+        }
+        for ( int i = 0; i < arenaList.size() && i < slots.length; i++ ){
+            Arena arena = arenaList.get(i);
+            if (arena.isUsing()) continue;
             inventory.setItem(slots[i], new ItemBuilder(arena.getIcon().clone())
                     .setDisplayName(arena.getDisplayName())
                     .addLoreLine("")
@@ -66,8 +71,6 @@ public class ArenaSelector extends Menu {
                     .addTag("arena-name", arena.getName())
                     .build()
             );
-            arenasAdded.add(arena.getName());
-            arenasAddedDisplay.add(arena.getDisplayName());
         }
         inventory.setItem(49, CLOSE_ITEM);
     }

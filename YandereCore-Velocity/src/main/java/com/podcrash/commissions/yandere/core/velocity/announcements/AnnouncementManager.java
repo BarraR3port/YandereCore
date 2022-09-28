@@ -1,36 +1,48 @@
 package com.podcrash.commissions.yandere.core.velocity.announcements;
 
 import com.podcrash.commissions.yandere.core.velocity.VMain;
+import com.velocitypowered.api.scheduler.ScheduledTask;
+import com.velocitypowered.api.scheduler.TaskStatus;
 import de.leonhard.storage.Config;
 
 import java.util.LinkedList;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public final class AnnouncementManager {
     
     private final LinkedList<Announcement> announcements = new LinkedList<>();
+    private int delay;
+    private ScheduledTask task;
     
     public AnnouncementManager(){
     }
     
     public AnnouncementManager init(){
         Config config = VMain.getConfig();
-        for ( String key : config.getSection("announcements").singleLayerKeySet() ){
+        delay = config.getInt("announcements.delay");
+        for ( String key : config.getSection("announcements.list").singleLayerKeySet() ){
             Announcement announcement = new Announcement(
-                    config.getInt("announcements." + key + ".delay"),
-                    config.getEnum("announcements." + key + ".timeType", TimeUnit.class),
-                    config.getBoolean("announcements." + key + ".sound"),
-                    config.getStringList("announcements." + key + ".messages")
-            );
-            announcement.announce();
+                    config.getBoolean("announcements.list." + key + ".sound"),
+                    config.getStringList("announcements.list." + key + ".messages"));
             announcements.add(announcement);
         }
+        startAnnouncements();
         return this;
     }
     
     public void stopAnnouncements(){
-        for ( Announcement announcement : announcements ){
-            announcement.cancel();
-        }
+        if (task != null && (!task.status().equals(TaskStatus.FINISHED) || !task.status().equals(TaskStatus.CANCELLED)))
+            task.cancel();
+    }
+    
+    public void startAnnouncements(){
+        stopAnnouncements();
+        task = VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), () -> {
+            Announcement announcement = announcements.get(ThreadLocalRandom.current().nextInt(0, announcements.size()));
+            if (announcement != null){
+                announcement.startAnnouncing();
+            }
+        }).repeat(delay, TimeUnit.MINUTES).schedule();
     }
 }

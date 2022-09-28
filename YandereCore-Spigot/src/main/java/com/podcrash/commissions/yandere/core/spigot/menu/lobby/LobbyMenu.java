@@ -142,6 +142,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine(isLobbyOnline ? "" : null)
                 .addLoreLine(isLobbyOnline ? "&7Click para ver la lista de Lobbies." : null)
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.LOBBY).getProxyName())
+                .addTag("development", "false")
                 .build());
     
         inventory.setItem(30, new ItemBuilder(Items.TNT_TAG.clone())
@@ -169,6 +170,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine("&7► Nivel: &c" + user.getLevel().getLevelName())
                 .addLoreLine(user.getLevel().getProgressBar())
                 .addTag("stats", "stats")
+                .addTag("development", "false")
                 .build());
         
         inventory.setItem(36, super.CLOSE_ITEM);

@@ -15,17 +15,34 @@ db:
   urli: "mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@172.18.0.1:27017/"
 
 announcements:
-  1:
-    timeType: MINUTES
-    delay: 15
-    sound: true
-    messages:
-      - "&7&m-------------&e&l Yandere &c&lRangos &7&m-------------"
-      - ""
-      - "&f   Compra rangos para obtener mejoras visuales, "
-      - "&f   mayor prioridad, partículas, y mucho más"
-      - "&f   dentro de nuestras diferentes modalidades."
-      - ""
-      - "  &e¡Compra tu rango en &c&lstore.yandere.es&f!"
-      - ""
-      - "&7&m--------------------------------------------"
+  delay: 15
+  list:
+    1:
+      timeType: MINUTES
+      delay: 30
+      sound: true
+      messages:
+        - "&7&m---------------&e&l Yandere &c&lRangos &7&m---------------"
+        - ""
+        - "&f   Compra rangos para obtener mejoras visuales, mayor"
+        - "&f   prioridad, partículas, y mucho más dentro de nuestas"
+        - "&f   diferentes modalidades."
+        - ""
+        - "    &e¡Compra tu rango en &c&ltienda.yanderecraft.com&f!"
+        - ""
+        - "&7&m------------------------------------------------"
+    2:
+      timeType: MINUTES
+      delay: 30
+      sound: true
+      messages:
+        - "&7&m---------------&e&l Yandere &c&lFiestas &7&m---------------"
+        - ""
+        - "&f               ¿Estás jugando con amigos?"
+        - ""
+        - "&f   Juega junto con ellos y muevete a través del server"
+        - "&f   invitándolos a una &eFiesta &fcon el siguiente comando:"
+        - ""
+        - "&f                 &c/fiesta invite <amigo>."
+        - ""
+        - "&7&m------------------------------------------------"

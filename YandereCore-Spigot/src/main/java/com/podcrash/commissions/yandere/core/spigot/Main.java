@@ -20,6 +20,8 @@ import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMACommand
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMCCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSPCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.practice.PracticeArenaAutoCreateCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.practice.PracticeMenuCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.punish.EnderSeeCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.punish.InvSeeCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.spawn.DelSpawnCommand;
@@ -189,7 +191,7 @@ public final class Main extends JavaPlugin implements YandereApi {
             case LOBBY:{
                 getServer().getPluginManager().registerEvents(new MainLobbyPlayerEvents(), this);
                 api.getCommandService().registerCommands(new BuildCommand());
-                getLogger().info("\n------------------------");
+                getLogger().info("------------------------");
                 getLogger().info("[YandereCore] Hooked into Lobby");
                 getLogger().info("------------------------\n");
                 break;
@@ -197,7 +199,7 @@ public final class Main extends JavaPlugin implements YandereApi {
             case LOBBY_BED_WARS:{
                 getServer().getPluginManager().registerEvents(new LBWPlayerEvents(), this);
                 api.getCommandService().registerCommands(new BuildCommand());
-                getLogger().info("\n------------------------");
+                getLogger().info("------------------------");
                 getLogger().info("[YandereCore] Hooked into Lobby BedWars");
                 getLogger().info("------------------------\n");
                 break;
@@ -208,7 +210,8 @@ public final class Main extends JavaPlugin implements YandereApi {
                     getServer().getPluginManager().registerEvents(new PracticeGameEvents(), this);
                     getServer().getPluginManager().registerEvents(new PracticePlayerEvents(), this);
                     api.getCommandService().registerCommands(new PracticeMenuCommand());
-                    getLogger().info("\n------------------------");
+                    api.getCommandService().registerCommands(new PracticeArenaAutoCreateCommand());
+                    getLogger().info("------------------------");
                     getLogger().info("[YandereCore] Hooked into Practice");
                     getLogger().info("------------------------\n");
                 } else {
@@ -243,7 +246,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         }, 0L, 10L);
     
         Bukkit.getScheduler().runTaskTimer(this, () -> {
-            getLogger().info("\n------------------------");
+            getLogger().info("------------------------");
             getLogger().info("[UPDATE MACHINE] Checking Plugin Updates...");
             this.serverRepository.checkForPluginsUpdates();
             getLogger().info("[UPDATE MACHINE] Done.");
@@ -402,7 +405,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     public boolean hookPodBedWars(){
         try {
             if (!hockedIntoBedWars){
-                getLogger().info("\n------------------------");
+                getLogger().info("------------------------");
                 getLogger().info("[YandereCore] Loading BedWars Events...");
                 Bukkit.getPluginManager().registerEvents(new BWPlayerEvents(), Main.getInstance());
                 hockedIntoBedWars = true;
@@ -420,7 +423,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     public boolean hookSkyWars(){
         try {
             if (!hockedIntoSkyWars){
-                getLogger().info("\n------------------------");
+                getLogger().info("------------------------");
                 getLogger().info("[YandereCore] Loading SkyWars Events...");
                 getServer().getPluginManager().registerEvents(new SWGameEvents(), this);
                 getServer().getPluginManager().registerEvents(new SWPlayerEvents(), this);
