@@ -31,7 +31,7 @@ public class LevelCommand implements ILyCommand {
                                 "&7Nivel: &c" + user.getLevel().getLevel(),
                                 "&7XP: &c" + user.getLevel().getFormattedCurrentXp(),
                                 "&7XP Necesario: &c" + user.getLevel().getFormattedRequiredXp(),
-                                user.getLevel().getProgressBar())));
+                                user.getLevel().getProgressBarFormatted())));
                 return new CommandResponse();
             }
             

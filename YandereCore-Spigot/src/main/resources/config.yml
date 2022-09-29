@@ -9,7 +9,9 @@ spawn:
 socket:
   ip: 172.18.0.1
   port: 5555
+
 web:
+  enabled: false
   uuid: null
   key: ASDJ209KASDHKADJ2KASDJGHASDK4KAHSKKDHGHJA8JA20LASDHGKALSKVMXJNASDOJG
   url: "http://209.222.97.163:3000"

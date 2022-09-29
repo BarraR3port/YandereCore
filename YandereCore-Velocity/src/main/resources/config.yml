@@ -1,6 +1,7 @@
 global:
   debug: true
 web:
+  enabled: false
   uuid: null
   key: ASDJ209KASDHKADJ2KASDJGHASDK4KAHSKKDHGHJA8JA20LASDHGKALSKVMXJNASDOJG
   url: "http://209.222.97.163:3000"
@@ -25,7 +26,7 @@ announcements:
         - "&7&m---------------&e&l Yandere &c&lRangos &7&m---------------"
         - ""
         - "&f   Compra rangos para obtener mejoras visuales, mayor"
-        - "&f   prioridad, partículas, y mucho más dentro de nuestas"
+        - "&f   prioridad, partículas, y mucho más dentro de nuestras"
         - "&f   diferentes modalidades."
         - ""
         - "    &e¡Compra tu rango en &c&ltienda.yanderecraft.com&f!"
@@ -40,7 +41,7 @@ announcements:
         - ""
         - "&f               ¿Estás jugando con amigos?"
         - ""
-        - "&f   Juega junto con ellos y muevete a través del server"
+        - "&f   Juega junto con ellos y muévete a través del server"
         - "&f   invitándolos a una &eFiesta &fcon el siguiente comando:"
         - ""
         - "&f                 &c/fiesta invite <amigo>."

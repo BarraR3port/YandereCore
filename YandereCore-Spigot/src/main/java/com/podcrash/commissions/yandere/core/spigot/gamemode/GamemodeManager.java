@@ -1,8 +1,8 @@
 package com.podcrash.commissions.yandere.core.spigot.gamemode;
 
 import com.podcrash.commissions.yandere.core.spigot.Main;
-import com.podcrash.commissions.yandere.core.spigot.libs.lymarket.lyapi.spigot.utils.Utils;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
+import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;

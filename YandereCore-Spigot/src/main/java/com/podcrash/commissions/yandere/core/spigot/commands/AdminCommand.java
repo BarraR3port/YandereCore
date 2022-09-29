@@ -31,6 +31,8 @@ public class AdminCommand implements ILyCommand {
                 Items.init(Main.getInstance().getItems());
                 Sounds.init(Main.getInstance().getSounds());
                 Main.getInstance().reconnectToProxy();
+                Utils.sendMessage(context.getSender(), "&c&lRegistering Commands!");
+                Main.getInstance().registerCommands();
                 Utils.sendMessage(context.getSender(), "&c&lYandere reloaded Successfully!");
                 Main.getInstance().getGlobalServerSettings().fetch();
                 return new CommandResponse();

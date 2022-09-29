@@ -399,8 +399,6 @@ public class SpigotSocketClient extends ISocket {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            in = null;
-            out = null;
         }
     }
 }

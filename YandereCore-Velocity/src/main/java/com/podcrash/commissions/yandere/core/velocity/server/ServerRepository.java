@@ -52,6 +52,7 @@ public class ServerRepository extends IServerRepository {
     
     @Override
     public void checkForPluginsUpdates(){
+        if (!VMain.getConfig().getBoolean("web.enabled")) return;
         try {
             pluginFilesGarbageCollector();
             VMain.getInstance().getLogger().info("[UPDATE MACHINE] Initializing the ~Updating Machine~ ...");

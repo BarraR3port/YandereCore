@@ -5,8 +5,12 @@ import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.users.PlayerRepository;
 import net.lymarket.lyapi.common.db.MongoDBClient;
 import net.lymarket.lyapi.spigot.LyApi;
+import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class SpigotSocketClientTest {
     
@@ -44,17 +48,33 @@ public class SpigotSocketClientTest {
         for ( String s : toRemove ){
             textToTranslate = textToTranslate.replace(s, "");
         }
-        
+    
         System.out.println(textToTranslate);
+    
+    }
+    
+    @Test
+    public void test4(){
+        String commandText = "&e     ▸ &c/[command=discord] [subcommand=&7Entra a nuestro servidor de Discord.]";
+        
+        String[] realText = commandText.split("[\\[].*?]");
+        System.out.println(Arrays.toString(realText));
+        
+        String command = commandText.split("\\[command=")[1].split("\\]")[0].trim();
+        String commandHover = commandText.split("\\[subcommand=")[1].split("\\]")[0].trim();
+        System.out.println(command);
+        System.out.println(commandHover);
+        
+        System.out.println(realText[0] + command + realText[1] + commandHover);
+        
         
     }
     
-    
-    public void test4(){
-        Randomizer random = new Randomizer();
-        List<Integer> list = Arrays.asList(random.getRandomizer());
-        Collections.shuffle(list);
-        System.out.println(list);
+    @Test
+    public void test5(){
+        String commandText = "           &e¡Compra tu rango en [link]&f!";
+        String[] linkMessage = commandText.split("%link%");
+        System.out.println(linkMessage);
         
         
     }

@@ -97,7 +97,7 @@ public final class BWPlayerEvents extends MainEvents {
                             "&7► Rango: " + prefix,
                             "&7► Monedas: &c" + user.getCoinsFormatted(),
                             "&7► Nivel: &c" + user.getLevel().getLevelName(),
-                            "" + user.getLevel().getProgressBar()/* ,
+                            "" + user.getLevel().getProgressBarFormatted()/* ,
                             "&7Clan: &c" + clanTag*/));
             TextComponent team = Utils.formatTC("");
             TextComponent rank = Utils.hoverOverMessageURL(isDefault ? " " : prefix,

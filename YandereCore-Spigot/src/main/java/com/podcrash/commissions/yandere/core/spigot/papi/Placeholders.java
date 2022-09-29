@@ -188,6 +188,9 @@ public class Placeholders extends PlaceholderExpansion {
             case "level_progress_bar":{
                 return p.getLevel().getProgressBar();
             }
+            case "level_progress_bar_formatted":{
+                return p.getLevel().getProgressBar();
+            }
             case "level_progres_xp":{
                 return p.getLevel().getProgressXP();
             }

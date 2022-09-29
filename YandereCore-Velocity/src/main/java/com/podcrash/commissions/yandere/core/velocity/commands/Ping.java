@@ -19,19 +19,16 @@ public class Ping implements SimpleCommand {
         if (invocation.source() instanceof final Player player){
             long ping = player.getPing();
             String color;
-            
-            if (ping <= 50){
+            if (ping <= 150){
                 color = "&a";
-            } else if (ping <= 80){
+            } else if (ping <= 180){
                 color = "&e";
-            } else if (ping <= 100){
-                color = "&6";
             } else if (ping <= 200){
-                color = "&c";
+                color = "&6";
             } else {
                 color = "&4";
             }
-            player.sendMessage(Utils.format("&aTu ping es " + color + ping));
+            player.sendMessage(Utils.format(" &8&l» &aTu ping es " + color + ping));
         }
     }
     

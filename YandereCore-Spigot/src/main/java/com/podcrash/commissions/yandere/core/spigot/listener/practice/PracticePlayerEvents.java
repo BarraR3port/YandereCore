@@ -72,7 +72,7 @@ public final class PracticePlayerEvents extends MainEvents {
                         "&7► Rango: " + prefix,
                         "&7► Monedas: &c" + user.getCoinsFormatted(),
                         "&7► Nivel: &c" + user.getLevel().getLevelName(),
-                        "" + user.getLevel().getProgressBar()/* ,
+                        "" + user.getLevel().getProgressBarFormatted()/* ,
                             "&7Clan: &c" + clanTag*/));
         TextComponent rank = Utils.hoverOverMessageURL(isDefault ? " " : prefix,
                 Arrays.asList("&7「&eYandere &cRangos&7⏌",

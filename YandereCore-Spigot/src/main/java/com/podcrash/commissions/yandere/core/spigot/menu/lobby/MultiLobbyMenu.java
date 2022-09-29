@@ -72,6 +72,7 @@ public class MultiLobbyMenu extends UpdatableMenu {
                             .addLoreLine("")
                             .setFireWorkColor(color)
                             .addTag("allowed", String.valueOf(!isSameLobby))
+                            .addTag("online", String.valueOf(isOnline))
                             .addTag("server", serverName)
                             .build()
             );
@@ -89,7 +90,11 @@ public class MultiLobbyMenu extends UpdatableMenu {
             if (nbtItem.getTag("allowed").equalsIgnoreCase("false")){
                 getOwner().sendMessage(Utils.format("&cYa estás en este servidor!"));
             } else if (nbtItem.getTag("allowed").equalsIgnoreCase("true")){
-                Main.getInstance().getSocket().sendJoinServer(getOwner().getUniqueId(), nbtItem.getString("server"));
+                if (nbtItem.getTag("online").equalsIgnoreCase("true")){
+                    Main.getInstance().getSocket().sendJoinServer(getOwner().getUniqueId(), nbtItem.getString("server"));
+                } else {
+                    this.checkSomething(getOwner(), e.getSlot(), item, "&cEste servidor está cerrado!", "", getMenuUUID());
+                }
             }
             e.setCancelled(true);
         } else if (nbtItem.hasTag("ly-menu-close")){

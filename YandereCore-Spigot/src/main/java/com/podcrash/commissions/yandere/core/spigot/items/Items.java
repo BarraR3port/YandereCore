@@ -234,7 +234,7 @@ public final class Items {
                 .addLoreLine("&a► Rango: " + user.getRank().getTabPrefix())
                 .addLoreLine("&a► Monedas: &c" + user.getCoinsFormatted())
                 .addLoreLine("&a► Nivel: &c" + user.getLevel().getLevelName())
-                .addLoreLine(user.getLevel().getProgressBar())
+                .addLoreLine(user.getLevel().getProgressBarFormatted())
                 .addLoreLine("")
                 .addLoreLine("&5STAFF MEMBER")
                 .addLoreLine("&a► &7Vanished " + (Main.getInstance().getVanishManager().isVanished(owner) ? "&aOn" : "&cOff"))

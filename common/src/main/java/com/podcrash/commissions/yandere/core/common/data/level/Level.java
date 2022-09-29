@@ -150,6 +150,12 @@ public class Level {
         return "§8 [{progress}§8]".replace("{progress}", "&c" + String.valueOf(new char[unlocked]).replace("\0", "■") + "&7" + String.valueOf(new char[locked]).replace("\0", "■"));
     }
     
+    public String getProgressBarFormatted(){
+        double percentage = ((double) getCurrentXp() / (double) getNextLevelXp()) * 100;
+        String formattedPercentage = new DecimalFormat("####.#").format(percentage);
+        return getProgressBar() + " &e" + formattedPercentage + "%";
+    }
+    
     public String getFormattedRequiredXp(){
         final int nextLevelCost = getNextLevelXp();
         return nextLevelCost >= 1000000 ? nextLevelCost % 1000000 == 0 ? nextLevelCost / 1000000 + "M" : df((double) nextLevelCost / 1000000) + "M" : nextLevelCost >= 1000 ? nextLevelCost % 1000 == 0 ? nextLevelCost / 1000 + "k" : df((double) nextLevelCost / 1000) + "k" : String.valueOf(nextLevelCost);

@@ -13,6 +13,7 @@ import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import net.lymarket.lyapi.common.Api;
 import net.lymarket.lyapi.common.db.MongoDBClient;
+import net.lymarket.lyapi.spigot.utils.Utils;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,6 +21,7 @@ import okhttp3.RequestBody;
 import org.apache.commons.io.FileUtils;
 import org.bson.Document;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.*;
@@ -172,8 +174,11 @@ public class ServerRepository extends IServerRepository {
                         Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting...");
                         Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting....");
                         Main.getInstance().getLogger().severe("[UPDATE MACHINE] Restarting.....");
+                        for ( Player player : Bukkit.getOnlinePlayers() ){
+                            player.kickPlayer(Utils.format("&cEl server se está reiniciando!"));
+                        }
                         Bukkit.shutdown();
-            
+    
                     } else {
                         Main.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
                     }

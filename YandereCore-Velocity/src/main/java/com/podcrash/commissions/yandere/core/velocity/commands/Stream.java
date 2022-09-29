@@ -29,8 +29,8 @@ public class Stream implements SimpleCommand {
         if (invocation.source() instanceof final Player player){
             if (invocation.arguments().length != 2){
                 if (invocation.arguments().length == 0){
-                    player.sendMessage(Utils.format("&7Este comando es exclusivo para &dLy&5ContentCreator &7Autorizados &a✓."));
-                    player.sendMessage(Utils.format("&7Intenta este comando con /stream <twitch/youtube> <url>"));
+                    player.sendMessage(Utils.format(" &8&l» &7Este comando es exclusivo para &c&lAfiliados &7Autorizados &a✓."));
+                    player.sendMessage(Utils.format(" &8&l» &7Intenta este comando con /stream <twitch/youtube> <url>"));
                     return;
                 }
                 if (invocation.arguments().length == 1 || invocation.arguments().length == 2){
@@ -39,20 +39,20 @@ public class Stream implements SimpleCommand {
                             Player target = VMain.getInstance().getProxy().getPlayer(invocation.arguments()[1]).get();
                             VMain.getInstance().getStreams().get(target.getUniqueId()).cancel();
                             VMain.getInstance().getStreams().remove(target.getUniqueId());
-                            target.sendMessage(Utils.format("&7Anuncio de Stream parado al streamer &d" + player.getUsername()));
-                            player.sendMessage(Utils.format("&7Anuncio de Stream parado por un &dStaff."));
+                            target.sendMessage(Utils.format(" &8&l» &7Anuncio de Stream parado al streamer &d" + player.getUsername()));
+                            player.sendMessage(Utils.format(" &8&l» &7Anuncio de Stream parado por un &dStaff."));
                             return;
                         }
                         
                         if (VMain.getInstance().getStreams().containsKey(player.getUniqueId())){
                             VMain.getInstance().getStreams().get(player.getUniqueId()).cancel();
                             VMain.getInstance().getStreams().remove(player.getUniqueId());
-                            player.sendMessage(Utils.format("&7Anuncio de Stream parado."));
+                            player.sendMessage(Utils.format(" &8&l» &7Anuncio de Stream parado."));
                             return;
                         }
                     }
                 }
-                player.sendMessage(Utils.format("&7Comando incorrecto. Intenta con /stream <twitch/youtube> <url>"));
+                player.sendMessage(Utils.format(" &8&l» &7Comando incorrecto. Intenta con /stream <twitch/youtube> <url>"));
             } else {
                 if (!VMain.getInstance().getStreams().containsKey(player.getUniqueId())){
                     if (invocation.arguments()[0].equalsIgnoreCase("twitch") || invocation.arguments()[0].equalsIgnoreCase("youtube")){
@@ -80,14 +80,14 @@ public class Stream implements SimpleCommand {
                             }).repeat(20L, TimeUnit.MINUTES).schedule();
                             VMain.getInstance().setStreams(player.getUniqueId(), streamTask);
                         } else {
-                            player.sendMessage(Utils.format("&cURL incorrecta, sólo están permitidas urls de Twitch o Youtube"));
+                            player.sendMessage(Utils.format(" &8&l» &cURL incorrecta, sólo están permitidas urls de Twitch o Youtube"));
                         }
                     } else {
-                        player.sendMessage(Utils.format("&cComando incorrecto. Intenta con /stream <twitch/youtube> <url>"));
+                        player.sendMessage(Utils.format(" &8&l» &cComando incorrecto. Intenta con /stream <twitch/youtube> <url>"));
                     }
                 } else {
-                    player.sendMessage(Utils.format("&7Hey tranquil@, tu stream ya se está promocionando!"));
-                    player.sendMessage(Utils.format("&7pero puedes paralo con /stream cancelar"));
+                    player.sendMessage(Utils.format(" &8&l» &7Hey tranquil@, tu stream ya se está promocionando!"));
+                    player.sendMessage(Utils.format(" &8&l» &7pero puedes paralo con /stream cancelar"));
                 }
             }
         }

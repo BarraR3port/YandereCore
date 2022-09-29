@@ -20,6 +20,9 @@ import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMACommand
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMCCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSPCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.misc.DiscordCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.misc.HelpCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.misc.TiendaCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.practice.PracticeArenaAutoCreateCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.practice.PracticeMenuCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.punish.EnderSeeCommand;
@@ -38,7 +41,6 @@ import com.podcrash.commissions.yandere.core.spigot.inv.EndInvManager;
 import com.podcrash.commissions.yandere.core.spigot.inv.InvManager;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.lang.ESLang;
-import com.podcrash.commissions.yandere.core.spigot.libs.lymarket.lyapi.spigot.utils.Utils;
 import com.podcrash.commissions.yandere.core.spigot.listener.DefaultEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.BWPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.lobby.LBWPlayerEvents;
@@ -68,6 +70,7 @@ import net.lymarket.lyapi.spigot.LyApi;
 import net.lymarket.lyapi.spigot.config.Config;
 import net.lymarket.lyapi.spigot.menu.IUpdatableMenu;
 import net.lymarket.lyapi.spigot.menu.InventoryMenu;
+import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -243,15 +246,16 @@ public final class Main extends JavaPlugin implements YandereApi {
                     ((InventoryMenu) p.getOpenInventory().getTopInventory().getHolder()).reOpen();
                 }
             }
-        }, 0L, 10L);
-    
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            getLogger().info("------------------------");
-            getLogger().info("[UPDATE MACHINE] Checking Plugin Updates...");
-            this.serverRepository.checkForPluginsUpdates();
-            getLogger().info("[UPDATE MACHINE] Done.");
-            getLogger().info("------------------------\n");
-        }, 0L, 20L * 3600L * 24L);
+        }, 0L, 20L);
+        if (config.getBoolean("web.enabled")){
+            Bukkit.getScheduler().runTaskTimer(this, () -> {
+                getLogger().info("------------------------");
+                getLogger().info("[UPDATE MACHINE] Checking Plugin Updates...");
+                this.serverRepository.checkForPluginsUpdates();
+                getLogger().info("[UPDATE MACHINE] Done.");
+                getLogger().info("------------------------\n");
+            }, 0L, 20L * 3600L * 24L);
+        }
         //new PacketManager( this );
         overrideSpigotDefaultMessages();
         getServer().getPluginManager().callEvent(new PluginEnableEvent(this));
@@ -314,7 +318,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         return Settings.PROXY_SERVER_NAME;
     }
     
-    private void registerCommands(){
+    public void registerCommands(){
         api.getCommandService().registerCommands(new SetSpawnCommand());
         api.getCommandService().registerCommands(new DelSpawnCommand());
         api.getCommandService().registerCommands(new SpawnCommand());
@@ -348,24 +352,14 @@ public final class Main extends JavaPlugin implements YandereApi {
         api.getCommandService().registerCommands(new FlyCommand());
         api.getCommandService().registerCommands(new HealCommand());
         api.getCommandService().registerCommands(new NbtInfoCommand());
+        api.getCommandService().registerCommands(new SettingsCommand());
+        api.getCommandService().registerCommands(new TiendaCommand());
+        api.getCommandService().registerCommands(new DiscordCommand());
+        api.getCommandService().registerCommands(new HelpCommand());
     }
     
     public void reconnectToProxy(){
-        socket.disable();
-        try {
-            socket.init();
-        } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        socket.sendUpdate();
-        getServer().getScheduler().runTaskTimer(this, () -> {
-            for ( Player p : Bukkit.getOnlinePlayers() ){
-                if (p.getOpenInventory().getTopInventory().getHolder() instanceof IUpdatableMenu){
-                    ((IUpdatableMenu) p.getOpenInventory().getTopInventory().getHolder()).reOpen();
-                }
-            }
-            
-        }, 20L, 20L);
+        socket.getSocket().reconnect("Reconnecting to proxy...");
     }
     
     public ProxyStats getProxyStats(){
