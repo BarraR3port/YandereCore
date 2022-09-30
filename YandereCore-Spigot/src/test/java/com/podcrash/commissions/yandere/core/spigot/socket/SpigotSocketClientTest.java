@@ -20,16 +20,17 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SpigotSocketClientTest {
     
-    public void test(){
+    private final ArrayList<Server> servers = new ArrayList<>();
     
+    public void test(){
+        
         final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
         PlayerRepository players = new PlayerRepository(mongo, "players");
-    
+        
         User user = players.getPlayer(UUID.fromString("bc7d7eb8-cb64-4002-8ee7-6bd68e04d789"));
-    
+        
         System.out.println(LyApi.getGson().toJson(user));
     }
-    
     
     public void test2(){
         final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
@@ -41,7 +42,6 @@ public class SpigotSocketClientTest {
         System.out.println(user.getCoins());
         System.out.println(user.getCoinsFormatted());
     }
-    
     
     public void test3(){
         String textToTranslate = "&c&l&Hola cómo estás=?";
@@ -84,8 +84,6 @@ public class SpigotSocketClientTest {
         
         
     }
-    
-    private final ArrayList<Server> servers = new ArrayList<>();
     
     @Test
     public void test6(){

@@ -154,11 +154,11 @@ public class ServerRepository extends IServerRepository {
                                         }
                                     }
                                 }
-                    
+    
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                
+    
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -268,7 +268,7 @@ public class ServerRepository extends IServerRepository {
                     }
                 } catch (IOException e) {
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Couldn't delete the file with the normal way, trying with the panel api!");
-        
+    
                     RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "{\"root\":\"/plugins\",\"files\":[\"" + plugin_to_delete + "\"]}");
                     //RequestBody formBody = new FormBody.Builder().add("root", "/plugins").add( "files" , "["+plugin_to_delete+"]" ).build();
                     Request requestToDelete = new Request.Builder()

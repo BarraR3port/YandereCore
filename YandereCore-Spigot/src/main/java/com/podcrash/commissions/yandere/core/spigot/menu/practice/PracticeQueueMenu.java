@@ -99,7 +99,7 @@ public class PracticeQueueMenu extends UpdatableMenu {
                         practice.a(p, "party-size", y.a("<number>", Integer.toString(2)));
                         return;
                     }
-        
+    
                     boolean removeIf = fI.entrySet().removeIf(entry -> entry.getValue() == party);
                     PartyQueueRunnable ranked = PartyQueueRunnable.getRanked(p);
                     if (ranked != null){
