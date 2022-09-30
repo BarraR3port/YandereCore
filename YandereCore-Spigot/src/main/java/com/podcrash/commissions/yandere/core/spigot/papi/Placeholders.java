@@ -1,5 +1,6 @@
 package com.podcrash.commissions.yandere.core.spigot.papi;
 
+import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
@@ -100,6 +101,14 @@ public class Placeholders extends PlaceholderExpansion {
         if (identifier.startsWith("server_online_formatted_")){
             return Main.getInstance().getProxyStats().isTargetServerOnline(identifier.replace("server_online_formatted_", "")) ? "&aABIERTO" : "&cCERRADO";
         }
+        if (identifier.startsWith("server_capacity_formatted_")){
+            String server = identifier.replace("server_capacity_formatted_", "");
+            return Main.getInstance().getProxyStats().getTargetServerCapacity(ServerType.valueOf(server), Main.getInstance().getGlobalServerSettings().getOrCreate());
+        }
+        if (identifier.startsWith("server_capacity_current_")){
+            String server = identifier.replace("server_capacity_current_", "");
+            return Main.getInstance().getProxyStats().getCurrentTargetServerCapacity(ServerType.valueOf(server), Main.getInstance().getGlobalServerSettings().getOrCreate());
+        }
     
         switch(identifier){
             case "server_name":
@@ -189,7 +198,7 @@ public class Placeholders extends PlaceholderExpansion {
                 return p.getLevel().getProgressBar();
             }
             case "level_progress_bar_formatted":{
-                return p.getLevel().getProgressBar();
+                return p.getLevel().getProgressBarFormatted();
             }
             case "level_progres_xp":{
                 return p.getLevel().getProgressXP();

@@ -1,5 +1,6 @@
 package com.podcrash.commissions.yandere.core.common.data.server;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,33 @@ public final class ProxyStats {
     
     public EmptyServer getEmptyServer(){
         return emptyServer;
+    }
+    
+    
+    public String getTargetServerCapacity(ServerType type, GlobalServerSettings settings){
+        int serversSize = (int) servers.values().stream().filter(server -> server.getServerType() == type).count();
+        if (serversSize == 0) return null;
+        int maxPlayers = settings.getMax(type) * serversSize;
+        int currentPlayers = servers.values().stream().filter(server -> server.getServerType().equals(type)).mapToInt(Server::getOnlinePlayers).sum();
+        double l1 = ((maxPlayers - currentPlayers) / (double) (maxPlayers)) * 10;
+        int locked = (int) l1;
+        int unlocked = 10 - locked;
+        if (locked < 0 || unlocked < 0){
+            locked = 10;
+            unlocked = 0;
+        }
+        String progress = "&8 [{progress}&8]".replace("{progress}", "&c" + String.valueOf(new char[unlocked]).replace("\0", "■") + "&7" + String.valueOf(new char[locked]).replace("\0", "■"));
+        double percentage = ((double) currentPlayers / (double) maxPlayers) * 100;
+        String formattedPercentage = new DecimalFormat("####.#").format(percentage);
+        return progress + " &e" + formattedPercentage + "%";
+    }
+    
+    public String getCurrentTargetServerCapacity(ServerType type, GlobalServerSettings settings){
+        int serversSize = (int) servers.values().stream().filter(server -> server.getServerType() == type).count();
+        if (serversSize == 0) return null;
+        int maxPlayers = settings.getMax(type) * serversSize;
+        int currentPlayers = servers.values().stream().filter(server -> server.getServerType().equals(type)).mapToInt(Server::getOnlinePlayers).sum();
+        return currentPlayers + "/" + maxPlayers;
     }
     
 }

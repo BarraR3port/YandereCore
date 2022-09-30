@@ -47,9 +47,9 @@ public class PlayerSettingsMainMenu extends UpdatableMenu {
     
     @Override
     public void setMenuItems(){
-        for ( int i : decorateSlots ){
+        /*for ( int i : decorateSlots ){
             inventory.setItem(i, null);
-        }
+        }*/
         int[] separateSlot = {12, 21, 30};
         ItemStack fillerMidItem = new ItemBuilder(FILLER_GLASS.clone()).setDyeColor(14).build();
         for ( int i : separateSlot ){

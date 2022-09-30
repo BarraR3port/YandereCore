@@ -16,6 +16,9 @@ import org.bukkit.inventory.ItemStack;
 public class MultiLobbyMenu extends UpdatableMenu {
     
     private final ServerType serverType;
+    private final int[] serverSlot = {
+            10, 11, 12, 13, 14, 15, 16,
+            19, 20, 21, 22, 23, 24, 25};
     
     public MultiLobbyMenu(IPlayerMenuUtility playerMenuUtility, ServerType serverType){
         super(playerMenuUtility, true);
@@ -48,19 +51,19 @@ public class MultiLobbyMenu extends UpdatableMenu {
     
     @Override
     public int getSlots(){
-        return 27;
+        return 36;
     }
     
     @Override
     public void setMenuItems(){
-        for ( int i = 10; i < 17; i++ ){
-            String current = String.valueOf((i - 9));
+        for ( int i = 0; i < serverSlot.length; i++ ){
+            String current = String.valueOf((i + 1));
             String serverName = serverType.getPrefix() + current;
             boolean isSameLobby = Settings.PROXY_SERVER_NAME.equals(serverName);
             int playersOnline = Main.getInstance().getProxyStats().getTargetServerPlayers(serverName);
             boolean isOnline = Main.getInstance().getProxyStats().isTargetServerOnline(serverName);
             Color color = isSameLobby ? Color.ORANGE : (isOnline ? Color.LIME : Color.WHITE);
-            this.inventory.setItem(i,
+            this.inventory.setItem(serverSlot[i],
                     new ItemBuilder(Items.MULTI_LOBBY_MENU.getItem().clone())
                             .setDisplayName("&a" + serverType.getName() + " &c#" + current)
                             .clearLore()
@@ -77,7 +80,7 @@ public class MultiLobbyMenu extends UpdatableMenu {
                             .build()
             );
         }
-        inventory.setItem(22, super.CLOSE_ITEM);
+        inventory.setItem(31, super.CLOSE_ITEM);
     
     }
     
