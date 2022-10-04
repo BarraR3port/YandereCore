@@ -16,6 +16,7 @@ import com.podcrash.commissions.yandere.core.common.log.ILogRepository;
 import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import com.podcrash.commissions.yandere.core.common.socket.OfflineSocketClient;
 import com.podcrash.commissions.yandere.core.spigot.commands.*;
+import com.podcrash.commissions.yandere.core.spigot.commands.admin.*;
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMACommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMCCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSCommand;
@@ -356,6 +357,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         api.getCommandService().registerCommands(new TiendaCommand());
         api.getCommandService().registerCommands(new DiscordCommand());
         api.getCommandService().registerCommands(new HelpCommand());
+        api.getCommandService().registerCommands(new LogCommand());
     }
     
     public void reconnectToProxy(){

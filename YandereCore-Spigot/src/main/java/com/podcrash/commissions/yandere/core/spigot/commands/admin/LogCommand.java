@@ -1,8 +1,9 @@
-package com.podcrash.commissions.yandere.core.spigot.commands;
+package com.podcrash.commissions.yandere.core.spigot.commands.admin;
 
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
+import com.podcrash.commissions.yandere.core.spigot.menu.admin.log.LogManagerMenu;
 import com.podcrash.commissions.yandere.core.spigot.menu.lobby.LobbyMenu;
 import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
@@ -11,14 +12,14 @@ import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
 
-public final class MenuCommand implements ILyCommand {
+public final class LogCommand implements ILyCommand {
     
-    @Command(name = "menu", permission = "yandere.menu", usage = "menu", description = "Menu", aliases = {"m"})
+    @Command(name = "logs", permission = "yandere.admin.log", usage = "logs", aliases = {"log"})
     public CommandResponse command(CommandContext context){
         if (context.getSender() instanceof Player){
             final Player player = (Player) context.getSender();
             if (context.getArgs().length == 0){
-                new LobbyMenu(LyApi.getPlayerMenuUtility(player)).open();
+                new LogManagerMenu(LyApi.getPlayerMenuUtility(player)).open();
                 return new CommandResponse();
             }
             if (context.getArgs().length == 1 && player.hasPermission("yandere.menu.other")){

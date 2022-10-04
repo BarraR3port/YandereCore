@@ -1,4 +1,4 @@
-package com.podcrash.commissions.yandere.core.spigot.commands;
+package com.podcrash.commissions.yandere.core.spigot.commands.admin;
 
 import com.podcrash.commissions.yandere.core.spigot.listener.lobby.LobbyPlayerEvents;
 import net.lymarket.lyapi.common.commands.*;

@@ -108,7 +108,7 @@
         <module>common</module>
         <module>YandereCore-Spigot</module>
         <module>YandereCore-Velocity</module>
-        <module>versionsupport_common</module>
+        <!--<module>versionsupport_common</module>-->
     </modules>
 
 </project>

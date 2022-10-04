@@ -580,7 +580,7 @@
         <dependency>
             <groupId>be.isach.ultracosmetics</groupId>
             <artifactId>UltraCosmetics</artifactId>
-            <version>2.9-DEV-b7</version>
+            <version>3.0-DEV-b0</version>
             <scope>system</scope>
             <exclusions>
                 <exclusion>
@@ -588,7 +588,7 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
-            <systemPath>/home/barra/Desktop/apis/UltraCosmetics-2.9-DEV-b7.jar</systemPath>
+            <systemPath>/home/barra/Desktop/apis/UltraCosmetics-3.0-DEV-b0.jar</systemPath>
 
         </dependency>
 

@@ -1,18 +1,22 @@
 package com.podcrash.commissions.yandere.core.common.log;
 
-import com.mongodb.client.model.Filters;
 import com.podcrash.commissions.yandere.core.common.data.logs.Log;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import net.lymarket.lyapi.common.db.MongoDB;
 import net.lymarket.lyapi.common.db.MongoDBClient;
 import net.lymarket.lyapi.spigot.LyApi;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.LinkedList;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.mongodb.client.model.Filters.eq;
+
 public abstract class ILogRepository extends MongoDB<UUID, Log> {
+    
+    private final int maxPerPage = 28;
     
     public ILogRepository(MongoDBClient database, String TABLE_NAME){
         super(database, TABLE_NAME);
@@ -31,7 +35,7 @@ public abstract class ILogRepository extends MongoDB<UUID, Log> {
         if (list.containsKey(uuid)){
             return list.get(uuid);
         }
-        Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()));
+        Document doc = database.findOneFast(TABLE_NAME, eq("uuid", uuid.toString()));
         if (doc == null) return null;
         return LyApi.getGson().fromJson(doc.toJson(), Log.class);
     }
@@ -43,4 +47,16 @@ public abstract class ILogRepository extends MongoDB<UUID, Log> {
     }
     
     
+    public LinkedList<Log> getLogs(){
+        return database.findMany(TABLE_NAME, Log.class);
+    }
+    
+    public LinkedList<Log> getLogsByPage(int page){
+        return database.findManyPaginated(TABLE_NAME, page, maxPerPage + 1, Log.class);
+    }
+    
+    public LinkedList<Log> getLogsByPageAndName(int page, String name){
+        Bson equalComparison = eq("owner", name);
+        return database.findManyPaginatedAndFilter(TABLE_NAME, equalComparison, page, maxPerPage + 1, Log.class);
+    }
 }

@@ -1,4 +1,4 @@
-package com.podcrash.commissions.yandere.core.spigot.commands;
+package com.podcrash.commissions.yandere.core.spigot.commands.admin;
 
 import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;

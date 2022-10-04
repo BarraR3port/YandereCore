@@ -1,10 +1,12 @@
 package com.podcrash.commissions.yandere.core.spigot.socket;
 
 
+import com.podcrash.commissions.yandere.core.common.data.logs.Log;
 import com.podcrash.commissions.yandere.core.common.data.server.GlobalServerSettings;
 import com.podcrash.commissions.yandere.core.common.data.server.Server;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
+import com.podcrash.commissions.yandere.core.spigot.log.LogRepository;
 import com.podcrash.commissions.yandere.core.spigot.server.GlobalServerRepository;
 import com.podcrash.commissions.yandere.core.spigot.users.PlayerRepository;
 import net.lymarket.lyapi.common.db.MongoDBClient;
@@ -12,10 +14,7 @@ import net.lymarket.lyapi.spigot.LyApi;
 import org.junit.Test;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SpigotSocketClientTest {
@@ -85,7 +84,7 @@ public class SpigotSocketClientTest {
         
     }
     
-    @Test
+    
     public void test6(){
         final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
         GlobalServerRepository serversRepo = new GlobalServerRepository(mongo, "server_settings");
@@ -111,6 +110,20 @@ public class SpigotSocketClientTest {
         double percentage = ((double) currentPlayers / (double) maxPlayers) * 100;
         String formattedPercentage = new DecimalFormat("####.#").format(percentage);
         System.out.println(progress + " &e" + formattedPercentage + "%");
+    }
+    
+    @Test
+    public void test7(){
+        final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
+        LogRepository serversRepo = new LogRepository(mongo, "logs");
+        
+        for ( int i = 0; i < 10; i++ ){
+            LinkedList<Log> logs = serversRepo.getLogsByPage(i);
+            System.out.println("Page " + i + " has " + logs.size() + " logs");
+            System.out.println(mongo.getGson().toJson(logs));
+        }
+        
+        
     }
     
     private static class Hola {

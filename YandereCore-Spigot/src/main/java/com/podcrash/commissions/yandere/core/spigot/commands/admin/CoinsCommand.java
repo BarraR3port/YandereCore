@@ -1,4 +1,4 @@
-package com.podcrash.commissions.yandere.core.spigot.commands;
+package com.podcrash.commissions.yandere.core.spigot.commands.admin;
 
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
