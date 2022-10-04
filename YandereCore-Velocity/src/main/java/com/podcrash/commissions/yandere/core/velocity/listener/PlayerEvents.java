@@ -4,11 +4,13 @@ package com.podcrash.commissions.yandere.core.velocity.listener;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.commissions.yandere.core.velocity.VMain;
 import com.podcrash.commissions.yandere.core.velocity.utils.Utils;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.*;
+import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.ServerConnection;
@@ -38,8 +40,24 @@ public class PlayerEvents {
     }
     
     @Subscribe
+    public void onServerConnectedEvent(PlayerChooseInitialServerEvent e){
+        if (e.getInitialServer().isPresent()){
+            RegisteredServer server = e.getInitialServer().get();
+            VMain.getInstance().getLogs().createLog(LogType.CONNECT, server.getServerInfo().getName(), "&aConnected to &eYandere&cCraft", e.getPlayer().getUsername());
+        } else {
+            VMain.getInstance().getLogs().createLog(LogType.CONNECT, "UNKNOWN", "&aConnected to &eYandere&cCraft", e.getPlayer().getUsername());
+        }
+    }
+    
+    @Subscribe
     public void onDisconnectEvent(DisconnectEvent e){
         VMain.getInstance().getPlayers().unCachePlayer(e.getPlayer().getUniqueId());
+        if (e.getPlayer().getCurrentServer().isPresent()){
+            VMain.getInstance().getLogs().createLog(LogType.DISCONNECT, e.getPlayer().getCurrentServer().get().getServerInfo().getName(), "&cDisconnected from &eYandere&cCraft", e.getPlayer().getUsername());
+        } else {
+            VMain.getInstance().getLogs().createLog(LogType.DISCONNECT, "UNKNOWN", "&cDisconnected from &eYandere&cCraft", e.getPlayer().getUsername());
+        }
+        
     }
     
     @Subscribe

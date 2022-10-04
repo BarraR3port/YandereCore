@@ -15,6 +15,7 @@ import com.podcrash.commissions.yandere.core.velocity.commands.VAdmin;
 import com.podcrash.commissions.yandere.core.velocity.config.VConfig;
 import com.podcrash.commissions.yandere.core.velocity.listener.PlayerEvents;
 import com.podcrash.commissions.yandere.core.velocity.listener.ServerEvents;
+import com.podcrash.commissions.yandere.core.velocity.log.LogRepository;
 import com.podcrash.commissions.yandere.core.velocity.manager.PlayerRepository;
 import com.podcrash.commissions.yandere.core.velocity.manager.ServerSocketManager;
 import com.podcrash.commissions.yandere.core.velocity.server.GlobalServerRepository;
@@ -63,6 +64,7 @@ public final class VMain extends LyApiVelocity {
     private IServerRepository serverRepository;
     private IGlobalServerRepository globalServerRepository;
     private AnnouncementManager announcementManager;
+    private LogRepository logs;
     
     /**
      * Constructor for ChatRegulator Plugin
@@ -115,6 +117,7 @@ public final class VMain extends LyApiVelocity {
         playersRepository = new PlayerRepository(mongo, "players");
         serverRepository = new ServerRepository(mongo, "servers");
         globalServerRepository = new GlobalServerRepository(mongo, "server_settings");
+        logs = new LogRepository(mongo, "logs");
         VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), this::sendInfo).repeat(5, TimeUnit.SECONDS).schedule();
     
         new Lobby(proxy.getCommandManager());
@@ -189,5 +192,9 @@ public final class VMain extends LyApiVelocity {
     
     public AnnouncementManager getAnnouncementManager(){
         return announcementManager;
+    }
+    
+    public LogRepository getLogs(){
+        return logs;
     }
 }

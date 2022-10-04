@@ -73,8 +73,8 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
     
     @Override
     public void setMenuItems(){
-        super.NEXT_ITEM = new ItemBuilder(super.NEXT_ITEM.clone()).setDisplayName("&7Próxima página: &c" + (page + 2)).build();
-        super.PREV_ITEM = new ItemBuilder(super.PREV_ITEM.clone()).setDisplayName("&7Página anterior: &c" + (page - 2)).build();
+        super.NEXT_ITEM = new ItemBuilder(super.NEXT_ITEM.clone()).setDisplayName("&7Próxima página: &c" + (page == 0 ? page + 2 : page + 1)).build();
+        super.PREV_ITEM = new ItemBuilder(super.PREV_ITEM.clone()).setDisplayName("&7Página anterior: &c" + Math.max(page - 2, 1)).build();
         addMenuBorder();
         if (!list.isEmpty()){
             for ( int i = 0; i < super.maxItemsPerPage; i++ ){
@@ -83,41 +83,47 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                 Log log = list.get(i);
                 if (log != null){
                     index = super.maxItemsPerPage * (Math.max(page - 1, 0)) + i;
-                    XMaterial material;
+                    ItemBuilder builder;
                     switch(log.getType()){
-                        case PUNISHMENT:
-                            material = XMaterial.BARRIER;
+                        case PUNISHMENT:{
+                            builder = new ItemBuilder(XMaterial.BARRIER.parseItem());
                             break;
-                        case COMMAND:
-                            material = XMaterial.COMMAND_BLOCK;
+                        }
+                        case COMMAND:{
+                            builder = new ItemBuilder(XMaterial.COMMAND_BLOCK.parseItem());
                             break;
-                        case OTHER:
-                            material = XMaterial.COMPASS;
+                        }
+                        case CONNECT:{
+                            builder = new ItemBuilder(XMaterial.LIME_WOOL.parseItem());
                             break;
-                        case ERROR:
-                            material = XMaterial.REDSTONE_BLOCK;
+                        }
+                        case DISCONNECT:{
+                            builder = new ItemBuilder(XMaterial.RED_WOOL.parseItem());
                             break;
-                        case CHAT:
-                            material = XMaterial.PAPER;
+                        }
+                        case CHAT:{
+                            builder = new ItemBuilder(XMaterial.PAPER.parseItem());
                             break;
-                        case TP:
-                            material = XMaterial.ENDER_PEARL;
+                        }
+                        case TP:{
+                            builder = new ItemBuilder(XMaterial.ENDER_PEARL.parseItem());
                             break;
-                        case EVENT:
-                            material = XMaterial.CLOCK;
+                        }
+                        default:{
+                            builder = new ItemBuilder(XMaterial.PAINTING.parseItem());
                             break;
-                        default:
-                            material = XMaterial.PAINTING;
-                            break;
+                        }
                     }
-                    
-                    inventory.setItem(slots[i], new ItemBuilder(material.parseItem())
-                            .setDisplayName("&fLog de: " + log.getOwner())
-                            .addLoreLine("&4• &7Tipo: &7" + log.getType().name())
-                            .addLoreLine("&4• &7Mensaje: &f" + log.getMsg())
-                            .addLoreLine("&4• &7Server: &f" + log.getServer())
-                            .addLoreLine("&4• &7Creado: el &f" + log.getCreateDate())
-                            .addLoreLine("&4• &7ID: &7&o" + log.getUuid().toString().split("-")[0])
+                
+                    inventory.setItem(slots[i], builder
+                            .setDisplayName("&c" + log.getType().getName())
+                            .addLoreLine("&f&lINFORMACIÓN:")
+                            .addLoreLine("&4• &8Mensaje: " + log.getMsg())
+                            .addLoreLine("&4• &8Tipo: " + log.getType().getColor() + log.getType().name())
+                            .addLoreLine("&4• &8Creador: &f" + log.getOwner())
+                            .addLoreLine("&4• &8Server: &f" + log.getServer())
+                            .addLoreLine("&4• &8Creado: el &f" + log.getCreateDate())
+                            .addLoreLine("&4• &8ID: &8&o" + log.getUuid().toString().split("-")[0])
                             .addTag("uuid", log.getUuid().toString())
                             .build());
                 }
