@@ -4,7 +4,6 @@ import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.menu.admin.log.LogManagerMenu;
-import com.podcrash.commissions.yandere.core.spigot.menu.lobby.LobbyMenu;
 import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.LyApi;
@@ -22,11 +21,11 @@ public final class LogCommand implements ILyCommand {
                 new LogManagerMenu(LyApi.getPlayerMenuUtility(player)).open();
                 return new CommandResponse();
             }
-            if (context.getArgs().length == 1 && player.hasPermission("yandere.menu.other")){
+            if (context.getArgs().length == 1 && player.hasPermission("yandere.admin.log.other")){
                 final String userName = context.getArg(0);
                 try {
                     final User user = Main.getInstance().getPlayers().getCachedPlayer(userName);
-                    new LobbyMenu(LyApi.getPlayerMenuUtility(player), user.getUUID()).open();
+                    new LogManagerMenu(LyApi.getPlayerMenuUtility(player), user).open();
                 } catch (UserNotFoundException e) {
                     Main.getLang().sendErrorMsg(player, "player.not-found", "player", userName);
                 }
