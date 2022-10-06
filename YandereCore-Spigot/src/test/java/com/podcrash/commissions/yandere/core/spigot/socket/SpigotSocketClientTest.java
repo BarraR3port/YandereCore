@@ -1,6 +1,7 @@
 package com.podcrash.commissions.yandere.core.spigot.socket;
 
 
+import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.commissions.yandere.core.common.data.server.GlobalServerSettings;
 import com.podcrash.commissions.yandere.core.common.data.server.Server;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
@@ -118,8 +119,8 @@ public class SpigotSocketClientTest {
     public void test7(){
         final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
         LogRepository logs = new LogRepository(mongo, "logs");
-        
-        System.out.println(logs.getLogsByPageAndNameSize(0, 21, "BarraR3port"));
+    
+        System.out.println(logs.getLogsByPageAndNameSize(0, LogType.UNKNOWN, 21, "BarraR3port"));
         
         
     }

@@ -4,7 +4,7 @@ public enum LogType {
     UNKNOWN("Sin Filtro", "&4", "GLASS"),
     CHAT("Chat", "&7", "PAPER"),
     COMMAND("Comando", "&7", "COMMAND_BLOCK"),
-    TP("Teletransportación (En Desarrollo)", "&3", "ENDER_PEARL"),
+    TP("Tp", "&3", "ENDER_PEARL"),
     PUNISHMENT("Castigo", "&c", "BARRIER"),
     CONNECT("Conección", "&a", "LIME_WOOL"),
     DISCONNECT("Desconección", "&c", "RED_WOOL");

@@ -179,15 +179,15 @@ public abstract class MainEvents implements Listener {
             float pitch = e.getTo().getPitch();
             World world = e.getTo().getWorld();
             LinkedHashMap<String, String> data = new LinkedHashMap<>();
-            data.put("  &4• &8Mundo: ", world.getName());
-            data.put("  &4• &8X: ", String.valueOf(x));
-            data.put("  &4• &8Y: ", String.valueOf(y));
-            data.put("  &4• &8Z: ", String.valueOf(z));
-            data.put("  &4• &8Pitch: ", String.valueOf(pitch));
-            data.put("  &4• &8Yaw: ", String.valueOf(yaw));
-            
+            data.put(" &4• &8Mundo: ", world.getName());
+            data.put(" &4• &8X: ", String.valueOf(x));
+            data.put(" &4• &8Y: ", String.valueOf(y));
+            data.put(" &4• &8Z: ", String.valueOf(z));
+            data.put(" &4• &8Pitch: ", String.valueOf(pitch));
+            data.put(" &4• &8Yaw: ", String.valueOf(yaw));
+    
             Main.getInstance().getLogs().createLogWithProps(LogType.TP, Settings.PROXY_SERVER_NAME, "TP en " + world.getName(), e.getPlayer().getName(), data);
-            
+    
         } catch (NullPointerException ignored) {
         }
     }

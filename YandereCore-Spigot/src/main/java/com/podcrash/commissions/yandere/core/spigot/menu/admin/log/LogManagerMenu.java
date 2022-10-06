@@ -1,6 +1,7 @@
 package com.podcrash.commissions.yandere.core.spigot.menu.admin.log;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.podcrash.commissions.yandere.core.common.YandereApi;
 import com.podcrash.commissions.yandere.core.common.data.DBOrderType;
 import com.podcrash.commissions.yandere.core.common.data.logs.Log;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
@@ -27,6 +28,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
     private DBOrderType orderType;
     private LogType filter;
     private int maxItems = 0;
+    private boolean loading = true;
     
     public LogManagerMenu(IPlayerMenuUtility playerMenuUtility, User targetUser){
         super(playerMenuUtility, true);
@@ -77,12 +79,9 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
     @Override
     public void setSize(){
         Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-        
-        });
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
-            maxItems = Main.getInstance().getLogs().getLogsByType(filter).size();
+            maxItems = type == LogMenuDisplayType.ALL ? Main.getInstance().getLogs().getLogsByType(filter).size() : Main.getInstance().getLogs().getLogsByType(user.getName(), filter).size();
             int currentPage = page + 1;
-            int maxPages = (int) Math.ceil((double) maxItems / (double) maxItemsPerPage);
+            int maxPages = (int) Math.ceil(((double) maxItems) / (double) maxItemsPerPage);
             int pagesLeft = maxPages - currentPage;
             int pagesRight = maxPages - pagesLeft;
             inventory.setItem(0, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
@@ -114,7 +113,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                         .addTag("move-amount", Math.min(pagesLeft, 10))
                         .build());
             }
-            super.size = Main.getInstance().getLogs().getLogsByPageAndNameSize(index, maxItemsPerPage, user.getName());
+            super.size = type == LogMenuDisplayType.ALL ? Main.getInstance().getLogs().getLogsByPageSize(index, filter, maxItemsPerPage) : Main.getInstance().getLogs().getLogsByPageAndNameSize(index, filter, maxItemsPerPage, user.getName());
             int currentPageIndex = 0;
             if (!list.isEmpty()){
                 for ( int i = 0; i < super.maxItemsPerPage; i++ ){
@@ -130,8 +129,8 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                             } catch (IllegalArgumentException e) {
                                 material = XMaterial.matchXMaterial(Material.valueOf(log.getProperty("material")));
                             }
-                            log.removeProperty("material");
                         }
+                        log.removeProperty("material");
                         ItemBuilder builder = new ItemBuilder(material.parseItem());
                         builder
                                 .setDisplayName("&c" + log.getType().getName())
@@ -140,28 +139,29 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                                 .addLoreLine(" &4• &7Tipo: &f" + log.getType().getColor() + log.getType().name())
                                 .addLoreLine(" &4• &7Jugador: &f" + log.getOwner())
                                 .addLoreLine(" &4• &7Server: &f" + log.getServer())
-                                .addLoreLine(" &4• &7Creado: el &f" + log.getCreateDate())
+                                .addLoreLine(" &4• &7Creado: el &f" + YandereApi.DATE_FORMAT.format(log.getCreateDate()))
                                 .addLoreLine(" &4• &7ID: &7&o" + log.getUuid().toString().split("-")[0])
                                 .addLoreLine(log.getProperties().size() > 0 ? "" : null)
                                 .addLoreLine(log.getProperties().size() > 0 ? "&f&lPROPIEDADES:" : null)
                                 .addTag("uuid", log.getUuid().toString());
-                        
+    
                         for ( String s : log.getProperties().keySet() ){
                             builder.addLoreLine(s + log.getProperty(s));
                         }
                         //FOR DEBUG
-                    /*builder
-                            .addLoreLine("-------------------------------")
-                            .addLoreLine(" &4• &7Page: &f" + (page))
-                            .addLoreLine(" &4• &7Index: &f" + index)
-                            .addLoreLine(" &4• &7CurrentIndex: &f" + (currentPageIndex))
-                            .addLoreLine("-------------------------------");*/
+                        /*builder
+                                .addLoreLine("-------------------------------")
+                                .addLoreLine(" &4• &7Page: &f" + (page))
+                                .addLoreLine(" &4• &7Index: &f" + index)
+                                .addLoreLine(" &4• &7CurrentIndex: &f" + (currentPageIndex))
+                                .addLoreLine("-------------------------------");*/
                         inventory.setItem(slots[i], builder.build());
                     }
                 }
                 getOwner().updateInventory();
             }
             index = currentPageIndex;
+            loading = false;
         });
         
         
@@ -169,16 +169,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
     
     @Override
     public void updateList(){
-        switch(type){
-            case ALL:{
-                list = Main.getInstance().getLogs().getLogsByPage(index, maxItemsPerPage, filter, orderType);
-                break;
-            }
-            case PLAYER:{
-                list = Main.getInstance().getLogs().getLogsByPageAndName(index, user.getName(), maxItemsPerPage, filter, orderType);
-                break;
-            }
-        }
+        list = type == LogMenuDisplayType.ALL ? Main.getInstance().getLogs().getLogsByPage(index, maxItemsPerPage, filter, orderType) : Main.getInstance().getLogs().getLogsByPageAndName(index, user.getName(), maxItemsPerPage, filter, orderType);
     }
     
     @Override
@@ -241,7 +232,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
         }
         
         inventory.setItem(18, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
-                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmNjYmY5ODgzZGQzNTlmZGYyMzg1YzkwYTQ1OWQ3Mzc3NjUzODJlYzQxMTdiMDQ4OTVhYzRkYzRiNjBmYyJ9fX0=")
+                .setHeadSkin(orderType == DBOrderType.DATE_ASCENDING ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRhMDI3NDc3MTk3YzZmZDdhZDMzMDE0NTQ2ZGUzOTJiNGE1MWM2MzRlYTY4YzhiN2JjYzAxMzFjODNlM2YifX19" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmNjYmY5ODgzZGQzNTlmZGYyMzg1YzkwYTQ1OWQ3Mzc3NjUzODJlYzQxMTdiMDQ4OTVhYzRkYzRiNjBmYyJ9fX0=")
                 .setDisplayName("&eOrden por Fecha ⇝ &a")
                 .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
                 .addLoreLine(" &4• &eClick para cambiar a: " + DBOrderType.DATE_ASCENDING.getOrderName())
@@ -250,7 +241,14 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                 .build());
         
         inventory.setItem(27, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
-                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTdkZDM0OTI0ZDJiNmEyMTNhNWVkNDZhZTU3ODNmOTUzNzNhOWVmNWNlNWM4OGY5ZDczNjcwNTk4M2I5NyJ9fX0=")
+                .setHeadSkin(
+                        (orderType == DBOrderType.ALPHABETICAL_ASCENDING || orderType == DBOrderType.ALPHABETICAL_DESCENDING
+                                ? (orderType == DBOrderType.ALPHABETICAL_ASCENDING ?
+                                "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjBhZmQ3NzdkNTU3YTIwN2JhYzdhYWQ4NDIxZmRmNzg4ZDY2ODU4NzNjNDk1MTVkNTUyOTFlOTMwNjk5ZiJ9fX0=" :
+                                "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzYxNTdiOWMxMDEzMTI4MzhiMTI4ZTcxZDU1YmZjOWFkNGUyNmI1OTE5YTczODA3YjEzNDY2YTc2ZDVlMCJ9fX0=")
+                                : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTdkZDM0OTI0ZDJiNmEyMTNhNWVkNDZhZTU3ODNmOTUzNzNhOWVmNWNlNWM4OGY5ZDczNjcwNTk4M2I5NyJ9fX0="))
+        
+        
                 .setDisplayName("&eOrden Alfabético ⇝ &a")
                 .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
                 .addLoreLine(" &4• &eSiguiente Orden: " + (orderType == DBOrderType.ALPHABETICAL_DESCENDING ? DBOrderType.DATE_ASCENDING.getOrderName() : DBOrderType.ALPHABETICAL_DESCENDING.getOrderName()))
@@ -260,7 +258,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                 .build());
         
         inventory.setItem(36, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
-                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzI0MzE5MTFmNDE3OGI0ZDJiNDEzYWE3ZjVjNzhhZTQ0NDdmZTkyNDY5NDNjMzFkZjMxMTYzYzBlMDQzZTBkNiJ9fX0=")
+                .setHeadSkin(orderType == DBOrderType.DATE_DESCENDING ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY3NDE2Y2U5ZTgyNmU0ODk5YjI4NGJiMGFiOTQ4NDNhOGY3NTg2ZTUyYjcxZmMzMTI1ZTAyODZmOTI2YSJ9fX0=" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzI0MzE5MTFmNDE3OGI0ZDJiNDEzYWE3ZjVjNzhhZTQ0NDdmZTkyNDY5NDNjMzFkZjMxMTYzYzBlMDQzZTBkNiJ9fX0=")
                 .setDisplayName("&eOrden por Fecha ⇝ &a")
                 .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
                 .addLoreLine(" &4• &eClick para cambiar a: " + DBOrderType.DATE_DESCENDING.getOrderName())
@@ -282,16 +280,25 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
         NBTItem nbtItem = new NBTItem(item);
         if (nbtItem.hasTag("ly-menu-close")){
             //new AdminMenu(this.playerMenuUtility, user).open();
-        } else if (nbtItem.hasTag("ly-menu-next")){
+        }
+        if (loading){
+            checkSomething(getOwner(), e.getSlot(), item, "&cEspera un poco, se está cargando la página.", "", getMenuUUID());
+            e.setCancelled(true);
+            return;
+        }
+        if (nbtItem.hasTag("ly-menu-next")){
+            loading = true;
             nextPage();
             getOwner().updateInventory();
         } else if (nbtItem.hasTag("ly-menu-previous")){
+            loading = true;
             prevPage();
             getOwner().updateInventory();
         } else if (nbtItem.hasTag("filter")){
             LogType postFiler = LogType.valueOf(nbtItem.getString("filter"));
             if (postFiler == filter)
                 return;
+            loading = true;
             filter = postFiler;
             page = 0;
             index = 0;
@@ -300,6 +307,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
             DBOrderType order = DBOrderType.valueOf(nbtItem.getString("order"));
             if (order == orderType)
                 return;
+            loading = true;
             orderType = order;
             page = 0;
             index = 0;
@@ -308,12 +316,14 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
             String type = nbtItem.getString("go");
             if (type.equals("back")){
                 int amount = nbtItem.getInteger("move-amount");
+                loading = true;
                 page = Math.max((page) - amount, 0);
                 index = Math.max(super.maxItemsPerPage * page, 0);
                 reloadPage();
             } else if (type.equals("forward")){
                 int amount = nbtItem.getInteger("move-amount");
                 int maxPages = maxItems / maxItemsPerPage;
+                loading = true;
                 page = Math.min((page) + amount, maxPages);
                 index = Math.min(super.maxItemsPerPage * page, maxPages * maxItemsPerPage);
                 reloadPage();

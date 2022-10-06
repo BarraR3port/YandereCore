@@ -67,9 +67,31 @@ public abstract class ILogRepository extends MongoDB<UUID, Log> {
         LinkedList<Log> list = new LinkedList<>();
         Bson mongoFilter;
         if (type != LogType.UNKNOWN){
-            mongoFilter = and(eq("type", type.toString()));
+            mongoFilter = eq("type", type.toString());
         } else {
             mongoFilter = new Document();
+        }
+        try {
+            MongoCollection<Document> collection = database.getDatabase().getCollection(TABLE_NAME);
+            FindIterable<Document> documents = collection.find(mongoFilter);
+            MongoCursor<Document> cursor = documents.cursor();
+            while (cursor.hasNext()) {
+                Log current = database.getGson().fromJson(cursor.next().toJson(), Log.class);
+                list.add(current);
+            }
+        } catch (MongoTimeoutException TimeOut) {
+            TimeOut.printStackTrace();
+        }
+        return list;
+    }
+    
+    public LinkedList<Log> getLogsByType(String owner, LogType type){
+        LinkedList<Log> list = new LinkedList<>();
+        Bson mongoFilter;
+        if (type != LogType.UNKNOWN){
+            mongoFilter = and(eq("owner", owner), eq("type", type.toString()));
+        } else {
+            mongoFilter = eq("owner", owner);
         }
         try {
             MongoCollection<Document> collection = database.getDatabase().getCollection(TABLE_NAME);
@@ -88,7 +110,7 @@ public abstract class ILogRepository extends MongoDB<UUID, Log> {
     public LinkedList<Log> getLogsByPage(int page, int maxPerPage, LogType filter, DBOrderType orderType){
         Bson mongoFilter;
         if (filter != LogType.UNKNOWN){
-            mongoFilter = and(eq("type", filter.toString()));
+            mongoFilter = eq("type", filter.toString());
         } else {
             mongoFilter = new Document();
         }
@@ -131,11 +153,39 @@ public abstract class ILogRepository extends MongoDB<UUID, Log> {
         return list;
     }
     
-    public int getLogsByPageAndNameSize(int page, int maxPerPage, String name){
+    public int getLogsByPageAndNameSize(int page, LogType filter, int maxPerPage, String name){
         try {
+            Bson mongoFilter;
+            if (filter != LogType.UNKNOWN){
+                mongoFilter = and(eq("owner", name), eq("type", filter.toString()));
+            } else {
+                mongoFilter = eq("owner", name);
+            }
             MongoCollection<Document> collection = database.getDatabase().getCollection(TABLE_NAME);
-            Bson filter = eq("owner", name);
-            FindIterable<Document> documents = collection.find(filter).skip(page).limit(maxPerPage + 1);
+            FindIterable<Document> documents = collection.find(mongoFilter).skip(page).limit(maxPerPage + 1);
+            MongoCursor<Document> cursor = documents.cursor();
+            int size = 0;
+            while (cursor.hasNext()) {
+                cursor.next();
+                size++;
+            }
+            return size;
+        } catch (MongoTimeoutException TimeOut) {
+            TimeOut.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public int getLogsByPageSize(int page, LogType filter, int maxPerPage){
+        try {
+            Bson mongoFilter;
+            if (filter != LogType.UNKNOWN){
+                mongoFilter = eq("type", filter.toString());
+            } else {
+                mongoFilter = new Document();
+            }
+            MongoCollection<Document> collection = database.getDatabase().getCollection(TABLE_NAME);
+            FindIterable<Document> documents = collection.find(mongoFilter).skip(page).limit(maxPerPage + 1);
             MongoCursor<Document> cursor = documents.cursor();
             int size = 0;
             while (cursor.hasNext()) {

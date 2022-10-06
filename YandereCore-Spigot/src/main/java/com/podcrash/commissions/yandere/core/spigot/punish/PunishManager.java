@@ -1,5 +1,6 @@
 package com.podcrash.commissions.yandere.core.spigot.punish;
 
+import com.podcrash.commissions.yandere.core.common.YandereApi;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.commissions.yandere.core.common.data.punish.IPunishManager;
 import com.podcrash.commissions.yandere.core.common.data.punish.PunishState;
@@ -28,15 +29,16 @@ public class PunishManager extends IPunishManager {
         Main.getInstance().getPlayers().savePlayer(punished);
         this.getBans().createBan(ban);
         announceNewBan(ban);
-        
+    
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
-        data.put("  &4• &8Baneador: &c", punisher.getName());
-        data.put("  &4• &8Baneado: &c", punished.getName());
-        data.put("  &4• &8Razón: &c", reason);
-        data.put("  &4• &8IP: &c", ip ? "Sí" : "No");
-        data.put("  &4• &8Expira el: &c", expDate.toString());
-        data.put("  &4• &8ID: &c", ban.getUUID().toString().split("-")[0]);
-        
+        data.put(" &4• &7Baneador: &c", punisher.getName());
+        data.put(" &4• &7Baneado: &c", punished.getName());
+        data.put(" &4• &7Razón: &c", reason);
+        data.put(" &4• &7IP: &c", ip ? "Sí" : "No");
+        data.put(" &4• &7Expira el: &c", YandereApi.DATE_FORMAT.format(expDate));
+        data.put(" &4• &7Creado el: &c", YandereApi.DATE_FORMAT.format(ban.getCreateDate()));
+        data.put(" &4• &7ID: &c", ban.getUUID().toString().split("-")[0]);
+    
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Ha Baneado a: &7" + punished.getName(), punisher.getName(), data);
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Fue Baneado por: &7" + punisher.getName(), punished.getName(), data);
     }
@@ -47,15 +49,16 @@ public class PunishManager extends IPunishManager {
         Main.getInstance().getPlayers().savePlayer(punished);
         this.getBans().createBan(ban);
         announceNewBan(ban);
-        
+    
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
-        data.put("  &4• &8Baneador: &c", punisher.getName());
-        data.put("  &4• &8Baneado: &c", punished.getName());
-        data.put("  &4• &8Razón: &c", reason);
-        data.put("  &4• &8IP: &c", ip ? "Sí" : "No");
-        data.put("  &4• &8Expira: &c", "Nunca");
-        data.put("  &4• &8ID: &c", ban.getUUID().toString().split("-")[0]);
-        
+        data.put(" &4• &7Baneador: &c", punisher.getName());
+        data.put(" &4• &7Baneado: &c", punished.getName());
+        data.put(" &4• &7Razón: &c", reason);
+        data.put(" &4• &7IP: &c", ip ? "Sí" : "No");
+        data.put(" &4• &7Expira: &c", "Nunca");
+        data.put(" &4• &7Creado el: &c", YandereApi.DATE_FORMAT.format(ban.getCreateDate()));
+        data.put(" &4• &7ID: &c", ban.getUUID().toString().split("-")[0]);
+    
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Ha Baneado a: &7" + punished.getName(), punisher.getName(), data);
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Fue Baneado por: &7" + punisher.getName(), punished.getName(), data);
     }
@@ -65,12 +68,13 @@ public class PunishManager extends IPunishManager {
         punished.removePunish(uuid);
         Main.getInstance().getPlayers().savePlayer(punished);
         announceNewUnBan(ban);
-        
+    
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
-        data.put("  &4• &8Baneador: &c", owner.getName());
-        data.put("  &4• &8DesBaneado: &c", punished.getName());
-        data.put("  &4• &8ID: &c", ban.getUUID().toString().split("-")[0]);
-        
+        data.put(" &4• &7Baneador: &c", owner.getName());
+        data.put(" &4• &7DesBaneado: &c", punished.getName());
+        data.put(" &4• &7Creado el: &c", YandereApi.DATE_FORMAT.format(ban.getCreateDate()));
+        data.put(" &4• &7ID: &c", ban.getUUID().toString().split("-")[0]);
+    
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Ha DesBaneado a: &7" + punished.getName(), owner.getName(), data);
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Fue DesBaneado por: &7" + owner.getName(), punished.getName(), data);
     }
@@ -81,17 +85,18 @@ public class PunishManager extends IPunishManager {
         Main.getInstance().getPlayers().savePlayer(punished);
         this.getMutes().createMute(mute);
         announceNewMute(mute);
-        
+    
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
-        data.put("  &4• &8Muteador: &c", punisher.getName());
-        data.put("  &4• &8Muteado: &c", punished.getName());
-        data.put("  &4• &8Razón: &c", reason);
-        data.put("  &4• &8Expira el: &c", expDate.toString());
-        data.put("  &4• &8ID: &c", mute.getUUID().toString().split("-")[0]);
-        
+        data.put(" &4• &7Muteador: &c", punisher.getName());
+        data.put(" &4• &7Muteado: &c", punished.getName());
+        data.put(" &4• &7Razón: &c", reason);
+        data.put(" &4• &7Expira el: &c", YandereApi.DATE_FORMAT.format(expDate));
+        data.put(" &4• &7Creado el: &c", YandereApi.DATE_FORMAT.format(mute.getCreateDate()));
+        data.put(" &4• &7ID: &c", mute.getUUID().toString().split("-")[0]);
+    
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Ha Muteado a: &7" + punished.getName(), punisher.getName(), data);
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Fue Muteado por: &7" + punisher.getName(), punished.getName(), data);
-        
+    
     }
     
     public void permanentMute(User punished, User punisher, String reason, String server){
@@ -100,17 +105,18 @@ public class PunishManager extends IPunishManager {
         Main.getInstance().getPlayers().savePlayer(punished);
         this.getMutes().createMute(mute);
         announceNewMute(mute);
-        
+    
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
-        data.put("  &4• &8Muteador: &c", punisher.getName());
-        data.put("  &4• &8Muteado: &c", punished.getName());
-        data.put("  &4• &8Razón: &c", reason);
-        data.put("  &4• &8Expira: &c", "Nunca");
-        data.put("  &4• &8ID: &c", mute.getUUID().toString().split("-")[0]);
-        
+        data.put(" &4• &7Muteador: &c", punisher.getName());
+        data.put(" &4• &7Muteado: &c", punished.getName());
+        data.put(" &4• &7Razón: &c", reason);
+        data.put(" &4• &7Expira: &c", "Nunca");
+        data.put(" &4• &7Creado el: &c", YandereApi.DATE_FORMAT.format(mute.getCreateDate()));
+        data.put(" &4• &7ID: &c", mute.getUUID().toString().split("-")[0]);
+    
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Ha Muteado a: &7" + punished.getName(), punisher.getName(), data);
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Fue Muteado por: &7" + punisher.getName(), punished.getName(), data);
-        
+    
     }
     
     public void createWarn(User punished, User punisher, String reason, String server){
@@ -119,17 +125,18 @@ public class PunishManager extends IPunishManager {
         this.getWarns().createWarn(warn);
         Main.getInstance().getPlayers().savePlayer(punished);
         announceNewWarn(warn);
-        
+    
         ArrayList<Warn> warns = new ArrayList<>();
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
-        data.put("  &4• &8Avisador: &c", punisher.getName());
-        data.put("  &4• &8Avisado: &c", punished.getName());
-        data.put("  &4• &8Razón: &c", reason);
-        data.put("  &4• &8ID: &c", warn.getUUID().toString().split("-")[0]);
-        
+        data.put(" &4• &7Avisador: &c", punisher.getName());
+        data.put(" &4• &7Avisado: &c", punished.getName());
+        data.put(" &4• &7Razón: &c", reason);
+        data.put(" &4• &7Creado el: &c", YandereApi.DATE_FORMAT.format(warn.getCreateDate()));
+        data.put(" &4• &7ID: &c", warn.getUUID().toString().split("-")[0]);
+    
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Ha Avisado a: &7" + punished.getName(), punisher.getName(), data);
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Fue Avisado por: &7" + punisher.getName(), punished.getName(), data);
-        
+    
         HashMap<UUID, PunishType> punishments = punished.getPunishments();
         if (punishments != null){
             for ( UUID ids : punishments.keySet() ){
@@ -150,18 +157,19 @@ public class PunishManager extends IPunishManager {
         Main.getInstance().getPlayers().savePlayer(punished);
         this.getReports().createReport(report);
         announceNewReport(report);
-        
+    
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
-        
+    
         data.put("material", material);
-        data.put("  &4• &8Reportador: &c", punisher.getName());
-        data.put("  &4• &8Reportado: &c", punished.getName());
-        data.put("  &4• &8Razón: &c", reason);
-        data.put("  &4• &8ID: &c", report.getUUID().toString().split("-")[0]);
-        
+        data.put(" &4• &7Reportador: &c", punisher.getName());
+        data.put(" &4• &7Reportado: &c", punished.getName());
+        data.put(" &4• &7Razón: &c", reason);
+        data.put(" &4• &7Creado el: &c", YandereApi.DATE_FORMAT.format(report.getCreateDate()));
+        data.put(" &4• &7ID: &c", report.getUUID().toString().split("-")[0]);
+    
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Ha Reportado a: &7" + punished.getName(), punisher.getName(), data);
         Main.getInstance().getLogs().createLogWithProps(LogType.PUNISHMENT, Settings.PROXY_SERVER_NAME, "&4Fue Reportado por: &7" + punisher.getName(), punished.getName(), data);
-        
+    
     }
     
     
