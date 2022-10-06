@@ -1,9 +1,12 @@
 package com.podcrash.commissions.yandere.core.spigot.menu.settings.player;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.podcrash.commissions.yandere.core.spigot.Main;
+import com.podcrash.commissions.yandere.core.spigot.menu.lobby.LobbyMenu;
 import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
 import net.lymarket.lyapi.spigot.menu.UpdatableMenu;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
+import net.lymarket.lyapi.spigot.utils.NBTItem;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,12 +16,10 @@ public class PlayerSettingsMainMenu extends UpdatableMenu {
     
     
     private final int[] decorateSlots = {
-            0, 1, 2, 3, 4, 5, 6, 7, 8,
+            0, 1, 7, 8,
             9, 17,
-            18, 26,
             27, 35,
-            36, 37, 38, 39, 40, 41, 42, 43, 44,
-            45, 46, 47, 48, 50, 51, 52, 53};
+            36, 37, 43, 44};
     
     private final UUID targetUUID;
     
@@ -42,24 +43,53 @@ public class PlayerSettingsMainMenu extends UpdatableMenu {
     
     @Override
     public int getSlots(){
-        return 54;
+        return 45;
     }
     
     @Override
     public void setMenuItems(){
-        /*for ( int i : decorateSlots ){
-            inventory.setItem(i, null);
-        }*/
-        int[] separateSlot = {12, 21, 30};
         ItemStack fillerMidItem = new ItemBuilder(FILLER_GLASS.clone()).setDyeColor(14).build();
-        for ( int i : separateSlot ){
+        for ( int i : decorateSlots ){
             inventory.setItem(i, fillerMidItem);
         }
-        inventory.setItem(49, CLOSE_ITEM);
+    
+        inventory.setItem(20, new ItemBuilder(XMaterial.MAP.parseItem())
+                .setDisplayName("&c&lOpciones:")
+                .addLoreLine("&7Haz click para ver tu opciones")
+                .addLoreLine("&7y así poder cambiarlas.")
+                .addLoreLine("")
+                .addTag("settings", "options")
+                .addTag("development", "true")
+                .build());
+    
+    
+        inventory.setItem(21, new ItemBuilder(XMaterial.NAME_TAG.parseItem())
+                .setDisplayName("&c&lPropiedades:")
+                .addLoreLine("&7Haz click para ver las propiedades")
+                .addLoreLine("&7atribuidas a tu cuenta.")
+                .addLoreLine("")
+                .addTag("settings", "options")
+                .addTag("development", "true")
+                .build());
+    
+        inventory.setItem(21, new ItemBuilder(XMaterial.SUNFLOWER.parseItem())
+                .setDisplayName("&c&lDinero:")
+                .addLoreLine("&7Haz click para ver tu dinero")
+                .addLoreLine("&7atribuidas a tu cuenta.")
+                .addLoreLine("")
+                .addTag("settings", "options")
+                .addTag("development", "true")
+                .build());
+    
+    
+        inventory.setItem(40, CLOSE_ITEM);
     }
     
     @Override
     public void handleMenu(InventoryClickEvent e){
-    
+        ItemStack item = e.getCurrentItem();
+        if (NBTItem.hasTag(item, "ly-menu-close")){
+            new LobbyMenu(playerMenuUtility).open();
+        }
     }
 }

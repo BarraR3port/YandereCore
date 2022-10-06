@@ -2,15 +2,18 @@ package com.podcrash.commissions.yandere.core.spigot.users;
 
 import com.mongodb.client.model.Filters;
 import com.podcrash.commissions.yandere.core.common.data.level.Level;
+import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.commissions.yandere.core.common.data.server.ChangeType;
 import com.podcrash.commissions.yandere.core.common.data.user.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
+import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.events.PlayerCoinsChangeEvent;
 import com.podcrash.commissions.yandere.core.spigot.events.PlayerLevelChangeEvent;
 import com.podcrash.commissions.yandere.core.spigot.events.PlayerRankChangeEvent;
 import com.podcrash.commissions.yandere.core.spigot.events.PlayerXpChangeEvent;
+import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import net.luckperms.api.LuckPermsProvider;
 import net.lymarket.lyapi.common.db.MongoDBClient;
 import net.lymarket.lyapi.spigot.utils.Utils;
@@ -19,6 +22,7 @@ import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -188,8 +192,15 @@ public final class PlayerRepository extends IPlayerRepository {
         if (event.isCancelled()) return;
         player.addCoins(amount);
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&a+" + amount + " ⛃");
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put(" &4• &7Cambio: &a+", amount + " &7 ⛃");
+        data.put(" &4• &7Total: &c", player.getCoinsFormatted());
+        Main.getInstance().getLogs().createLogWithProps(LogType.MONEY_CHANGE, Settings.PROXY_SERVER_NAME, "&a+" + amount + " ⛃", player.getName(), data);
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&a+" + amount + " ⛃");
+        } catch (NullPointerException ignored) {
+        }
     }
     
     @Override
@@ -203,8 +214,15 @@ public final class PlayerRepository extends IPlayerRepository {
             player.removeCoins(amount);
         }
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&c-" + amount + " ⛃");
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put(" &4• &7Cambio: &c-", amount + " &7 ⛃");
+        data.put(" &4• &7Total: &c", player.getCoinsFormatted());
+        Main.getInstance().getLogs().createLogWithProps(LogType.MONEY_CHANGE, Settings.PROXY_SERVER_NAME, "&c-" + amount + " ⛃", player.getName(), data);
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&c-" + amount + " ⛃");
+        } catch (NullPointerException ignored) {
+        }
     }
     
     @Override
@@ -213,8 +231,14 @@ public final class PlayerRepository extends IPlayerRepository {
         if (event.isCancelled()) return;
         player.setCoins(Math.max(amount, 0));
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&8Ahora tienes &a" + amount + " ⛃");
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put(" &4• &7Total: &c", player.getCoinsFormatted());
+        Main.getInstance().getLogs().createLogWithProps(LogType.MONEY_CHANGE, Settings.PROXY_SERVER_NAME, "&8Ahora tienes &a" + amount + " ⛃", player.getName(), data);
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&8Ahora tienes &a" + amount + " ⛃");
+        } catch (NullPointerException ignored) {
+        }
     }
     
     @Override
@@ -223,8 +247,16 @@ public final class PlayerRepository extends IPlayerRepository {
         if (event.isCancelled()) return;
         player.getLevel().setLevel(level);
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aAhora eres nivel &c" + player.getLevel().getLevel());
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
+        data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
+        data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&aAhora eres nivel &c" + player.getLevel().getLevel(), player.getName(), data);
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aAhora eres nivel &c" + player.getLevel().getLevel());
+        } catch (NullPointerException ignored) {
+        }
     }
     
     @Override
@@ -234,8 +266,17 @@ public final class PlayerRepository extends IPlayerRepository {
         if (event.isCancelled()) return;
         player.getLevel().addLevels(level);
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aSubiste al nivel &c" + player.getLevel().getLevel());
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put(" &4• &7Cambio: &a+", String.valueOf(level));
+        data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
+        data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
+        data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&aSubiste al nivel &c" + player.getLevel().getLevel(), player.getName(), data);
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aSubiste al nivel &c" + player.getLevel().getLevel());
+        } catch (NullPointerException ignored) {
+        }
     }
     
     @Override
@@ -244,8 +285,17 @@ public final class PlayerRepository extends IPlayerRepository {
         if (event.isCancelled()) return;
         player.getLevel().removeLevels(level);
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&cBajaste al nivel &c" + player.getLevel().getLevel());
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put(" &4• &7Cambio: &c-", String.valueOf(level));
+        data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
+        data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
+        data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&cBajaste al nivel &c" + player.getLevel().getLevel(), player.getName(), data);
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&cBajaste al nivel &c" + player.getLevel().getLevel());
+        } catch (NullPointerException ignored) {
+        }
     }
     
     @Override
@@ -254,8 +304,16 @@ public final class PlayerRepository extends IPlayerRepository {
         if (event.isCancelled()) return;
         player.getLevel().setXp(xp);
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aAhora tienes &c" + xp + " &5XP");
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
+        data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
+        data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&aAhora tienes &c" + xp + " &5XP", player.getName(), data);
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aAhora tienes &c" + xp + " &5XP");
+        } catch (NullPointerException ignored) {
+        }
     }
     
     @Override
@@ -265,8 +323,18 @@ public final class PlayerRepository extends IPlayerRepository {
         if (event.isCancelled()) return;
         player.getLevel().addXp(xp);
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&a+" + xp + " XP");
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put(" &4• &7Xp añadida: &a+", String.valueOf(xp));
+        data.put(" &4• &7Nueva XP: &a", String.valueOf(player.getLevel().getCurrentXp()));
+        data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
+        data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
+        data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&a+" + xp + " XP", player.getName(), data);
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&a+" + xp + " XP");
+        } catch (NullPointerException ignored) {
+        }
     }
     
     @Override
@@ -276,8 +344,19 @@ public final class PlayerRepository extends IPlayerRepository {
         if (event.isCancelled()) return;
         player.getLevel().removeXp(xp);
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&c-" + xp + " XP");
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put(" &4• &7Xp añadida: &c-", String.valueOf(xp));
+        data.put(" &4• &7Nueva XP: &a", String.valueOf(player.getLevel().getCurrentXp()));
+        data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
+        data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
+        data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&c-" + xp + " XP", player.getName(), data);
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&c-" + xp + " XP");
+        } catch (NullPointerException ignored) {
+        }
+    
     }
     
     @Override
@@ -286,7 +365,10 @@ public final class PlayerRepository extends IPlayerRepository {
         if (event.isCancelled()) return;
         player.setRank(event.getRank());
         savePlayer(player);
-        Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
-        Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aSe te ha otorgado el rango: " + event.getRank().getTabPrefix());
+        try {
+            Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
+            Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&aSe te ha otorgado el rango: " + event.getRank().getTabPrefix());
+        } catch (NullPointerException ignored) {
+        }
     }
 }

@@ -4,7 +4,8 @@ public enum LogType {
     UNKNOWN("Sin Filtro", "&4", "GLASS"),
     CHAT("Chat", "&7", "PAPER"),
     COMMAND("Comando", "&7", "COMMAND_BLOCK"),
-    TP("Tp", "&3", "ENDER_PEARL"),
+    MONEY_CHANGE("Cambio en el Dinero", "&e", "SUNFLOWER"),
+    XP_CHANGE("Cambio en la Experiencia", "&a", "EXPERIENCE_BOTTLE"),
     PUNISHMENT("Castigo", "&c", "BARRIER"),
     CONNECT("Conección", "&a", "LIME_WOOL"),
     DISCONNECT("Desconección", "&c", "RED_WOOL");

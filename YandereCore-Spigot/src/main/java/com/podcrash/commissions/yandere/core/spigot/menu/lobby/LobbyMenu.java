@@ -7,6 +7,7 @@ import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
+import com.podcrash.commissions.yandere.core.spigot.menu.settings.player.PlayerSettingsMainMenu;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
 import net.lymarket.lyapi.spigot.menu.UpdatableMenu;
@@ -49,7 +50,7 @@ public class LobbyMenu extends UpdatableMenu {
     
     @Override
     public int getSlots(){
-        return 54;
+        return 45;
     }
     
     @Override
@@ -88,6 +89,14 @@ public class LobbyMenu extends UpdatableMenu {
             } else {
                 super.checkSomething(p, e.getSlot(), item, "&cNo hay servers disponibles.", "", this.getMenuUUID());
             }
+        } else if (NBTItem.hasTag(item, "settings")){
+            final Player p = (Player) e.getWhoClicked();
+            boolean isInDevelopment = NBTItem.getTag(item, "development").equalsIgnoreCase("true");
+            if (isInDevelopment && !p.hasPermission("yandere.development.settings")){
+                super.checkSomething(p, e.getSlot(), item, "&cEste menú está en desarrollo.", "", this.getMenuUUID());
+                return;
+            }
+            new PlayerSettingsMainMenu(playerMenuUtility).open();
         } else if (NBTItem.hasTag(item, "ly-menu-close")){
             getOwner().closeInventory();
         }
@@ -96,23 +105,13 @@ public class LobbyMenu extends UpdatableMenu {
     
     @Override
     public void setMenuItems(){
+        inventory.setItem(40, super.CLOSE_ITEM);
         ItemStack fillerMidItem = new ItemBuilder(FILLER_GLASS.clone()).setDyeColor(14).build();
         for ( int i : decorateSlots ){
             inventory.setItem(i, fillerMidItem);
         }
-        int[] separateSlot = {13, 22, 31};
-        for ( int i : separateSlot ){
-            inventory.setItem(i, fillerMidItem);
-        }
-        int[] separateSlot2 = {10, 11, 12, 28, 29, 30};
-        ItemStack fillerItem = new ItemBuilder(FILLER_GLASS.clone()).setDyeColor(15).build();
-        for ( int i : separateSlot2 ){
-            inventory.setItem(i, fillerItem);
-        }
-        
-        
         int[] soonSlot = {14, 15, 16, 25, 32, 33, 34};
-        ItemStack soonItem = new ItemBuilder(XMaterial.BARRIER.parseItem()).setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODc4NDNlNDk1Mzg0Y2RkY2E3ZTg1MjJiZGEzYmI5YTMzYzNmM2IzMmZiYjIzNjFjMDA3MDExYTA1Njk0ZmI1MCJ9fX0=")
+        ItemStack soonItem = new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem()).setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODc4NDNlNDk1Mzg0Y2RkY2E3ZTg1MjJiZGEzYmI5YTMzYzNmM2IzMmZiYjIzNjFjMDA3MDExYTA1Njk0ZmI1MCJ9fX0=")
                 .setDisplayName("&c&k&oPróximamente")
                 .addLoreLine("")
                 .addLoreLine("&7&oEsta modalidad estará disponible")
@@ -130,6 +129,45 @@ public class LobbyMenu extends UpdatableMenu {
             user.setUUID(getOwner().getUniqueId());
             Main.getInstance().getPlayers().savePlayer(user);
         }
+        inventory.setItem(20, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
+                .setHeadSkin(user.getSkin())
+                .setDisplayName("&c&lAjustes:")
+                .addLoreLine("&7Haz click para ver los ajustes")
+                .addLoreLine("&7y opciones tuyas.")
+                .addLoreLine("")
+                .addLoreLine("&3&oEn Desarrollo")
+                .addLoreLine("")
+                .addTag("settings", "settings")
+                .addTag("development", "true")
+                .build());
+    
+        inventory.setItem(21, new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
+                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzZjYmFlNzI0NmNjMmM2ZTg4ODU4NzE5OGM3OTU5OTc5NjY2YjRmNWE0MDg4ZjI0ZTI2ZTA3NWYxNDBhZTZjMyJ9fX0=")
+                .setDisplayName("&c&lAmigos:")
+                .addLoreLine("&7Haz click para ver a tus amigos")
+                .addLoreLine("&7y manejarlos.")
+                .addLoreLine("")
+                .addLoreLine("&3&oEn Desarrollo")
+                .addLoreLine("")
+                .addTag("settings", "settings")
+                .addTag("development", "true")
+                .build());
+    
+        inventory.setItem(19, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
+                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTUwNjJlMzUyODE0ODMzZGJjYTU5ZTk1M2M4ODFjYzA5ZWM4N2I3NTQyNjVhYTMwMTIwMTA2NzY5YTdlZjNkMiJ9fX0=")
+                .setDisplayName("&a&lLobbies")
+                .addLoreLine("&7Haz click para ver los lobbies")
+                .addLoreLine("&7disponibles dentro del servidor.")
+                .addLoreLine("")
+                .build());
+        inventory.setItem(23, new ItemBuilder(Items.SKY_WARS_BASE.clone()).build());
+        inventory.setItem(24, new ItemBuilder(Items.BED_WARS_BASE.clone()).build());
+        inventory.setItem(25, new ItemBuilder(Items.PRACTICE_BASE.clone()).build());
+    }
+    
+    @Override
+    public void setMenuItemsAsync(){
+        
         final ProxyStats proxyStats = Main.getInstance().getProxyStats();
         final boolean isSkyWarsOnline = proxyStats.isServerByTypeOnline(ServerType.SKY_WARS);
         final boolean isBedWarsOnline = proxyStats.isServerByTypeOnline(ServerType.LOBBY_BED_WARS);
@@ -150,40 +188,6 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine(isLobbyOnline ? "&eClick Izq. &7para ver los lobbies." : null)
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.LOBBY).getProxyName())
                 .addTag("development", "false")
-                .build());
-        
-        inventory.setItem(20, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
-                .setHeadSkin(user.getSkin())
-                .setDisplayName("&c&lAjustes:")
-                .addLoreLine("&7Haz click para ver los ajustes")
-                .addLoreLine("&7y opciones tuyas.")
-                .addLoreLine("")
-                .addLoreLine("&3&oEn Desarrollo")
-                .addLoreLine("")
-                /*
-                .addLoreLine("&7► Rango: " + user.getRank().getTabPrefix())
-                .addLoreLine("&7► Monedas: &c" + user.getCoinsFormatted())
-                .addLoreLine("&7► Nivel: &c" + user.getLevel().getLevelName())
-                .addLoreLine(user.getLevel().getProgressBarFormatted())*/
-                .addTag("settings", "settings")
-                .addTag("development", "true")
-                .build());
-        
-        inventory.setItem(21, new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
-                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzZjYmFlNzI0NmNjMmM2ZTg4ODU4NzE5OGM3OTU5OTc5NjY2YjRmNWE0MDg4ZjI0ZTI2ZTA3NWYxNDBhZTZjMyJ9fX0=")
-                .setDisplayName("&c&lAmigos:")
-                .addLoreLine("&7Haz click para ver a tus amigos")
-                .addLoreLine("&7y manejarlos.")
-                .addLoreLine("")
-                .addLoreLine("&3&oEn Desarrollo")
-                .addLoreLine("")
-                /*
-                .addLoreLine("&7► Rango: " + user.getRank().getTabPrefix())
-                .addLoreLine("&7► Monedas: &c" + user.getCoinsFormatted())
-                .addLoreLine("&7► Nivel: &c" + user.getLevel().getLevelName())
-                .addLoreLine(user.getLevel().getProgressBarFormatted())*/
-                .addTag("settings", "settings")
-                .addTag("development", "true")
                 .build());
         
         inventory.setItem(23, new ItemBuilder(Items.SKY_WARS_BASE.clone())
@@ -237,13 +241,10 @@ public class LobbyMenu extends UpdatableMenu {
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.SURVIVAL).getProxyName())
                 .addTag("development", globalServerSettings.isSurvivalGamesInDevelopment() ? "true" : "false")
                 .build());*/
-        
-        inventory.setItem(49, super.CLOSE_ITEM);
-        
     }
     
     public void reOpen(){
-        this.setMenuItems();
+        this.addItemsAsync();
     }
     
 }
