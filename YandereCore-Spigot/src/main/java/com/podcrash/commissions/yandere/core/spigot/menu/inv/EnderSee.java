@@ -71,8 +71,8 @@ public class EnderSee extends InventoryMenu {
         } else if (e.getSlot() == 35){
             slot = 36;
         }
-    
-    
+        
+        
         try {
             if (item.getType().equals(Material.AIR)){
                 // player put item to inventory

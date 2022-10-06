@@ -41,7 +41,7 @@ public class PlayerRepository extends IPlayerRepository {
                 return user;
             }
         }
-    
+        
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("name", name));
         if (doc == null) throw new UserNotFoundException(name);
         User user = Api.getGson().fromJson(doc.toJson(), User.class);

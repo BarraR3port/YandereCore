@@ -93,7 +93,7 @@ public abstract class LobbyPlayerEvents extends MainEvents {
                 return;
             }
             Main.getInstance().getCoolDownManager().removeCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
-    
+            
             User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
             PlayerVisibility currentPlayerVisibility = user.getPlayerVisibility();
             user.nextPlayerVisibility();

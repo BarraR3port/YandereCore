@@ -248,7 +248,7 @@ public final class Items {
         p.getInventory().setArmorContents(null);
         p.getInventory().setItem(LOBBY_MENU.getSlot(), LOBBY_MENU.getItem());
         p.getInventory().setItem(MULTI_LOBBY_MENU_HOT_BAR.getSlot(), MULTI_LOBBY_MENU_HOT_BAR.getItem());
-    
+        
         User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         PlayerVisibility playerVisibility = user.getPlayerVisibility();
         switch(playerVisibility){
@@ -271,7 +271,7 @@ public final class Items {
         p.setSaturation(20F);
         p.getInventory().setHeldItemSlot(0);
         p.updateInventory();
-    
+        
     }
     
     public static void setSkyWarsLobbyItems(Player p){
@@ -373,7 +373,7 @@ public final class Items {
             if (!name.startsWith("lobby-bedwars-")) continue;
             p.getInventory().setItem(config.getInt("items." + name + ".slot"), config.getItem(name));
         }
-    
+        
         User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         PlayerVisibility playerVisibility = user.getPlayerVisibility();
         switch(playerVisibility){

@@ -109,8 +109,8 @@ public class LobbyMenu extends UpdatableMenu {
         for ( int i : separateSlot2 ){
             inventory.setItem(i, fillerItem);
         }
-    
-    
+        
+        
         int[] soonSlot = {14, 15, 16, 25, 32, 33, 34};
         ItemStack soonItem = new ItemBuilder(XMaterial.BARRIER.parseItem()).setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODc4NDNlNDk1Mzg0Y2RkY2E3ZTg1MjJiZGEzYmI5YTMzYzNmM2IzMmZiYjIzNjFjMDA3MDExYTA1Njk0ZmI1MCJ9fX0=")
                 .setDisplayName("&c&k&oPróximamente")
@@ -137,7 +137,7 @@ public class LobbyMenu extends UpdatableMenu {
         final boolean isLobbyOnline = proxyStats.isServerByTypeOnline(ServerType.LOBBY);
         //final boolean isTNTTagOnline = proxyStats.isServerByTypeOnline(ServerType.TNT_TAG);
         //final boolean isSurvivalOnline = proxyStats.isServerByTypeOnline(ServerType.SURVIVAL);
-    
+        
         inventory.setItem(19, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTUwNjJlMzUyODE0ODMzZGJjYTU5ZTk1M2M4ODFjYzA5ZWM4N2I3NTQyNjVhYTMwMTIwMTA2NzY5YTdlZjNkMiJ9fX0=")
                 .setDisplayName("&a&lLobbies")
@@ -151,7 +151,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.LOBBY).getProxyName())
                 .addTag("development", "false")
                 .build());
-    
+        
         inventory.setItem(20, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
                 .setHeadSkin(user.getSkin())
                 .setDisplayName("&c&lAjustes:")
@@ -168,7 +168,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addTag("settings", "settings")
                 .addTag("development", "true")
                 .build());
-    
+        
         inventory.setItem(21, new ItemBuilder(XMaterial.PLAYER_HEAD.parseMaterial())
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzZjYmFlNzI0NmNjMmM2ZTg4ODU4NzE5OGM3OTU5OTc5NjY2YjRmNWE0MDg4ZjI0ZTI2ZTA3NWYxNDBhZTZjMyJ9fX0=")
                 .setDisplayName("&c&lAmigos:")
@@ -185,7 +185,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addTag("settings", "settings")
                 .addTag("development", "true")
                 .build());
-    
+        
         inventory.setItem(23, new ItemBuilder(Items.SKY_WARS_BASE.clone())
                 .addLoreLine("&7&oEstado: " + (globalServerSettings.isSkyWarsInDevelopment() ? "&3&oEn Desarrollo" : isSkyWarsOnline ? "&a&oActivo" : "&c&oCerrado"))
                 .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : isSkyWarsOnline ? "" : null)
@@ -197,7 +197,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.SKY_WARS).getProxyName())
                 .addTag("development", globalServerSettings.isSkyWarsInDevelopment() ? "true" : "false")
                 .build());
-    
+        
         inventory.setItem(24, new ItemBuilder(Items.BED_WARS_BASE.clone())
                 .addLoreLine("&7&oEstado: " + (globalServerSettings.isBedWarsInDevelopment() ? "&3&oEn Desarrollo" : isBedWarsOnline ? "&a&oActivo" : "&c&oCerrado"))
                 .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : isBedWarsOnline ? "" : null)
@@ -209,7 +209,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.LOBBY_BED_WARS).getProxyName())
                 .addTag("development", globalServerSettings.isBedWarsInDevelopment() ? "true" : "false")
                 .build());
-    
+        
         inventory.setItem(25, new ItemBuilder(Items.PRACTICE_BASE.clone())
                 .addLoreLine("&7&oEstado: " + (globalServerSettings.isPracticeInDevelopment() ? "&3&oEn Desarrollo" : isPracticeOnline ? "&a&oActivo" : "&c&oCerrado"))
                 .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : isPracticeOnline ? "" : null)
@@ -237,9 +237,9 @@ public class LobbyMenu extends UpdatableMenu {
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.SURVIVAL).getProxyName())
                 .addTag("development", globalServerSettings.isSurvivalGamesInDevelopment() ? "true" : "false")
                 .build());*/
-    
+        
         inventory.setItem(49, super.CLOSE_ITEM);
-    
+        
     }
     
     public void reOpen(){

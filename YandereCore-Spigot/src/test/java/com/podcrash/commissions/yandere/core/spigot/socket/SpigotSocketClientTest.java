@@ -55,9 +55,9 @@ public class SpigotSocketClientTest {
         for ( String s : toRemove ){
             textToTranslate = textToTranslate.replace(s, "");
         }
-    
+        
         System.out.println(textToTranslate);
-    
+        
     }
     
     @Test
@@ -118,10 +118,10 @@ public class SpigotSocketClientTest {
     public void test7(){
         final MongoDBClient mongo = new MongoDBClient("mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@localhost:27017/yandere", "yandere");
         LogRepository logs = new LogRepository(mongo, "logs");
-    
+        
         System.out.println(logs.getLogsByPageAndNameSize(0, 21, "BarraR3port"));
-    
-    
+        
+        
     }
     
     private static class Hola {

@@ -22,7 +22,7 @@ public class EconomyCommand implements ILyCommand {
                 Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/money <jugador>");
                 return new CommandResponse();
             }
-    
+            
             Player p = (Player) context.getSender();
             User user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
             Main.getLang().sendMsg(p, "coins.amount.own", "amount", String.valueOf(user.getCoins()));

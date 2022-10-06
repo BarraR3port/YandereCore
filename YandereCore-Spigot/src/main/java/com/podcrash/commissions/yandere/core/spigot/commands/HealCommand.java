@@ -26,7 +26,7 @@ public class HealCommand implements ILyCommand {
             Main.getLang().sendMsg(p, "health.set");
             return new CommandResponse();
         }
-    
+        
         Player target = Bukkit.getPlayer(context.getArg(0));
         if (target != null){
             if (context.getSender().hasPermission("yandere.health.other")){
@@ -40,7 +40,7 @@ public class HealCommand implements ILyCommand {
                 return new CommandResponse("yandere.health.set.other");
             }
         }
-    
+        
         Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
         return new CommandResponse();
     }

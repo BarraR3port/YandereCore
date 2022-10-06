@@ -35,7 +35,7 @@ public abstract class MainEvents implements Listener {
                 "pendeja", "culiao", "qlo", "kuliao", "weon", "scw", "aweonao",
                 "aweona", "wna", "weona", "weonsito", "weonsita"
         );
-    
+        
     }
     
     public abstract void subPlayerQuitEvent(PlayerQuitEvent e);

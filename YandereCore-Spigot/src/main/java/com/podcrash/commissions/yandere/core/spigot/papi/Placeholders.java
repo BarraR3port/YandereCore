@@ -91,7 +91,7 @@ public class Placeholders extends PlaceholderExpansion {
     // PLACEHOLDERS
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String identifier){
-    
+        
         if (identifier.startsWith("server_size_")){
             return String.valueOf(Main.getInstance().getProxyStats().getTargetServerSize(identifier.replace("server_size_", "")));
         }
@@ -109,7 +109,7 @@ public class Placeholders extends PlaceholderExpansion {
             String server = identifier.replace("server_capacity_current_", "");
             return Main.getInstance().getProxyStats().getCurrentTargetServerCapacity(ServerType.valueOf(server), Main.getInstance().getGlobalServerSettings().getOrCreate());
         }
-    
+        
         switch(identifier){
             case "server_name":
             case "server":{
@@ -133,16 +133,16 @@ public class Placeholders extends PlaceholderExpansion {
             case "server_name_number":{
                 return String.valueOf(Settings.PROXY_SERVER_NAME.charAt(Settings.PROXY_SERVER_NAME.length() - 1));
             }
-        
+            
         }
-    
+        
         if (player == null) return "Jugador no encontrado";
         if (identifier.equals("health")) return String.valueOf(player.getHealth());
         if (identifier.equals("gamemode")) return String.valueOf(player.getGameMode());
-    
+        
         final User p = Main.getInstance().getPlayers().getCachedPlayer(player.getUniqueId());
         if (p == null) return "Jugador no encontrado";
-    
+        
         switch(identifier){
             case "location_server":{
                 return p.getLastLocation().getServer();
@@ -213,7 +213,7 @@ public class Placeholders extends PlaceholderExpansion {
                 return p.getJoinSkyWarsArenaType().getFormattedName();
             }
         }
-    
+        
         return "&cJugador oo encontrado";
     }
 }

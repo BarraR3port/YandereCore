@@ -18,13 +18,13 @@ import org.bukkit.inventory.ItemStack;
 public class LogManagerMenu extends PaginatedMenu<Log> {
     
     private final User user;
-    private DBOrderType orderType;
     private final LogMenuDisplayType type;
     private final int[] slots = {
             /*10, 11, 12, 13, 14, 15, 16,*/
             19, 20, 21, 22, 23, 24, 25,
             28, 29, 30, 31, 32, 33, 34,
             37, 38, 39, 40, 41, 42, 43};
+    private DBOrderType orderType;
     private LogType filter;
     private int maxItems = 0;
     
@@ -228,7 +228,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                     .addTag("go", "back")
                     .addTag("move-amount", 10)
                     .build());
-        
+            
         }
         if (list.size() > maxItemsPerPage){
             inventory.setItem(getSlots() - 3, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
@@ -239,7 +239,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                     .addTag("move-amount", 10)
                     .build());
         }
-    
+        
         inventory.setItem(18, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmNjYmY5ODgzZGQzNTlmZGYyMzg1YzkwYTQ1OWQ3Mzc3NjUzODJlYzQxMTdiMDQ4OTVhYzRkYzRiNjBmYyJ9fX0=")
                 .setDisplayName("&eOrden por Fecha ⇝ &a")
@@ -248,7 +248,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                 .addTag("order", DBOrderType.DATE_ASCENDING.name())
                 .setEnchanted(orderType == DBOrderType.DATE_ASCENDING)
                 .build());
-    
+        
         inventory.setItem(27, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTdkZDM0OTI0ZDJiNmEyMTNhNWVkNDZhZTU3ODNmOTUzNzNhOWVmNWNlNWM4OGY5ZDczNjcwNTk4M2I5NyJ9fX0=")
                 .setDisplayName("&eOrden Alfabético ⇝ &a")
@@ -258,7 +258,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                 .addTag("order", orderType == DBOrderType.ALPHABETICAL_DESCENDING ? DBOrderType.ALPHABETICAL_ASCENDING.name() : DBOrderType.ALPHABETICAL_DESCENDING.name())
                 .setEnchanted(orderType == DBOrderType.ALPHABETICAL_DESCENDING || orderType == DBOrderType.ALPHABETICAL_ASCENDING)
                 .build());
-    
+        
         inventory.setItem(36, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
                 .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzI0MzE5MTFmNDE3OGI0ZDJiNDEzYWE3ZjVjNzhhZTQ0NDdmZTkyNDY5NDNjMzFkZjMxMTYzYzBlMDQzZTBkNiJ9fX0=")
                 .setDisplayName("&eOrden por Fecha ⇝ &a")

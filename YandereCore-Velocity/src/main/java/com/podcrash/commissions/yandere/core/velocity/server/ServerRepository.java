@@ -56,7 +56,7 @@ public class ServerRepository extends IServerRepository {
         try {
             pluginFilesGarbageCollector();
             VMain.getInstance().getLogger().info("[UPDATE MACHINE] Initializing the ~Updating Machine~ ...");
-    
+            
             StringBuilder resultado = new StringBuilder();
             URL url = new URL(VMain.getInstance().getConfig().get("web.url") + "/api/lydark/server/checkPlugins");
             HttpURLConnection connexion = (HttpURLConnection) url.openConnection();
@@ -106,7 +106,7 @@ public class ServerRepository extends IServerRepository {
                 if (pluginsToUpdate.size() > 0){
                     VMain.getInstance().getLogger().warn("[UPDATE MACHINE] I have found " + pluginsToUpdate.size() + " plugins to update");
                     VMain.getInstance().getLogger().info("[UPDATE MACHINE] Starting the update process...");
-    
+                    
                     pluginsToUpdate.forEach((plugin, pluginBukkit) -> {
                         try {
                             updatePlugin(plugin, pluginBukkit);
@@ -118,7 +118,7 @@ public class ServerRepository extends IServerRepository {
                     VMain.getInstance().getLogger().info("[UPDATE MACHINE] Every Plugin has successfully updated!");
                     VMain.getInstance().getLogger().warn("[UPDATE MACHINE] Restarting...");
                     VMain.getInstance().getProxy().shutdown();
-    
+                    
                 } else {
                     VMain.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
                 }
@@ -131,7 +131,7 @@ public class ServerRepository extends IServerRepository {
         } catch (IOException | NullPointerException | ConcurrentModificationException ignored) {
             ignored.printStackTrace();
         }
-    
+        
     }
     
     /*public void checkForPluginsUpdates2(){
@@ -270,7 +270,7 @@ public class ServerRepository extends IServerRepository {
     
     public void updatePlugin(LyPlugin plugin, PluginContainer outdatedPlugin) throws IOException{
         VMain.getInstance().getLogger().info("[UPDATE MACHINE] Updating " + plugin.getName() + " to --> V: " + plugin.getVersion() + " ...");
-    
+        
         VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 1/5 -> Downloading the Plugin");
         URL url = new URL(VMain.getInstance().getConfig().get("web.url") + "/api/lydark/plugins/downloads/" + plugin.getUuid());
         HttpURLConnection connexion = (HttpURLConnection) url.openConnection();
@@ -286,7 +286,7 @@ public class ServerRepository extends IServerRepository {
         }
         VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 3/5 -> Finding the old plugin file path");
         String path = new File(pluginsPath.toAbsolutePath() + "\\" + outdatedPlugin.getDescription().getName().get() + "-" + outdatedPlugin.getDescription().getVersion().get() + ".jar").getAbsolutePath();
-    
+        
         VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 4/5 -> Deleting the file");
         try {
             String plugin_to_delete = outdatedPlugin.getDescription().getName().get() + "-" + outdatedPlugin.getDescription().getVersion().get() + ".jar";
@@ -308,7 +308,7 @@ public class ServerRepository extends IServerRepository {
                 if (!response.isSuccessful()){
                     VMain.getInstance().getLogger().severe("[UPDATE MACHINE] STEP 5/5 -> Failed to delete the old plugin file: " + response);
                     VMain.getInstance().getLogger().severe("[UPDATE MACHINE] STEP 5/5 -> Failed to delete the old plugin file: " + plugin_to_delete);
-    
+                    
                 }
                 VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 5/5 -> Successfully deleted the old plugin file: " + plugin_to_delete);
                 

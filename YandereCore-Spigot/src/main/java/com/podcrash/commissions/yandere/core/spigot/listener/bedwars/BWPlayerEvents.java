@@ -164,11 +164,11 @@ public final class BWPlayerEvents extends MainEvents {
                         return true;
                     }
                     ShoutCommand.updateShout(p);
-    
+                    
                     e.getRecipients().clear();
                     e.getRecipients().addAll(a.getPlayers());
                     e.getRecipients().addAll(a.getSpectators());
-    
+                    
                     if (finalMessage.startsWith("!")) finalMessage = finalMessage.replaceFirst("!", "");
                     if (finalMessage.startsWith("shout")) finalMessage = finalMessage.replaceFirst("SHOUT", "");
                     if (finalMessage.startsWith("shout")) finalMessage = finalMessage.replaceFirst("shout", "");
@@ -196,11 +196,11 @@ public final class BWPlayerEvents extends MainEvents {
                     } else {
                         e.getRecipients().addAll(t.getMembers());
                     }
-    
+                    
                     e.setFormat(SupportPAPI.getSupportPAPI().replace(e.getPlayer(), getMsg(p, Messages.FORMATTING_CHAT_TEAM).replace("{vPrefix}", getChatSupport().getPrefix(p)).replace("{vSuffix}", getChatSupport().getSuffix(p))
                             .replace("{player}", p.getDisplayName()).replace("{team}", t.getColor().chat() + "「" + t.getDisplayName(Language.getPlayerLanguage(e.getPlayer())).toUpperCase() + "⏌")
                             .replace("{level}", getLevelSupport().getLevel(p))).replace("{finalMessage}", "%2$s"));
-    
+                    
                     for ( Player player : e.getRecipients() ){
                         Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> player.spigot().sendMessage(
                                 level,

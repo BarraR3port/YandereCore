@@ -230,7 +230,7 @@ public class SpigotSocketClient extends ISocket {
         private PrintWriter out;
         private Scanner in;
         private boolean compute = true;
-    
+        
         private ProxySocket(Socket socket, String name){
             this.name = name;
             this.socket = socket;
@@ -245,7 +245,7 @@ public class SpigotSocketClient extends ISocket {
             } catch (IOException ignored) {
                 return;
             }
-        
+            
             Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), new BukkitRunnable() {
                 @Override
                 public void run(){
@@ -303,14 +303,14 @@ public class SpigotSocketClient extends ISocket {
                                         final UUID target_uuid = UUID.fromString(json.get("target_uuid").getAsString());
                                         final String key = json.get("key").getAsString();
                                         final boolean hasReplacements = json.get("has-replacements").getAsBoolean();
-        
+                                        
                                         try {
                                             final Player player = Bukkit.getPlayer(target_uuid);
                                             if (player == null) continue;
                                             if (hasReplacements){
                                                 final JsonObject replacements = json.get("replacements").getAsJsonObject();
                                                 final HashMap<String, String> replace = new HashMap<>();
-    
+                                                
                                                 for ( Map.Entry<String, JsonElement> entry : replacements.entrySet() ){
                                                     replace.put(entry.getKey(), entry.getValue().getAsString());
                                                 }
@@ -318,7 +318,7 @@ public class SpigotSocketClient extends ISocket {
                                             } else {
                                                 player.sendMessage(Main.getLang().getMSG(key));
                                             }
-            
+                                            
                                         } catch (NullPointerException e) {
                                             e.printStackTrace();
                                         }
@@ -331,12 +331,12 @@ public class SpigotSocketClient extends ISocket {
                             e.printStackTrace();
                         }
                     }
-    
+                    
                 }
-            
+                
             });
         }
-    
+        
         @Override
         public boolean sendMessage(JsonObject message){
             if (socket == null){
@@ -368,10 +368,10 @@ public class SpigotSocketClient extends ISocket {
             final UUID msgUUID = UUID.randomUUID();
             message.addProperty("socket-msg-uuid", msgUUID.toString());
             out.println(encrypt(GSON.toJson(message)));
-        
+            
             return true;
         }
-    
+        
         @Override
         public void reconnect(String msg){
             if (reconnecting) return;
@@ -402,9 +402,9 @@ public class SpigotSocketClient extends ISocket {
                     }
                 }
             };
-        
+            
         }
-    
+        
         @Override
         public void disable(String reason){
             compute = false;

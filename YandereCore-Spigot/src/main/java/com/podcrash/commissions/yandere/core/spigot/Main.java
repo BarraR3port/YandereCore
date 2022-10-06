@@ -159,16 +159,16 @@ public final class Main extends JavaPlugin implements YandereApi<Config> {
                 getServer().shutdown();
             }
         }
-    
-    
+        
+        
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
             new Placeholders(this).register();
         }
-    
+        
         if (Bukkit.getPluginManager().getPlugin("ViaVersion") != null){
             viaVersionApi = Via.getAPI();
         }
-    
+        
         if (config.getBoolean("db.enabled")){
             final MongoDBClient mongo = new MongoDBClient(config.getString("db.urli"), config.getString("db.database"));
             players = new PlayerRepository(mongo, "players");
@@ -266,7 +266,7 @@ public final class Main extends JavaPlugin implements YandereApi<Config> {
         registerCommands();
         overrideSpigotDefaultMessages();
         getServer().getPluginManager().callEvent(new PluginEnableEvent(this));
-    
+        
     }
     
     @Override

@@ -210,7 +210,7 @@ public final class SWPlayerEvents extends MainEvents {
                         p.setAllowFlight(true);
                     }
                     PlayerVisibility visibility = user.getPlayerVisibility();
-    
+                    
                     for ( Player targetPlayer : w.getPlayers() ){
                         if (targetPlayer.getUniqueId().equals(p.getUniqueId())) continue;
                         User targetUser = Main.getInstance().getPlayers().getCachedPlayer(targetPlayer.getUniqueId());
@@ -283,7 +283,7 @@ public final class SWPlayerEvents extends MainEvents {
                     Items.setSkyWarsLobbyItems(p);
                     User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
                     boolean hasRank = user.getRank() != Rank.USUARIO;
-    
+                    
                     if (hasRank){
                         p.setAllowFlight(true);
                     }

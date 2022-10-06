@@ -24,7 +24,7 @@ public class PracticeGameEvents implements Listener {
             winners.add(Main.getInstance().getPlayers().getCachedPlayer(duelEvent.getWinner().getUniqueId()));
             losers.add(Main.getInstance().getPlayers().getCachedPlayer(duelEvent.getLoser().getUniqueId()));
         }
-    
+        
         if (event instanceof PartyFFAEndEvent){
             PartyFFAEndEvent partyFFAEndEvent = (PartyFFAEndEvent) event;
             winners.add(Main.getInstance().getPlayers().getCachedPlayer(partyFFAEndEvent.getWinner().getUniqueId()));

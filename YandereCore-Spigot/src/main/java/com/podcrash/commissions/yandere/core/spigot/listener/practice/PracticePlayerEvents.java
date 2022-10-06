@@ -50,7 +50,7 @@ public final class PracticePlayerEvents extends MainEvents {
     public boolean subPlayerChatEvent(AsyncPlayerChatEvent event){
         Player p = event.getPlayer();
         String message = event.getMessage();
-    
+        
         User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
         boolean color = p.hasPermission("yandere.chat.color");
         event.setCancelled(true);
@@ -82,12 +82,12 @@ public final class PracticePlayerEvents extends MainEvents {
                         "&7Rangos disponibles: " + Rank.BRONCE.getTabPrefix() + " " + Rank.HIERRO.getTabPrefix() + " " + Rank.ORO.getTabPrefix() + " " + Rank.DIAMANTE.getTabPrefix(),
                         ""),
                 "https://store.yanderecraft.com");
-    
+        
         TextComponent msg = new TextComponent(level,
                 rank,
                 name,
                 Utils.formatTC(" &8&l► " + (isDefault ? "&7" : white_msg)), (color ? Utils.formatTC(message) : Utils.stripColorsToTextComponent(message)));
-    
+        
         Bukkit.getServer().getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
             for ( Player player : Bukkit.getOnlinePlayers() ){
                 player.spigot().sendMessage(msg);

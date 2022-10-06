@@ -81,14 +81,14 @@ public class MultiLobbyMenu extends UpdatableMenu {
             );
         }
         inventory.setItem(31, super.CLOSE_ITEM);
-    
+        
     }
     
     @Override
     public void handleMenu(InventoryClickEvent e){
         final ItemStack item = e.getCurrentItem();
         final NBTItem nbtItem = new NBTItem(item);
-    
+        
         if (nbtItem.hasTag("allowed")){
             if (nbtItem.getTag("allowed").equalsIgnoreCase("false")){
                 getOwner().sendMessage(Utils.format("&cYa estás en este servidor!"));
@@ -103,6 +103,6 @@ public class MultiLobbyMenu extends UpdatableMenu {
         } else if (nbtItem.hasTag("ly-menu-close")){
             new LobbyMenu(playerMenuUtility).open();
         }
-    
+        
     }
 }

@@ -34,7 +34,7 @@ public class RankMenuCommand implements ILyCommand {
             context.getSender().sendMessage("§b§m----------------------------------------------------");
             return new CommandResponse();
         }
-    
+        
         if (context.getArg(0).equalsIgnoreCase("set")){
             if (context.getArgs().length == 2){
                 final String target = context.getArg(1);

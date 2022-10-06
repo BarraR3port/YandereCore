@@ -24,8 +24,8 @@ public interface VConfig {
         config.setDefault("db.password", "JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK");
         config.setDefault("db.database", "yandere");
         config.setDefault("db.urli", "mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@172.18.0.1:27017/");
-    
-    
+        
+        
     }
 }
 

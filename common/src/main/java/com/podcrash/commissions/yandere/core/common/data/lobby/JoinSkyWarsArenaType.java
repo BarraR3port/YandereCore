@@ -38,7 +38,7 @@ public enum JoinSkyWarsArenaType {
             default:
                 return RANKED;
         }
-    
+        
     }
     
     public String getFormattedName(){

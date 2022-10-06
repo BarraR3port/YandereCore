@@ -42,7 +42,7 @@ public enum JoinBedWarsArenaType {
             default:
                 return _4V4V4V4;
         }
-    
+        
     }
     
     public String getFormattedName(){

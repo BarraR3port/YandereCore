@@ -134,11 +134,11 @@ public class PlayerEvents {
                         }
                     } catch (ExecutionException | InterruptedException ignored) {
                     }
-    
+                    
                 }
             }
         }
-    
+        
     }
     
     @Subscribe

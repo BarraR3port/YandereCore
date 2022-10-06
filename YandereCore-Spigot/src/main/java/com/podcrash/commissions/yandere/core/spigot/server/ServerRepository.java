@@ -122,16 +122,16 @@ public class ServerRepository extends IServerRepository {
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR MSG: " + rs);
                     return;
                 }
-    
+                
                 BufferedReader rd = new BufferedReader(new InputStreamReader(rs.body().byteStream()));
                 String linea;
                 while ((linea = rd.readLine()) != null) {
                     resultado.append(linea);
                 }
                 rd.close();
-    
+                
                 String response = resultado.toString();
-    
+                
                 /*JsonElement jElement = new JsonParser( ).parse( resultado.toString( ) );*/
                 Response res = Api.getGson().fromJson(response, Response.class);
                 if (res.getType().equals("plugins")){
@@ -154,11 +154,11 @@ public class ServerRepository extends IServerRepository {
                                         }
                                     }
                                 }
-    
+                                
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-    
+                            
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -178,7 +178,7 @@ public class ServerRepository extends IServerRepository {
                             player.kickPlayer(Utils.format("&cEl server se está reiniciando!"));
                         }
                         Bukkit.shutdown();
-    
+                        
                     } else {
                         Main.getInstance().getLogger().info("[UPDATE MACHINE] You are up to date!");
                     }
@@ -251,7 +251,7 @@ public class ServerRepository extends IServerRepository {
                     Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 2/5 -> Main Plugin Update Found" + outdatedPlugin.getBukkitName());
                     Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 2/5 -> Waiting to update all the plugins to update this one.");
                 }
-    
+                
                 String path;
                 String plugin_to_delete = outdatedPlugin.getName() + "-" + outdatedPlugin.getVersion() + ".jar";
                 try {
@@ -268,7 +268,7 @@ public class ServerRepository extends IServerRepository {
                     }
                 } catch (IOException e) {
                     Main.getInstance().getLogger().log(Level.SEVERE, "[UPDATE MACHINE] ERROR -> Couldn't delete the file with the normal way, trying with the panel api!");
-    
+                    
                     RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "{\"root\":\"/plugins\",\"files\":[\"" + plugin_to_delete + "\"]}");
                     //RequestBody formBody = new FormBody.Builder().add("root", "/plugins").add( "files" , "["+plugin_to_delete+"]" ).build();
                     Request requestToDelete = new Request.Builder()
@@ -292,14 +292,14 @@ public class ServerRepository extends IServerRepository {
                         }
                     }
                 }
-    
+                
                 String pathTarget = Bukkit.getUpdateFolderFile().getAbsolutePath().substring(0, Bukkit.getUpdateFolderFile().getAbsolutePath().length() - 7) + "/" + plugin.getName() + "-" + plugin.getVersion() + ".jar";
                 try (InputStream in = rs.body().byteStream()) {
                     Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 4/5 -> Installing the Plugin");
                     Files.copy(in, Paths.get(pathTarget), StandardCopyOption.REPLACE_EXISTING);
                 }
                 Main.getInstance().getLogger().info("[UPDATE MACHINE] STEP 5/5 The plugin " + plugin.getName() + " has been updated to V: " + plugin.getVersion());
-    
+                
             }
             
         } catch (IOException e) {

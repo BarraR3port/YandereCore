@@ -28,7 +28,7 @@ public class PluginMessage implements PluginMessageListener {
                 Main.getInstance().getConfig().set("global.server-type", Settings.SERVER_TYPE.toString());
                 Main.getInstance().getConfig().saveData();
                 Main.getInstance().getServer().shutdown();
-    
+                
             }
         }
     }
