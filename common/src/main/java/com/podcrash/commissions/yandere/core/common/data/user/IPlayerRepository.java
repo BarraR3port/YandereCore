@@ -1,7 +1,8 @@
 package com.podcrash.commissions.yandere.core.common.data.user;
 
 import com.mongodb.client.model.Filters;
-import com.podcrash.commissions.yandere.core.common.data.level.Level;
+import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import net.lymarket.lyapi.common.db.MongoDB;
 import net.lymarket.lyapi.common.db.MongoDBClient;
@@ -91,23 +92,23 @@ public abstract class IPlayerRepository extends MongoDB<UUID, User> {
     
     public abstract ArrayList<String> getPlayersName();
     
-    public abstract void addCoins(User player, long amount);
+    public abstract void addCoins(User player, long amount, GainSource source, ServerType serverSource);
     
-    public abstract void removeCoins(User player, long amount);
+    public abstract void removeCoins(User player, long amount, GainSource source, ServerType serverSource);
     
-    public abstract void setCoins(User player, long amount);
+    public abstract void setCoins(User player, long amount, GainSource source, ServerType serverSource);
     
-    public abstract void setPlayerLevel(User player, int level);
+    public abstract void setPlayerLevel(User player, int level, GainSource source, ServerType serverSource);
     
-    public abstract void addPlayerLevel(User player, int level);
+    public abstract void addPlayerLevel(User player, int level, GainSource source, ServerType serverSource);
     
-    public abstract void removePlayerLevel(User player, int level);
+    public abstract void removePlayerLevel(User player, int level, GainSource source, ServerType serverSource);
     
-    public abstract void setPlayerXp(User player, int xp, Level.GainSource source);
+    public abstract void setPlayerXp(User player, int xp, GainSource source, ServerType serverSource);
     
-    public abstract void addPlayerXp(User player, int xp, Level.GainSource source);
+    public abstract void addPlayerXp(User player, int xp, GainSource source, ServerType serverSource);
     
-    public abstract void removePlayerXp(User player, int xp, Level.GainSource source);
+    public abstract void removePlayerXp(User player, int xp, GainSource source, ServerType serverSource);
     
     public abstract void setPlayerRank(User player, Rank rank);
 }

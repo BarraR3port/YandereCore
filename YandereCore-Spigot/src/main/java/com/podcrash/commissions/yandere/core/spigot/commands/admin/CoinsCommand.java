@@ -1,8 +1,10 @@
 package com.podcrash.commissions.yandere.core.spigot.commands.admin;
 
 import com.podcrash.commissions.yandere.core.common.data.user.User;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
+import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
 import net.lymarket.lyapi.spigot.utils.Utils;
@@ -37,7 +39,7 @@ public class CoinsCommand implements ILyCommand {
                     replacements.put("player", context.getArg(1));
                     replacements.put("amount", String.valueOf(amount));
                     if (context.getArg(0).equalsIgnoreCase("add")){
-                        Main.getInstance().getPlayers().addCoins(user, amount);
+                        Main.getInstance().getPlayers().addCoins(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
                         if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                             Main.getLang().sendMsg(context.getSender(), "coins.change.add", replacements);
                         }
@@ -49,7 +51,7 @@ public class CoinsCommand implements ILyCommand {
                             Main.getLang().sendErrorMsg(context.getSender(), "player.coins.remove.not-enough", "player", context.getArg(1));
                             return new CommandResponse();
                         }
-                        Main.getInstance().getPlayers().removeCoins(user, amount);
+                        Main.getInstance().getPlayers().removeCoins(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
                         if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                             Main.getLang().sendMsg(context.getSender(), "coins.change.remove", replacements);
                         }
@@ -57,7 +59,7 @@ public class CoinsCommand implements ILyCommand {
                     }
                     
                     if (context.getArg(0).equalsIgnoreCase("set")){
-                        Main.getInstance().getPlayers().setCoins(user, amount);
+                        Main.getInstance().getPlayers().setCoins(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
                         if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                             Main.getLang().sendMsg(context.getSender(), "coins.change.set", replacements);
                         }

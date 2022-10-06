@@ -1,9 +1,10 @@
 package com.podcrash.commissions.yandere.core.velocity.manager;
 
 import com.mongodb.client.model.Filters;
-import com.podcrash.commissions.yandere.core.common.data.level.Level;
+import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.data.user.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import net.luckperms.api.LuckPermsProvider;
@@ -169,47 +170,47 @@ public class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void addCoins(User player, long amount){
+    public void addCoins(User player, long amount, GainSource source, ServerType serverSource){
     
     }
     
     @Override
-    public void removeCoins(User player, long amount){
+    public void removeCoins(User player, long amount, GainSource source, ServerType serverSource){
     
     }
     
     @Override
-    public void setCoins(User player, long amount){
+    public void setCoins(User player, long amount, GainSource source, ServerType serverSource){
     
     }
     
     @Override
-    public void setPlayerLevel(User player, int level){
+    public void setPlayerLevel(User player, int level, GainSource source, ServerType serverSource){
     
     }
     
     @Override
-    public void addPlayerLevel(User player, int level){
+    public void addPlayerLevel(User player, int level, GainSource source, ServerType serverSource){
     
     }
     
     @Override
-    public void removePlayerLevel(User player, int level){
+    public void removePlayerLevel(User player, int level, GainSource source, ServerType serverSource){
     
     }
     
     @Override
-    public void setPlayerXp(User player, int xp, Level.GainSource source){
+    public void setPlayerXp(User player, int xp, GainSource source, ServerType serverSource){
     
     }
     
     @Override
-    public void addPlayerXp(User player, int xp, Level.GainSource source){
+    public void addPlayerXp(User player, int xp, GainSource source, ServerType serverSource){
     
     }
     
     @Override
-    public void removePlayerXp(User player, int xp, Level.GainSource source){
+    public void removePlayerXp(User player, int xp, GainSource source, ServerType serverSource){
     
     }
     

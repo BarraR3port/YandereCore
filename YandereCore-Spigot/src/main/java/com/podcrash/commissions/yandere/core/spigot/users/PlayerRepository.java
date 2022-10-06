@@ -1,11 +1,12 @@
 package com.podcrash.commissions.yandere.core.spigot.users;
 
 import com.mongodb.client.model.Filters;
-import com.podcrash.commissions.yandere.core.common.data.level.Level;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.commissions.yandere.core.common.data.server.ChangeType;
+import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.data.user.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
@@ -186,15 +187,17 @@ public final class PlayerRepository extends IPlayerRepository {
     
     
     @Override
-    public void addCoins(User player, long amount){
+    public void addCoins(User player, long amount, GainSource source, ServerType serverSource){
         if (amount <= 0) return;
-        PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, Level.GainSource.COMMAND, ChangeType.ADD);
+        PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, source, serverSource, ChangeType.ADD);
         if (event.isCancelled()) return;
         player.addCoins(amount);
         savePlayer(player);
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
         data.put(" &4• &7Cambio: &a+", amount + " &7 ⛃");
         data.put(" &4• &7Total: &c", player.getCoinsFormatted());
+        data.put(" &4• &7Fuente: &a", source.getName());
+        data.put(" &4• &7Servidor: &a", serverSource.getName());
         Main.getInstance().getLogs().createLogWithProps(LogType.MONEY_CHANGE, Settings.PROXY_SERVER_NAME, "&a+" + amount + " ⛃", player.getName(), data);
         try {
             Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -204,9 +207,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void removeCoins(User player, long amount){
+    public void removeCoins(User player, long amount, GainSource source, ServerType serverSource){
         if (amount <= 0) return;
-        PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, Level.GainSource.COMMAND, ChangeType.REMOVE);
+        PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, source, serverSource, ChangeType.REMOVE);
         if (event.isCancelled()) return;
         if (player.getCoins() - amount <= 0){
             player.setCoins(0);
@@ -217,6 +220,8 @@ public final class PlayerRepository extends IPlayerRepository {
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
         data.put(" &4• &7Cambio: &c-", amount + " &7 ⛃");
         data.put(" &4• &7Total: &c", player.getCoinsFormatted());
+        data.put(" &4• &7Fuente: &a", source.getName());
+        data.put(" &4• &7Servidor: &a", serverSource.getName());
         Main.getInstance().getLogs().createLogWithProps(LogType.MONEY_CHANGE, Settings.PROXY_SERVER_NAME, "&c-" + amount + " ⛃", player.getName(), data);
         try {
             Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -226,13 +231,15 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void setCoins(User player, long amount){
-        PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, Level.GainSource.COMMAND, ChangeType.SET);
+    public void setCoins(User player, long amount, GainSource source, ServerType serverSource){
+        PlayerCoinsChangeEvent event = new PlayerCoinsChangeEvent(Bukkit.getPlayer(player.getName()), amount, source, serverSource, ChangeType.SET);
         if (event.isCancelled()) return;
         player.setCoins(Math.max(amount, 0));
         savePlayer(player);
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
         data.put(" &4• &7Total: &c", player.getCoinsFormatted());
+        data.put(" &4• &7Fuente: &a", source.getName());
+        data.put(" &4• &7Servidor: &a", serverSource.getName());
         Main.getInstance().getLogs().createLogWithProps(LogType.MONEY_CHANGE, Settings.PROXY_SERVER_NAME, "&8Ahora tienes &a" + amount + " ⛃", player.getName(), data);
         try {
             Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -242,8 +249,8 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void setPlayerLevel(User player, int level){
-        PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(Bukkit.getPlayer(player.getName()), player.getLevel(), ChangeType.SET);
+    public void setPlayerLevel(User player, int level, GainSource source, ServerType serverSource){
+        PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(Bukkit.getPlayer(player.getName()), player.getLevel(), source, serverSource, ChangeType.SET);
         if (event.isCancelled()) return;
         player.getLevel().setLevel(level);
         savePlayer(player);
@@ -251,6 +258,8 @@ public final class PlayerRepository extends IPlayerRepository {
         data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
         data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
         data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        data.put(" &4• &7Fuente: &a", source.getName());
+        data.put(" &4• &7Servidor: &a", serverSource.getName());
         Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&aAhora eres nivel &c" + player.getLevel().getLevel(), player.getName(), data);
         try {
             Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
@@ -260,9 +269,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void addPlayerLevel(User player, int level){
+    public void addPlayerLevel(User player, int level, GainSource source, ServerType serverSource){
         if (level <= 0) return;
-        PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(Bukkit.getPlayer(player.getName()), player.getLevel(), ChangeType.ADD);
+        PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(Bukkit.getPlayer(player.getName()), player.getLevel(), source, serverSource, ChangeType.ADD);
         if (event.isCancelled()) return;
         player.getLevel().addLevels(level);
         savePlayer(player);
@@ -271,6 +280,8 @@ public final class PlayerRepository extends IPlayerRepository {
         data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
         data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
         data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        data.put(" &4• &7Fuente: &a", source.getName());
+        data.put(" &4• &7Servidor: &a", serverSource.getName());
         Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&aSubiste al nivel &c" + player.getLevel().getLevel(), player.getName(), data);
         try {
             Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
@@ -280,8 +291,8 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void removePlayerLevel(User player, int level){
-        PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(Bukkit.getPlayer(player.getName()), player.getLevel(), ChangeType.REMOVE);
+    public void removePlayerLevel(User player, int level, GainSource source, ServerType serverSource){
+        PlayerLevelChangeEvent event = new PlayerLevelChangeEvent(Bukkit.getPlayer(player.getName()), player.getLevel(), source, serverSource, ChangeType.REMOVE);
         if (event.isCancelled()) return;
         player.getLevel().removeLevels(level);
         savePlayer(player);
@@ -290,6 +301,8 @@ public final class PlayerRepository extends IPlayerRepository {
         data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
         data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
         data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        data.put(" &4• &7Fuente: &a", source.getName());
+        data.put(" &4• &7Servidor: &a", serverSource.getName());
         Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&cBajaste al nivel &c" + player.getLevel().getLevel(), player.getName(), data);
         try {
             Utils.playSound(Bukkit.getPlayer(player.getName()), "LEVEL_UP");
@@ -299,8 +312,8 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void setPlayerXp(User player, int xp, Level.GainSource source){
-        PlayerXpChangeEvent event = new PlayerXpChangeEvent(Bukkit.getPlayer(player.getName()), xp, source, ChangeType.SET);
+    public void setPlayerXp(User player, int xp, GainSource source, ServerType serverSource){
+        PlayerXpChangeEvent event = new PlayerXpChangeEvent(Bukkit.getPlayer(player.getName()), xp, source, serverSource, ChangeType.SET);
         if (event.isCancelled()) return;
         player.getLevel().setXp(xp);
         savePlayer(player);
@@ -308,6 +321,8 @@ public final class PlayerRepository extends IPlayerRepository {
         data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
         data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
         data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        data.put(" &4• &7Fuente: &a", source.getName());
+        data.put(" &4• &7Servidor: &a", serverSource.getName());
         Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&aAhora tienes &c" + xp + " &5XP", player.getName(), data);
         try {
             Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -317,9 +332,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void addPlayerXp(User player, int xp, Level.GainSource source){
+    public void addPlayerXp(User player, int xp, GainSource source, ServerType serverSource){
         if (xp <= 0) return;
-        PlayerXpChangeEvent event = new PlayerXpChangeEvent(Bukkit.getPlayer(player.getName()), xp, source, ChangeType.SET);
+        PlayerXpChangeEvent event = new PlayerXpChangeEvent(Bukkit.getPlayer(player.getName()), xp, source, serverSource, ChangeType.SET);
         if (event.isCancelled()) return;
         player.getLevel().addXp(xp);
         savePlayer(player);
@@ -329,6 +344,8 @@ public final class PlayerRepository extends IPlayerRepository {
         data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
         data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
         data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        data.put(" &4• &7Fuente: &a", source.getName());
+        data.put(" &4• &7Servidor: &a", serverSource.getName());
         Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&a+" + xp + " XP", player.getName(), data);
         try {
             Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
@@ -338,9 +355,9 @@ public final class PlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void removePlayerXp(User player, int xp, Level.GainSource source){
+    public void removePlayerXp(User player, int xp, GainSource source, ServerType serverSource){
         if (xp <= 0) return;
-        PlayerXpChangeEvent event = new PlayerXpChangeEvent(Bukkit.getPlayer(player.getName()), xp, source, ChangeType.REMOVE);
+        PlayerXpChangeEvent event = new PlayerXpChangeEvent(Bukkit.getPlayer(player.getName()), xp, source, serverSource, ChangeType.REMOVE);
         if (event.isCancelled()) return;
         player.getLevel().removeXp(xp);
         savePlayer(player);
@@ -350,13 +367,15 @@ public final class PlayerRepository extends IPlayerRepository {
         data.put(" &4• &7Nivel: &a", String.valueOf(player.getLevel().getLevel()));
         data.put(" &4• &7Nivel Formateado: &a", player.getLevel().getLevelNameFormatted());
         data.put(" &4•", player.getLevel().getProgressBarFormatted());
+        data.put(" &4• &7Fuente: &a", source.getName());
+        data.put(" &4• &7Servidor: &a", serverSource.getName());
         Main.getInstance().getLogs().createLogWithProps(LogType.XP_CHANGE, Settings.PROXY_SERVER_NAME, "&c-" + xp + " XP", player.getName(), data);
         try {
             Utils.playSound(Bukkit.getPlayer(player.getName()), "ORB_PICKUP");
             Utils.playActionBar(Bukkit.getPlayer(player.getName()), "&c-" + xp + " XP");
         } catch (NullPointerException ignored) {
         }
-    
+        
     }
     
     @Override

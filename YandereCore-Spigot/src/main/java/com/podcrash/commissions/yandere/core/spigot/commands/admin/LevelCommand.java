@@ -1,6 +1,7 @@
 package com.podcrash.commissions.yandere.core.spigot.commands.admin;
 
 import com.podcrash.commissions.yandere.core.common.data.user.User;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
@@ -61,8 +62,8 @@ public class LevelCommand implements ILyCommand {
                         replacements.put("player", context.getArg(1));
                         replacements.put("level", String.valueOf(amount));
                         if (context.getArg(0).equalsIgnoreCase("add")){
-                            
-                            Main.getInstance().getPlayers().addPlayerLevel(user, amount);
+    
+                            Main.getInstance().getPlayers().addPlayerLevel(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
                             
                             if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                                 Main.getLang().sendMsg(context.getSender(), "level.change.add", replacements);
@@ -74,8 +75,8 @@ public class LevelCommand implements ILyCommand {
                                 Main.getLang().sendErrorMsg(context.getSender(), "player.level.remove.not-enough", "player", context.getArg(1));
                                 return new CommandResponse();
                             }
-                            
-                            Main.getInstance().getPlayers().setPlayerLevel(user, amount);
+    
+                            Main.getInstance().getPlayers().setPlayerLevel(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
                             
                             if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                                 Main.getLang().sendMsg(context.getSender(), "level.change.set", replacements);

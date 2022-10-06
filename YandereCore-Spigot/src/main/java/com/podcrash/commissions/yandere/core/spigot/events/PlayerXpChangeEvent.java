@@ -1,7 +1,8 @@
 package com.podcrash.commissions.yandere.core.spigot.events;
 
-import com.podcrash.commissions.yandere.core.common.data.level.Level;
 import com.podcrash.commissions.yandere.core.common.data.server.ChangeType;
+import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -13,7 +14,8 @@ public class PlayerXpChangeEvent extends Event implements Cancellable {
     
     private final Player player;
     private final ChangeType changeType;
-    private final Level.GainSource xpSource;
+    private final GainSource source;
+    private final ServerType serverSource;
     private int amount;
     private boolean cancelled;
     
@@ -26,10 +28,11 @@ public class PlayerXpChangeEvent extends Event implements Cancellable {
      * @param amount   - amount of xp.
      * @param xpSource - where did the player receive xp from.
      */
-    public PlayerXpChangeEvent(Player player, int amount, Level.GainSource xpSource, ChangeType changeType){
+    public PlayerXpChangeEvent(Player player, int amount, GainSource source, ServerType serverSource, ChangeType changeType){
         this.player = player;
         this.amount = amount;
-        this.xpSource = xpSource;
+        this.source = source;
+        this.serverSource = serverSource;
         this.changeType = changeType;
     }
     
@@ -58,8 +61,12 @@ public class PlayerXpChangeEvent extends Event implements Cancellable {
     /**
      * Get xp source
      */
-    public Level.GainSource getXpSource(){
-        return xpSource;
+    public GainSource getSource(){
+        return source;
+    }
+    
+    public ServerType getServerSource(){
+        return serverSource;
     }
     
     public ChangeType getChangeType(){

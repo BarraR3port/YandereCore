@@ -1,6 +1,8 @@
 package com.podcrash.commissions.yandere.core.common.data.user;
 
 import com.podcrash.commissions.yandere.core.common.data.level.Level;
+import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 
 import java.util.ArrayList;
@@ -109,55 +111,55 @@ public final class OfflinePlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void addCoins(User player, long amount){
+    public void addCoins(User player, long amount, GainSource source, ServerType serverSource){
         player.addCoins(amount);
         list.replace(player.getUUID(), player);
     }
     
     @Override
-    public void removeCoins(User player, long amount){
+    public void removeCoins(User player, long amount, GainSource source, ServerType serverSource){
         player.removeCoins(amount);
         list.replace(player.getUUID(), player);
     }
     
     @Override
-    public void setCoins(User player, long amount){
+    public void setCoins(User player, long amount, GainSource source, ServerType serverSource){
         player.setCoins(amount);
         list.replace(player.getUUID(), player);
     }
     
     @Override
-    public void setPlayerLevel(User player, int level){
+    public void setPlayerLevel(User player, int level, GainSource source, ServerType serverSource){
         player.setLevel(new Level(player.getUUID(), level, 0, Level.OwnerType.PLAYER));
         list.replace(player.getUUID(), player);
     }
     
     @Override
-    public void addPlayerLevel(User player, int level){
+    public void addPlayerLevel(User player, int level, GainSource source, ServerType serverSource){
         player.getLevel().addLevels(level);
         list.replace(player.getUUID(), player);
     }
     
     @Override
-    public void removePlayerLevel(User player, int level){
+    public void removePlayerLevel(User player, int level, GainSource source, ServerType serverSource){
         player.getLevel().removeLevels(level);
         list.replace(player.getUUID(), player);
     }
     
     @Override
-    public void setPlayerXp(User player, int xp, Level.GainSource source){
+    public void setPlayerXp(User player, int xp, GainSource source, ServerType serverSource){
         player.getLevel().setXp(xp);
         list.replace(player.getUUID(), player);
     }
     
     @Override
-    public void addPlayerXp(User player, int xp, Level.GainSource source){
+    public void addPlayerXp(User player, int xp, GainSource source, ServerType serverSource){
         player.getLevel().addXp(xp);
         list.replace(player.getUUID(), player);
     }
     
     @Override
-    public void removePlayerXp(User player, int xp, Level.GainSource source){
+    public void removePlayerXp(User player, int xp, GainSource source, ServerType serverSource){
         player.getLevel().removeXp(xp);
         list.replace(player.getUUID(), player);
     }

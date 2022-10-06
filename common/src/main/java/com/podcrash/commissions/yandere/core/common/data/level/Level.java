@@ -233,8 +233,4 @@ public class Level {
     public enum OwnerType {
         PLAYER, TEAM, CLAN, OTHER
     }
-    
-    public enum GainSource {
-        PER_MINUTE, PER_TEAMMATE, GAME_WIN, GAME_LOSE, PER_KILL, PER_DEATH, PER_ASSISTANT, OTHER, COMMAND
-    }
 }

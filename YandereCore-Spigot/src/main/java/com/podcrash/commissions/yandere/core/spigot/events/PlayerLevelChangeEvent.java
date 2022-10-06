@@ -2,6 +2,8 @@ package com.podcrash.commissions.yandere.core.spigot.events;
 
 import com.podcrash.commissions.yandere.core.common.data.level.Level;
 import com.podcrash.commissions.yandere.core.common.data.server.ChangeType;
+import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -14,6 +16,8 @@ public class PlayerLevelChangeEvent extends Event implements Cancellable {
     
     private final Player player;
     private final Level level;
+    private final GainSource source;
+    private final ServerType serverSource;
     private final ChangeType type;
     protected boolean canceled;
     
@@ -26,9 +30,11 @@ public class PlayerLevelChangeEvent extends Event implements Cancellable {
      * @param player - target player.
      * @param level  - gained level.
      */
-    public PlayerLevelChangeEvent(Player player, Level level, ChangeType type){
+    public PlayerLevelChangeEvent(Player player, Level level, GainSource source, ServerType serverSource, ChangeType type){
         this.player = player;
         this.level = level;
+        this.source = source;
+        this.serverSource = serverSource;
         this.type = type;
     }
     
@@ -50,13 +56,6 @@ public class PlayerLevelChangeEvent extends Event implements Cancellable {
         return this.level;
     }
     
-    /**
-     * Get new player level.
-     */
-    public ChangeType getChangeType(){
-        return this.type;
-    }
-    
     @Override
     public HandlerList getHandlers(){
         return HANDLERS;
@@ -70,5 +69,17 @@ public class PlayerLevelChangeEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean canceled){
         this.canceled = canceled;
+    }
+    
+    public GainSource getSource(){
+        return source;
+    }
+    
+    public ServerType getServerSource(){
+        return serverSource;
+    }
+    
+    public ChangeType getType(){
+        return type;
     }
 }

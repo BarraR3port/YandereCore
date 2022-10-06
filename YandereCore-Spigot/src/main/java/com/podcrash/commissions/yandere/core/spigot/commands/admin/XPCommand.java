@@ -1,7 +1,7 @@
 package com.podcrash.commissions.yandere.core.spigot.commands.admin;
 
-import com.podcrash.commissions.yandere.core.common.data.level.Level;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import com.podcrash.commissions.yandere.core.common.error.UserNotFoundException;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
@@ -66,8 +66,8 @@ public class XPCommand implements ILyCommand {
                         replacements.put("xp", String.valueOf(amount));
                         
                         if (context.getArg(0).equalsIgnoreCase("add")){
-                            
-                            Main.getInstance().getPlayers().addPlayerXp(user, amount, Level.GainSource.COMMAND);
+    
+                            Main.getInstance().getPlayers().addPlayerXp(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
                             
                             if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                                 Main.getLang().sendMsg(context.getSender(), "xp.change.add", replacements);
@@ -79,7 +79,7 @@ public class XPCommand implements ILyCommand {
                                 Main.getLang().sendErrorMsg(context.getSender(), "player.xp.remove.not-enough", "player", context.getArg(1));
                                 return new CommandResponse();
                             }
-                            Main.getInstance().getPlayers().setPlayerXp(user, amount, Level.GainSource.COMMAND);
+                            Main.getInstance().getPlayers().setPlayerXp(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
                             
                             if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                                 Main.getLang().sendMsg(context.getSender(), "xp.change.set", replacements);

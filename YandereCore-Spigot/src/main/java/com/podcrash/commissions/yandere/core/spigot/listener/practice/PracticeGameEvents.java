@@ -1,8 +1,9 @@
 package com.podcrash.commissions.yandere.core.spigot.listener.practice;
 
-import com.podcrash.commissions.yandere.core.common.data.level.Level;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
+import com.podcrash.commissions.yandere.core.common.data.user.props.GainSource;
 import com.podcrash.commissions.yandere.core.spigot.Main;
+import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
 import ga.strikepractice.events.DuelEndEvent;
 import ga.strikepractice.events.FightEndEvent;
 import ga.strikepractice.events.PartyFFAEndEvent;
@@ -39,13 +40,13 @@ public class PracticeGameEvents implements Listener {
         
         
         winners.forEach(winner -> {
-            Main.getInstance().getPlayers().addCoins(winner, 5);
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(winner, 20, Level.GainSource.GAME_WIN), 65L);
+            Main.getInstance().getPlayers().addCoins(winner, 5, GainSource.GAME_WIN, Settings.SERVER_TYPE);
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(winner, 20, GainSource.GAME_WIN, Settings.SERVER_TYPE), 65L);
         });
         
         losers.forEach(looser -> {
-            Main.getInstance().getPlayers().addCoins(looser, 1);
-            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(looser, 7, Level.GainSource.GAME_WIN), 65L);
+            Main.getInstance().getPlayers().addCoins(looser, 1, GainSource.GAME_LOSE, Settings.SERVER_TYPE);
+            Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> Main.getInstance().getPlayers().addPlayerXp(looser, 7, GainSource.GAME_LOSE, Settings.SERVER_TYPE), 65L);
         });
         
     }
