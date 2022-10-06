@@ -52,13 +52,13 @@ public class ServerRepository extends IServerRepository {
     
     @Override
     public void checkForPluginsUpdates(){
-        if (!VMain.getConfig().getBoolean("web.enabled")) return;
+        if (!VMain.getInstance().getConfig().getBoolean("web.enabled")) return;
         try {
             pluginFilesGarbageCollector();
             VMain.getInstance().getLogger().info("[UPDATE MACHINE] Initializing the ~Updating Machine~ ...");
-            
+    
             StringBuilder resultado = new StringBuilder();
-            URL url = new URL(VMain.getConfig().get("web.url") + "/api/lydark/server/checkPlugins");
+            URL url = new URL(VMain.getInstance().getConfig().get("web.url") + "/api/lydark/server/checkPlugins");
             HttpURLConnection connexion = (HttpURLConnection) url.openConnection();
             
             ArrayList<OutPlugin> plugins = VMain.getInstance().getProxy().getPluginManager().getPlugins().stream().map(plugin -> new OutPlugin(plugin.getDescription().getName().get())).collect(Collectors.toCollection(ArrayList::new));
@@ -67,7 +67,7 @@ public class ServerRepository extends IServerRepository {
             String json = gson.toJson(plugins);
             VMain.getInstance().getLogger().info("[UPDATE MACHINE] Sending the following plugins to the server: " + json);
             connexion.setRequestMethod("GET");
-            connexion.setRequestProperty("Web-Api-Key", VMain.getConfig().getString("web.key"));
+            connexion.setRequestProperty("Web-Api-Key", VMain.getInstance().getConfig().getString("web.key"));
             connexion.setDoOutput(true);
             connexion.setRequestProperty("msg", json);
             
@@ -140,7 +140,7 @@ public class ServerRepository extends IServerRepository {
             VMain.getInstance().getLogger().info("[UPDATE MACHINE] Initializing the ~Updating Machine~ ...");
             
             StringBuilder resultado = new StringBuilder();
-            URL url = new URL(VMain.getConfig().get("web.url") + "/api/lydark/server/checkPlugins");
+            URL url = new URL(VMain.getInstance().getConfig().get("web.url") + "/api/lydark/server/checkPlugins");
             HttpURLConnection connexion = (HttpURLConnection) url.openConnection();
             ArrayList<OutPlugin> pluginsold = VMain.getInstance().getProxy().getPluginManager().getPlugins().stream().map(plugin -> new OutPlugin(plugin.getDescription().getName().get())).collect(Collectors.toCollection(ArrayList::new));
             
@@ -183,7 +183,7 @@ public class ServerRepository extends IServerRepository {
             String json = gson.toJson(plugins);
             VMain.getInstance().getLogger().info("[UPDATE MACHINE] Sending the following plugins to the server: " + json);
             connexion.setRequestMethod("GET");
-            connexion.setRequestProperty("Web-Api-Key", VMain.getConfig().getString("web.key"));
+            connexion.setRequestProperty("Web-Api-Key", VMain.getInstance().getConfig().getString("web.key"));
             connexion.setDoOutput(true);
             connexion.setRequestProperty("msg", json);
             
@@ -251,7 +251,7 @@ public class ServerRepository extends IServerRepository {
     }*/
     
     public void pluginFilesGarbageCollector(){
-        List<String> pluginsToDelete = VMain.getConfig().getStringList("web.pluginsToDelete");
+        List<String> pluginsToDelete = VMain.getInstance().getConfig().getStringList("web.pluginsToDelete");
         if (pluginsToDelete.size() > 0){
             VMain.getInstance().getLogger().info("[UPDATE MACHINE] Found " + pluginsToDelete.size() + " old plugins files pending to be deleted!");
             for ( String path : pluginsToDelete ){
@@ -263,7 +263,7 @@ public class ServerRepository extends IServerRepository {
                     VMain.getInstance().getLogger().severe("[UPDATE MACHINE] ERROR The plugin" + plugin + " couldn't be deleted!");
                 }
             }
-            VMain.getConfig().set("web.pluginsToDelete", null);
+            VMain.getInstance().getConfig().set("web.pluginsToDelete", null);
         }
     }
     
@@ -272,10 +272,10 @@ public class ServerRepository extends IServerRepository {
         VMain.getInstance().getLogger().info("[UPDATE MACHINE] Updating " + plugin.getName() + " to --> V: " + plugin.getVersion() + " ...");
     
         VMain.getInstance().getLogger().info("[UPDATE MACHINE] STEP 1/5 -> Downloading the Plugin");
-        URL url = new URL(VMain.getConfig().get("web.url") + "/api/lydark/plugins/downloads/" + plugin.getUuid());
+        URL url = new URL(VMain.getInstance().getConfig().get("web.url") + "/api/lydark/plugins/downloads/" + plugin.getUuid());
         HttpURLConnection connexion = (HttpURLConnection) url.openConnection();
         connexion.setRequestMethod("GET");
-        connexion.setRequestProperty("Web-Api-Key", VMain.getConfig().getString("web.key"));
+        connexion.setRequestProperty("Web-Api-Key", VMain.getInstance().getConfig().getString("web.key"));
         connexion.setDoOutput(true);
         
         Path pluginsPath = Paths.get("plugins");
@@ -317,9 +317,9 @@ public class ServerRepository extends IServerRepository {
             
         } catch (IOException e) {
             VMain.getInstance().getLogger().warn("[UPDATE MACHINE] ERROR -> Couldn't delete the file, don't worry, it will be deleted when the server restarts!");
-            List<String> pluginsToDelete = VMain.getConfig().getStringList("web.pluginsToDelete");
+            List<String> pluginsToDelete = VMain.getInstance().getConfig().getStringList("web.pluginsToDelete");
             pluginsToDelete.add(path);
-            VMain.getConfig().set("web.pluginsToDelete", pluginsToDelete);
+            VMain.getInstance().getConfig().set("web.pluginsToDelete", pluginsToDelete);
             e.printStackTrace();
         }
         //FileUtils.forceDelete( file );

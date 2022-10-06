@@ -117,7 +117,7 @@ class ServerRepositoryTest {
             String json = gson.toJson(plugins);
             System.out.println("[UPDATE MACHINE] Sending the following plugins to the server: " + json);
             connexion.setRequestMethod("GET");
-            connexion.setRequestProperty("Web-Api-Key", VMain.getConfig().getString("web.key"));
+            connexion.setRequestProperty("Web-Api-Key", VMain.getInstance().getConfig().getString("web.key"));
             connexion.setDoOutput(true);
             connexion.setRequestProperty("msg", json);
         

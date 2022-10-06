@@ -22,12 +22,12 @@ public class VAdmin implements SimpleCommand {
                 if (invocation.arguments()[0].equalsIgnoreCase("reload")){
                     invocation.source().sendMessage(Utils.format("&aReloading config..."));
                     VMain.getInstance().getAnnouncementManager().stopAnnouncements();
-                    VMain.getConfig().forceReload();
+                    VMain.getInstance().getConfig().forceReload();
                     VMain.getInstance().getAnnouncementManager().init();
                 } else if (invocation.arguments()[0].equalsIgnoreCase("debug")){
-                    boolean result = !VMain.getConfig().getBoolean("global.debug");
+                    boolean result = !VMain.getInstance().getConfig().getBoolean("global.debug");
                     invocation.source().sendMessage(Utils.format("&aDebug mode is now " + (result ? "&aenabled" : "&cdisabled")));
-                    VMain.getConfig().set("global.debug", result);
+                    VMain.getInstance().getConfig().set("global.debug", result);
                 } else if (invocation.arguments()[0].equalsIgnoreCase("refresh-plugins")){
                     VMain.getInstance().getServerRepository().checkForPluginsUpdates();
                 } else if (invocation.arguments()[0].equalsIgnoreCase("announce")){

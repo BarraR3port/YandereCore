@@ -5,6 +5,7 @@ import com.podcrash.commissions.yandere.core.common.data.lobby.JoinBedWarsArenaT
 import com.podcrash.commissions.yandere.core.common.data.lobby.JoinSkyWarsArenaType;
 import com.podcrash.commissions.yandere.core.common.data.lobby.PlayerVisibility;
 import com.podcrash.commissions.yandere.core.common.data.loc.Loc;
+import com.podcrash.commissions.yandere.core.common.data.punish.PunishType;
 import com.podcrash.commissions.yandere.core.common.data.reward.BetaTester;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
@@ -20,6 +21,7 @@ import java.util.*;
 
 public class User {
     private final Date createDate = new Date();
+    private final HashMap<UUID, PunishType> punishments = new HashMap<>();
     private final LinkedHashMap<String, Boolean> options = new LinkedHashMap<>();
     private final LinkedHashMap<String, String> properties = new LinkedHashMap<>();
     private final LinkedList<Reward> rewards = new LinkedList<>();
@@ -186,6 +188,18 @@ public class User {
     
     public void removeCoins(long coins){
         this.coins -= coins;
+    }
+    
+    public HashMap<UUID, PunishType> getPunishments(){
+        return this.punishments;
+    }
+    
+    public void addPunish(UUID id, PunishType punishType){
+        punishments.put(id, punishType);
+    }
+    
+    public void removePunish(UUID id){
+        punishments.remove(id);
     }
     
     public void addDefaultOptions(){

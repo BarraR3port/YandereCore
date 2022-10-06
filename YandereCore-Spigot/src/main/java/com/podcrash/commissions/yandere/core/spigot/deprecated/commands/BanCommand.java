@@ -1,5 +1,5 @@
 /*
-package com.podcrash.commissions.yandere.core.spigot.commands.punish;
+package com.podcrash.commissions.yandere.core.spigot.commands.inv;
 
 import org.bukkit.entity.Player;
 import org.lydark.api.common.commands.Command;
@@ -9,7 +9,7 @@ import org.lydark.api.spigot.SMain;
 import org.lydark.api.spigot.commands.ILyCommand;
 import org.lydark.api.spigot.commands.CommandContext;
 import net.lymarket.lyapi.common.commands.*;
-import org.lydark.api.spigot.punish.SPunishManager;
+import org.lydark.api.spigot.inv.SPunishManager;
 import org.lydark.core.spigot.Core;
 import org.lydark.core.spigot.staff.PunishDateType;
 import org.lydark.core.spigot.staff.ban.BanMenu;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class BanCommand implements ILyCommand {
     
-    private final SPunishManager pm = Core.getSMain( ).getPunishManager( );
+    private final SPunishManager pm = Main.getInstance().getPunishManager( );
     
     @Command(name = "ban", permission = "yandere.staff.ban")
     public CommandResponse command( CommandContext context ){
@@ -26,13 +26,13 @@ public class BanCommand implements ILyCommand {
             Player p = ( Player ) context.getSender( );
             if ( p.hasPermission( "yandere.staff.ban" ) ) {
                 if ( context.getArgs( ).length == 0 ) {
-                    p.sendMessage( Core.getApi( ).getUtils( ).prefix( ) + Core.getSMain( ).getUtils( ).format( "/ban <jugador> <tiempo> <-ip> <razón>" ) );
+                    p.sendMessage(  Utils.format( "/ban <jugador> <tiempo> <-ip> <razón>" ) );
                 } else if ( context.getArgs( ).length == 1 ) {
                     new BanMenu( SMain.getPlayerMenuUtility( p ) , context.getArg( 0 ) ).open( );
                 } else {
                     StringBuilder reason = new StringBuilder( );
-                    LydarkPlayer lp = Core.getSMain( ).getPlayers( ).getPlayer( p.getName( ) );
-                    LydarkPlayer lpTarget = Core.getSMain( ).getPlayers( ).getUpdatedPlayer( context.getArg( 0 ) );
+                    LydarkPlayer lp = Main.getInstance().getPlayers( ).getPlayer( p.getName( ) );
+                    LydarkPlayer lpTarget = Main.getInstance().getPlayers( ).getUpdatedPlayer( context.getArg( 0 ) );
                     if ( isNormal( context.getArg( 1 ) ) ) {
                         String lastWord = context.getArg( 1 ).substring( context.getArg( 1 ).length( ) - 1 );
                         int amount = Integer.parseInt( context.getArg( 1 ).substring( 0 , context.getArg( 1 ).length( ) - 1 ) );
@@ -46,7 +46,7 @@ public class BanCommand implements ILyCommand {
                             }
                         }
                         String finalReason = reason.toString( );
-                        pm.banPlayer( p , lpTarget , lp , finalReason , PunishDateType.ConvertDate( amount , lastWord ) , ip , Core.getSMain( ).getUtils( ).getServer( ) );
+                        pm.banPlayer( p , lpTarget , lp , finalReason , PunishDateType.ConvertDate( amount , lastWord ) , ip , Utils.getServer( ) );
                         
                     } else {
                         boolean ip = false;
@@ -59,7 +59,7 @@ public class BanCommand implements ILyCommand {
                                 reason.append( context.getArg( i ) ).append( " " );
                             }
                         }
-                        pm.permanentBan( p , lpTarget , lp , finalReason , ip , Core.getSMain( ).getUtils( ).getServer( ) );
+                        pm.permanentBan( p , lpTarget , lp , finalReason , ip , Utils.getServer( ) );
                         
                     }
                 }

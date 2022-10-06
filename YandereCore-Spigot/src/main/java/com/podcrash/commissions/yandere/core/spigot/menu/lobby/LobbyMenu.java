@@ -147,7 +147,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine("&7&oEstado: " + (isLobbyOnline ? "&a&oActivo" : "&c&oCerrado"))
                 .addLoreLine(isLobbyOnline ? "" : null)
                 .addLoreLine(isLobbyOnline ? "&eClick Der. &7para entrar a un Lobby." : null)
-                .addLoreLine(isLobbyOnline ? "&eClick Der. &7para ver los lobbies." : null)
+                .addLoreLine(isLobbyOnline ? "&eClick Izq. &7para ver los lobbies." : null)
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.LOBBY).getProxyName())
                 .addTag("development", "false")
                 .build());
@@ -193,7 +193,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : isSkyWarsOnline ? proxyStats.getTargetServerCapacity(ServerType.SKY_WARS, globalServerSettings) : null)
                 .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : isSkyWarsOnline ? "" : null)
                 .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : isSkyWarsOnline ? "&eClick Der. &7para entrar a un server." : null)
-                .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : isSkyWarsOnline ? "&eClick Der. &7para ver los lobbies." : null)
+                .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : isSkyWarsOnline ? "&eClick Izq. &7para ver los lobbies." : null)
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.SKY_WARS).getProxyName())
                 .addTag("development", globalServerSettings.isSkyWarsInDevelopment() ? "true" : "false")
                 .build());
@@ -205,7 +205,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : isBedWarsOnline ? proxyStats.getTargetServerCapacity(ServerType.BED_WARS, globalServerSettings) : null)
                 .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : isBedWarsOnline ? "" : null)
                 .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : isBedWarsOnline ? "&eClick Der. &7para entrar a un server." : null)
-                .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : isBedWarsOnline ? "&eClick Der. &7para ver los lobbies." : null)
+                .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : isBedWarsOnline ? "&eClick Izq. &7para ver los lobbies." : null)
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.LOBBY_BED_WARS).getProxyName())
                 .addTag("development", globalServerSettings.isBedWarsInDevelopment() ? "true" : "false")
                 .build());
@@ -217,7 +217,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : isPracticeOnline ? proxyStats.getTargetServerCapacity(ServerType.PRACTICE, globalServerSettings) : null)
                 .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : isPracticeOnline ? "" : null)
                 .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : isPracticeOnline ? "&eClick Der. &7para entrar a un server." : null)
-                .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : isPracticeOnline ? "&eClick Der. &7para ver los lobbies." : null)
+                .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : isPracticeOnline ? "&eClick Izq. &7para ver los lobbies." : null)
                 .addTag("server-name", proxyStats.getRandomServerByType(ServerType.PRACTICE).getProxyName())
                 .addTag("development", globalServerSettings.isPracticeInDevelopment() ? "true" : "false")
                 .build());

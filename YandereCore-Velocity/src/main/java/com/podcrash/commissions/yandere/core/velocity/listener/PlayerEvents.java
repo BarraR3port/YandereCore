@@ -5,9 +5,17 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
+import com.podcrash.commissions.yandere.core.common.data.punish.PunishState;
+import com.podcrash.commissions.yandere.core.common.data.punish.PunishType;
+import com.podcrash.commissions.yandere.core.common.data.punish.ban.Ban;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.velocity.VMain;
+import com.podcrash.commissions.yandere.core.velocity.announcements.VAnnouncer;
+import com.podcrash.commissions.yandere.core.velocity.manager.ServerSocketManager;
+import com.podcrash.commissions.yandere.core.velocity.punish.PunishManager;
 import com.podcrash.commissions.yandere.core.velocity.utils.Utils;
 import com.velocitypowered.api.event.PostOrder;
+import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.*;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
@@ -18,10 +26,13 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerPing;
 
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class PlayerEvents {
     
+    private final PunishManager pm = VMain.getInstance().getPunishManager();
+    private final VAnnouncer announcements = new VAnnouncer();
     
     public PlayerEvents(){
     }
@@ -123,11 +134,46 @@ public class PlayerEvents {
                         }
                     } catch (ExecutionException | InterruptedException ignored) {
                     }
-                    
+    
                 }
             }
         }
-        
+    
     }
     
+    @Subscribe
+    public void onPlayerLogin(LoginEvent e){
+        User player = VMain.getInstance().getPlayers().getCachedPlayer(e.getPlayer().getUsername());
+        if (player == null) return;
+        String address = e.getPlayer().getRemoteAddress().getAddress().toString().split(":")[0].replace("/", "");
+        Date currentDate = new Date();
+        for ( Ban ban : pm.getBans().getBansByIp(address) ){
+            System.out.println("Current Date: " + currentDate);
+            System.out.println("Ban Date: " + ban.getCreateDate());
+            System.out.println("Ban Expiration: " + ban.getExpDate());
+            if (currentDate.before(ban.getExpDate())){
+                e.setResult(ResultedEvent.ComponentResult.denied(announcements.banPlayerKickMessage(ban)));
+            } else {
+                pm.getBans().updateBanState(ban.getUUID(), PunishState.EXPIRED);
+                player.addPunish(ban.getUUID(), PunishType.BAN);
+                VMain.getInstance().getPlayers().savePlayer(player);
+                e.getPlayer().getCurrentServer().flatMap(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName())).ifPresent(socket -> socket.sendServerUpdatePlayerFromDb(player.getName()));
+            }
+        }
+        
+        for ( Ban ban : pm.getBans().getBansByName(player.getName()) ){
+            System.out.println("Current Date: " + currentDate);
+            System.out.println("Ban Date: " + ban.getCreateDate());
+            System.out.println("Ban Expiration: " + ban.getExpDate());
+            if (currentDate.before(ban.getExpDate())){
+                e.setResult(ResultedEvent.ComponentResult.denied(announcements.banPlayerKickMessage(ban)));
+                //e.getPlayer().disconnect(announcements.banPlayerKickMessage(ban));
+            } else {
+                pm.getBans().updateBanState(ban.getUUID(), PunishState.EXPIRED);
+                player.addPunish(ban.getUUID(), PunishType.BAN);
+                VMain.getInstance().getPlayers().savePlayer(player);
+                e.getPlayer().getCurrentServer().flatMap(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName())).ifPresent(socket -> socket.sendServerUpdatePlayerFromDb(player.getName()));
+            }
+        }
+    }
 }

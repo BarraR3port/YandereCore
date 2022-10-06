@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public class Log {
     
-    private final HashMap<String, String> property = new HashMap<>();
-    private final HashMap<String, Boolean> options = new HashMap<>();
+    private final HashMap<String, String> property;
+    private final HashMap<String, Boolean> options;
     private final Date createDate;
     private final UUID uuid;
     private String server;
@@ -24,6 +24,8 @@ public class Log {
         this.server = server;
         this.createDate = new Date();
         this.uuid = UUID.randomUUID();
+        this.property = new HashMap<>();
+        this.options = new HashMap<>();
     }
     
     public Log(LogType type, String server, String msg){
@@ -33,6 +35,30 @@ public class Log {
         this.server = server;
         this.createDate = new Date();
         this.uuid = UUID.randomUUID();
+        this.property = new HashMap<>();
+        this.options = new HashMap<>();
+    }
+    
+    public Log(LogType type, String server, String msg, String owner, HashMap<String, String> property, HashMap<String, Boolean> options){
+        this.type = type;
+        this.msg = msg;
+        this.owner = owner;
+        this.server = server;
+        this.createDate = new Date();
+        this.uuid = UUID.randomUUID();
+        this.property = property;
+        this.options = options;
+    }
+    
+    public Log(LogType type, String server, String msg, HashMap<String, String> property, HashMap<String, Boolean> options){
+        this.type = type;
+        this.msg = msg;
+        this.owner = "SYSTEM";
+        this.server = server;
+        this.createDate = new Date();
+        this.uuid = UUID.randomUUID();
+        this.property = property;
+        this.options = options;
     }
     
     public LogType getType(){
@@ -98,5 +124,13 @@ public class Log {
     @Override
     public String toString(){
         return Api.getGson().toJson(this);
+    }
+    
+    public HashMap<String, String> getProperties(){
+        return property;
+    }
+    
+    public void removeProperty(String material){
+        property.remove(material);
     }
 }

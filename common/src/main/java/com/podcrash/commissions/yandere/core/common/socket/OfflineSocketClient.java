@@ -1,6 +1,7 @@
 package com.podcrash.commissions.yandere.core.common.socket;
 
 import com.google.gson.JsonObject;
+import com.podcrash.commissions.yandere.core.common.data.punish.Punish;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -68,6 +69,11 @@ public final class OfflineSocketClient extends ISocket {
     
     @Override
     public void sendMSGToPlayer(UUID target, String key, HashMap<String, String> replacementsMap){
+    
+    }
+    
+    @Override
+    public void sendPunish(Punish punish, String punishType){
     
     }
     

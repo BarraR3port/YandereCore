@@ -19,7 +19,7 @@ public final class AnnouncementManager {
     }
     
     public AnnouncementManager init(){
-        Config config = VMain.getConfig();
+        Config config = VMain.getInstance().getConfig();
         delay = config.getInt("announcements.delay");
         for ( String key : config.getSection("announcements.list").singleLayerKeySet() ){
             Announcement announcement = new Announcement(

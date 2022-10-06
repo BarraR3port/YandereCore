@@ -1,4 +1,4 @@
-package com.podcrash.commissions.yandere.core.spigot.commands.punish;
+package com.podcrash.commissions.yandere.core.spigot.commands.inv;
 
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import net.lymarket.lyapi.common.commands.*;
@@ -11,35 +11,35 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-public class InvSeeCommand implements ILyCommand {
+public class EnderSeeCommand implements ILyCommand {
     
-    @Command(name = "invsee", permission = "yandere.invsee", usage = "/invsee <jugador>", aliases = {"inv"})
+    @Command(name = "endersee", permission = "yandere.endersee", usage = "/endersee <jugador>")
     public CommandResponse command(CommandContext context){
         if (context.getSender() instanceof Player){
             Player p = (Player) context.getSender();
             if (context.getArgs().length == 1){
                 if (Bukkit.getPlayer(context.getArg(0)) != null){
-                    if (context.getSender().hasPermission("yandere.invsee")){
+                    if (context.getSender().hasPermission("yandere.endersee")){
                         Player p2 = Bukkit.getPlayer(context.getArg(0));
-                        Main.getLang().sendMsg(p, "inventory.inv-see.open", "player", context.getArg(0));
-                        Main.getInstance().getInvManager().manage(p, p2);
+                        Main.getLang().sendMsg(p, "inventory.ender-inv-see.open", "player", context.getArg(0));
+                        Main.getInstance().getEndInvManager().manage(p, p2);
                     } else {
-                        return new CommandResponse("yandere.invsee");
+                        return new CommandResponse("yandere.endersee");
                     }
                 } else {
                     Main.getLang().sendErrorMsg(p, "player.not-online", "player", context.getArg(0));
                 }
             } else {
-                
                 p.spigot().sendMessage(Utils.hoverOverMessageSuggestCommand(
                         Main.getLang().getMSG(
                                 "error.wrong-command",
                                 "command",
-                                "invsee <jugador>"),
+                                "endersee <jugador>"),
                         Collections.singletonList("&7Click aquí"),
-                        "invsee "));
+                        "endersee "));
             }
         }
+        
         return new CommandResponse();
     }
     
@@ -48,6 +48,7 @@ public class InvSeeCommand implements ILyCommand {
         LinkedList<String> list = new LinkedList<>();
         if (TabContext.getArgs().length == 1){
             list.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(p -> !TabContext.getSender().getName().equals(p)).collect(Collectors.toList()));
+            
         }
         return list;
     }

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.podcrash.commissions.yandere.core.common.data.punish.Punish;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
 import com.podcrash.commissions.yandere.core.common.data.user.IPlayerRepository;
 import com.podcrash.commissions.yandere.core.common.socket.ISocket;
@@ -162,6 +163,17 @@ public class SpigotSocketClient extends ISocket {
     }
     
     @Override
+    public void sendPunish(Punish punish, String punishType){
+        JsonObject js = new JsonObject();
+        js.addProperty("type", "PUNISH");
+        js.addProperty("server_name", Settings.PROXY_SERVER_NAME);
+        js.addProperty("punish_type", punishType);
+        js.addProperty("punish", punish.serialize());
+        sendMessage(js);
+    }
+    
+    
+    @Override
     public String encrypt(String msg){
         msg = msg.replace("\\n", "");
         msg = msg.replace("\n", "");
@@ -280,6 +292,10 @@ public class SpigotSocketClient extends ISocket {
                                         Bukkit.getScheduler().runTask(Main.getInstance(), () -> Main.getInstance().getGlobalServerSettings().fetch());
                                         continue;
                                     }
+                                    case "UPDATE_PLAYER_FROM_DB":{
+                                        Main.getInstance().getPlayers().getPlayer(UUID.fromString(json.get("uuid").getAsString()));
+                                        continue;
+                                    }
                                     case "SEND_MSG_TO_PLAYER_POST":{
                                         if (!json.has("target_uuid")) continue;
                                         if (!json.has("current_server")) continue;
@@ -287,7 +303,7 @@ public class SpigotSocketClient extends ISocket {
                                         final UUID target_uuid = UUID.fromString(json.get("target_uuid").getAsString());
                                         final String key = json.get("key").getAsString();
                                         final boolean hasReplacements = json.get("has-replacements").getAsBoolean();
-    
+        
                                         try {
                                             final Player player = Bukkit.getPlayer(target_uuid);
                                             if (player == null) continue;
@@ -302,7 +318,7 @@ public class SpigotSocketClient extends ISocket {
                                             } else {
                                                 player.sendMessage(Main.getLang().getMSG(key));
                                             }
-        
+            
                                         } catch (NullPointerException e) {
                                             e.printStackTrace();
                                         }

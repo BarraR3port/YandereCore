@@ -72,22 +72,29 @@ public class AdminCommand implements ILyCommand {
         }
         if (context.getSender() instanceof Player){
             Player p = (Player) context.getSender();
-            if (context.getArgs().length == 2){
+            if (context.getArgs().length == 1){
+                if (context.getArg(0).equalsIgnoreCase("help")){
+                    Utils.sendMessage(p, "&c&lYandereCore &7- &a&lV" + Main.getInstance().getDescription().getVersion());
+                    Utils.sendMessage(p, " ");
+                    Utils.sendMessage(p, "&aCommands: ");
+                    Utils.sendMessage(p, " ");
+                    Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin menu <usuario>", Collections.singletonList("&7Con este comando adminstras al jugador de"), "/admin menu "));
+                    Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin worlds <usuario>", Arrays.asList("&7Con este comando ves los mundos de", "&7un usuario específico."), "/admin worlds "));
+                    Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin homes <usuario>", Arrays.asList("&7Con este comando ves los homes de", "&7un usuario específico."), "/admin homes "));
+                    Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin reload", Arrays.asList("&7Con este comando se recarga", "&7la información de la config."), "/admin reload"));
+                    Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageRunCommand("&c/admin debug", Arrays.asList("&7Con este comando activas o desactivas", "&7el modo debug."), "/admin debug"));
+                    return new CommandResponse();
+                }
+            } else if (context.getArgs().length == 2){
                 if (context.getArg(0).equalsIgnoreCase("menu")){
                     final User target = Main.getInstance().getPlayers().getCachedPlayer(context.getArg(1));
                     new AdminMenu(LyApi.getPlayerMenuUtility(p), target).open();
                     return new CommandResponse();
                 }
             }
-            Utils.sendMessage(p, "&c&lYandereCore &7- &a&lV" + Main.getInstance().getDescription().getVersion());
-            Utils.sendMessage(p, " ");
-            Utils.sendMessage(p, "&aCommands: ");
-            Utils.sendMessage(p, " ");
-            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin menu <usuario>", Collections.singletonList("&7Con este comando adminstras al jugador de"), "/admin menu "));
-            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin worlds <usuario>", Arrays.asList("&7Con este comando ves los mundos de", "&7un usuario específico."), "/admin worlds "));
-            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin homes <usuario>", Arrays.asList("&7Con este comando ves los homes de", "&7un usuario específico."), "/admin homes "));
-            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin reload", Arrays.asList("&7Con este comando se recarga", "&7la información de la config."), "/admin reload"));
-            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageRunCommand("&c/admin debug", Arrays.asList("&7Con este comando activas o desactivas", "&7el modo debug."), "/admin debug"));
+            //final User target = Main.getInstance().getPlayers().getCachedPlayer(p.getName());
+            //new AdminMenu(LyApi.getPlayerMenuUtility(p), target).open();
+            new ServerSettings(LyApi.getPlayerMenuUtility(p)).open();
             return new CommandResponse();
         }
         return new CommandResponse("yandere.admin");
@@ -101,6 +108,7 @@ public class AdminCommand implements ILyCommand {
                 list.add("reload");
                 list.add("debug");
                 list.add("menu");
+                list.add("help");
                 list.add("refresh-plugins");
                 list.add("refresh-plugins-general");
                 list.add("fetch-global-settings");

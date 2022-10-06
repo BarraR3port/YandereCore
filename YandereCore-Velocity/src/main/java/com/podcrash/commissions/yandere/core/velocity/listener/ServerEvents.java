@@ -54,8 +54,6 @@ public class ServerEvents {
         } else {
             e.setResult(KickedFromServerEvent.DisconnectPlayer.create(Utils.format("&cNo hay Lobbies disponibles!")));
         }
-    
-    
     }
     
     

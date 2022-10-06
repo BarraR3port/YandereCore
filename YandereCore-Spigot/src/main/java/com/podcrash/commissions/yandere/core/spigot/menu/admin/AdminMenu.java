@@ -24,6 +24,7 @@ public class AdminMenu extends UpdatableMenu {
     public AdminMenu(IPlayerMenuUtility playerMenuUtility, User target){
         super(playerMenuUtility);
         this.target = target;
+        setDebug(true);
     }
     
     public String getMenuName(){

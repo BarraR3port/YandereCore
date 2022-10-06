@@ -8,7 +8,7 @@ import java.util.Collections;
 public interface VConfig {
     
     static void defaultConfig(){
-        Config config = VMain.getConfig();
+        Config config = VMain.getInstance().getConfig();
         config.setDefault("web.url", "http://209.222.97.163:3000");
         config.setDefault("web.uuid", null);
         config.setDefault("web.pluginsToDelete", Collections.emptyList());

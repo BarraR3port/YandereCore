@@ -4,6 +4,7 @@ import com.mongodb.MongoTimeoutException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.podcrash.commissions.yandere.core.common.data.DBOrderType;
 import com.podcrash.commissions.yandere.core.common.data.logs.Log;
 import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import net.lymarket.lyapi.common.db.MongoDB;
@@ -12,6 +13,7 @@ import net.lymarket.lyapi.spigot.LyApi;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,6 +29,12 @@ public abstract class ILogRepository extends MongoDB<UUID, Log> {
     }
     
     public abstract Log createLog(LogType type, String server, String msg, String p);
+    
+    public abstract Log createLogWithProps(LogType type, String server, String msg, String p, HashMap<String, String> props);
+    
+    public abstract Log createLogWithOptions(LogType type, String server, String msg, String p, HashMap<String, Boolean> options);
+    
+    public abstract Log createLog(LogType type, String server, String msg, String p, HashMap<String, String> props, HashMap<String, Boolean> options);
     
     public Log createLog(LogType type, String server, String msg){
         Log log = new Log(type, server, msg);
@@ -55,19 +63,72 @@ public abstract class ILogRepository extends MongoDB<UUID, Log> {
         return database.findMany(TABLE_NAME, Log.class);
     }
     
-    public LinkedList<Log> getLogsByPage(int page, int maxPerPage, LogType filter){
-        Bson equalComparison = eq("type", filter.toString());
-        return database.findManyPaginatedAndFilter(TABLE_NAME, equalComparison, page, maxPerPage + 1, Log.class);
+    public LinkedList<Log> getLogsByType(LogType type){
+        LinkedList<Log> list = new LinkedList<>();
+        Bson mongoFilter;
+        if (type != LogType.UNKNOWN){
+            mongoFilter = and(eq("type", type.toString()));
+        } else {
+            mongoFilter = new Document();
+        }
+        try {
+            MongoCollection<Document> collection = database.getDatabase().getCollection(TABLE_NAME);
+            FindIterable<Document> documents = collection.find(mongoFilter);
+            MongoCursor<Document> cursor = documents.cursor();
+            while (cursor.hasNext()) {
+                Log current = database.getGson().fromJson(cursor.next().toJson(), Log.class);
+                list.add(current);
+            }
+        } catch (MongoTimeoutException TimeOut) {
+            TimeOut.printStackTrace();
+        }
+        return list;
     }
     
-    public LinkedList<Log> getLogsByPageAndName(int page, String name, int maxPerPage, LogType filter){
+    public LinkedList<Log> getLogsByPage(int page, int maxPerPage, LogType filter, DBOrderType orderType){
+        Bson mongoFilter;
+        if (filter != LogType.UNKNOWN){
+            mongoFilter = and(eq("type", filter.toString()));
+        } else {
+            mongoFilter = new Document();
+        }
+        LinkedList<Log> list = new LinkedList<>();
+        Bson sort = new Document(orderType.isDate() ? "createDate" : "owner", orderType.getOrder());
+        try {
+            MongoCollection<Document> collection = this.database.getDatabase().getCollection(TABLE_NAME);
+            FindIterable<Document> documents = collection.find(mongoFilter).skip(page).limit(maxPerPage + 1).sort(sort);
+            MongoCursor<Document> cursor = documents.cursor();
+            while (cursor.hasNext()) {
+                Log current = this.database.getGson().fromJson(cursor.next().toJson(), Log.class);
+                list.add(current);
+            }
+        } catch (MongoTimeoutException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
+    
+    public LinkedList<Log> getLogsByPageAndName(int page, String name, int maxPerPage, LogType filter, DBOrderType orderType){
         Bson mongoFilter;
         if (filter != LogType.UNKNOWN){
             mongoFilter = and(eq("owner", name), eq("type", filter.toString()));
         } else {
             mongoFilter = eq("owner", name);
         }
-        return database.findManyPaginatedAndFilter(TABLE_NAME, mongoFilter, page, maxPerPage + 1, Log.class);
+        LinkedList<Log> list = new LinkedList<>();
+        Bson sort = new Document(orderType.isDate() ? "createDate" : "owner", orderType.getOrder());
+        try {
+            MongoCollection<Document> collection = this.database.getDatabase().getCollection(TABLE_NAME);
+            FindIterable<Document> documents = collection.find(mongoFilter).skip(page).limit(maxPerPage + 1).sort(sort);
+            MongoCursor<Document> cursor = documents.cursor();
+            while (cursor.hasNext()) {
+                Log current = this.database.getGson().fromJson(cursor.next().toJson(), Log.class);
+                list.add(current);
+            }
+        } catch (MongoTimeoutException ex) {
+            ex.printStackTrace();
+        }
+        return list;
     }
     
     public int getLogsByPageAndNameSize(int page, int maxPerPage, String name){

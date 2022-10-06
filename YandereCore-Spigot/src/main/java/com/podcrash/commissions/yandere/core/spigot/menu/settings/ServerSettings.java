@@ -18,6 +18,7 @@ public class ServerSettings extends UpdatableMenu {
     public ServerSettings(IPlayerMenuUtility playerMenuUtility){
         super(playerMenuUtility);
         this.globalServerSettings = Main.getInstance().getGlobalServerSettings().getOrCreate();
+        setDebug(true);
     }
     
     @Override

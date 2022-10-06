@@ -3,21 +3,26 @@ package com.podcrash.commissions.yandere.core.velocity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
+import com.podcrash.commissions.yandere.core.common.YandereApi;
 import com.podcrash.commissions.yandere.core.common.data.server.IGlobalServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.IServerRepository;
 import com.podcrash.commissions.yandere.core.common.data.server.ProxyStats;
+import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.common.log.Slf4jPluginLogger;
+import com.podcrash.commissions.yandere.core.common.socket.ISocket;
 import com.podcrash.commissions.yandere.core.velocity.announcements.AnnouncementManager;
 import com.podcrash.commissions.yandere.core.velocity.commands.Lobby;
 import com.podcrash.commissions.yandere.core.velocity.commands.Ping;
 import com.podcrash.commissions.yandere.core.velocity.commands.Stream;
 import com.podcrash.commissions.yandere.core.velocity.commands.VAdmin;
 import com.podcrash.commissions.yandere.core.velocity.config.VConfig;
+import com.podcrash.commissions.yandere.core.velocity.listener.CommandsHider;
 import com.podcrash.commissions.yandere.core.velocity.listener.PlayerEvents;
 import com.podcrash.commissions.yandere.core.velocity.listener.ServerEvents;
 import com.podcrash.commissions.yandere.core.velocity.log.LogRepository;
 import com.podcrash.commissions.yandere.core.velocity.manager.PlayerRepository;
 import com.podcrash.commissions.yandere.core.velocity.manager.ServerSocketManager;
+import com.podcrash.commissions.yandere.core.velocity.punish.PunishManager;
 import com.podcrash.commissions.yandere.core.velocity.server.GlobalServerRepository;
 import com.podcrash.commissions.yandere.core.velocity.server.ServerRepository;
 import com.podcrash.commissions.yandere.core.velocity.socketmanager.ProxySocketServer;
@@ -49,7 +54,7 @@ import java.util.concurrent.TimeUnit;
         authors = {"BarraR3port"},
         url = "https://podcrash.com/",
         dependencies = {@Dependency(id = "luckperms")})
-public final class VMain extends LyApiVelocity {
+public final class VMain extends LyApiVelocity implements YandereApi<Config> {
     
     public final static Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private static final Config config = new Config("config", "plugins/YandereCore");
@@ -65,6 +70,7 @@ public final class VMain extends LyApiVelocity {
     private IGlobalServerRepository globalServerRepository;
     private AnnouncementManager announcementManager;
     private LogRepository logs;
+    private PunishManager punishManager;
     
     /**
      * Constructor for ChatRegulator Plugin
@@ -95,9 +101,24 @@ public final class VMain extends LyApiVelocity {
         }
     }
     
+    @Override
+    public void error(String message){
+    
+    }
+    
     @Internal
-    public static Config getConfig(){
+    public Config getConfig(){
         return config;
+    }
+    
+    @Override
+    public Config getItems(){
+        return null;
+    }
+    
+    @Override
+    public String getVersion(){
+        return null;
     }
     
     @Subscribe
@@ -107,8 +128,6 @@ public final class VMain extends LyApiVelocity {
         instance = this;
         VConfig.defaultConfig();
         proxy.getChannelRegistrar().register(new LegacyChannelIdentifier("podcrash:yandere"));
-        proxy.getEventManager().register(this, new PlayerEvents());
-        proxy.getEventManager().register(this, new ServerEvents());
         if (ServerSocketTask.init()){
             debug("ServerSocketTask started");
         }
@@ -117,16 +136,19 @@ public final class VMain extends LyApiVelocity {
         playersRepository = new PlayerRepository(mongo, "players");
         serverRepository = new ServerRepository(mongo, "servers");
         globalServerRepository = new GlobalServerRepository(mongo, "server_settings");
+        punishManager = new PunishManager(getProxy(), mongo);
         logs = new LogRepository(mongo, "logs");
         VMain.getInstance().getProxy().getScheduler().buildTask(VMain.getInstance(), this::sendInfo).repeat(5, TimeUnit.SECONDS).schedule();
-    
+        proxy.getEventManager().register(this, new PlayerEvents());
+        proxy.getEventManager().register(this, new ServerEvents());
+        proxy.getEventManager().register(this, new CommandsHider());
         new Lobby(proxy.getCommandManager());
         new VAdmin(proxy.getCommandManager());
         new Stream(proxy.getCommandManager());
         new Ping(proxy.getCommandManager());
         serverRepository.checkForPluginsUpdates();
         announcementManager = new AnnouncementManager().init();
-    
+        
     }
     
     @Subscribe
@@ -174,6 +196,26 @@ public final class VMain extends LyApiVelocity {
         return playersRepository;
     }
     
+    @Override
+    public ISocket getSocket(){
+        return null;
+    }
+    
+    @Override
+    public String getNMSVersion(){
+        return null;
+    }
+    
+    @Override
+    public String getProxyServerName(){
+        return null;
+    }
+    
+    @Override
+    public ServerType getServerType(){
+        return null;
+    }
+    
     public HashMap<UUID, ScheduledTask> getStreams(){
         return streams;
     }
@@ -196,5 +238,9 @@ public final class VMain extends LyApiVelocity {
     
     public LogRepository getLogs(){
         return logs;
+    }
+    
+    public PunishManager getPunishManager(){
+        return punishManager;
     }
 }

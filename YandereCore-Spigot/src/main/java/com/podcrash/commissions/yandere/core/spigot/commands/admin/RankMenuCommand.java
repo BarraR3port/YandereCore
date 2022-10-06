@@ -1,10 +1,12 @@
-package com.podcrash.commissions.yandere.core.spigot.commands;
+package com.podcrash.commissions.yandere.core.spigot.commands.admin;
 
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.common.data.user.props.Rank;
 import com.podcrash.commissions.yandere.core.spigot.Main;
+import com.podcrash.commissions.yandere.core.spigot.menu.admin.rank.RankEditor;
 import net.lymarket.lyapi.common.commands.*;
 import net.lymarket.lyapi.common.commands.response.CommandResponse;
+import net.lymarket.lyapi.spigot.LyApi;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -32,15 +34,36 @@ public class RankMenuCommand implements ILyCommand {
             context.getSender().sendMessage("§b§m----------------------------------------------------");
             return new CommandResponse();
         }
-        
+    
         if (context.getArg(0).equalsIgnoreCase("set")){
-            if (context.getArgs().length == 3){
+            if (context.getArgs().length == 2){
+                final String target = context.getArg(1);
+                try {
+                    User user = Main.getInstance().getPlayers().getCachedPlayer(target);
+                    new RankEditor(LyApi.getPlayerMenuUtility((Player) context.getSender()), user).open();
+                } catch (NullPointerException e) {
+                    Main.getLang().sendErrorMsg(context.getSender(), "player.not-fund", "player", target);
+                }
+            } else if (context.getArgs().length == 3){
                 final String target = context.getArg(1);
                 try {
                     Rank rank = Rank.valueOf(context.getArg(2).toUpperCase(Locale.ROOT));
                     User user = Main.getInstance().getPlayers().getCachedPlayer(target);
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user " + target + " group set " + rank.getLpName());
                     Main.getInstance().getPlayers().setPlayerRank(user, rank);
+                } catch (NullPointerException e) {
+                    Main.getLang().sendErrorMsg(context.getSender(), "player.not-fund", "player", target);
+                }
+            } else {
+                Main.getLang().sendErrorMsg(context.getSender(), "wrong-command", "command", "/rank set <jugador> (rango)");
+            }
+            return new CommandResponse();
+        } else if (context.getArg(0).equalsIgnoreCase("editor")){
+            if (context.getArgs().length == 2){
+                final String target = context.getArg(1);
+                try {
+                    User user = Main.getInstance().getPlayers().getCachedPlayer(target);
+                    new RankEditor(LyApi.getPlayerMenuUtility((Player) context.getSender()), user).open();
                 } catch (NullPointerException e) {
                     Main.getLang().sendErrorMsg(context.getSender(), "player.not-fund", "player", target);
                 }
@@ -59,6 +82,7 @@ public class RankMenuCommand implements ILyCommand {
         if (context.getSender().hasPermission("yandere.rank")){
             if (context.getArgs().length == 1){
                 list.add("set");
+                list.add("editor");
             }
             if (context.getArgs().length == 2){
                 list.addAll(Main.getInstance().getPlayers().getPlayersName());

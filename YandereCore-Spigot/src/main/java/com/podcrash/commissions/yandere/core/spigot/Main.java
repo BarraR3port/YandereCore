@@ -21,13 +21,16 @@ import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMACommand
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMCCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.gamemode.GMSPCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.inv.EnderSeeCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.inv.InvSeeCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.misc.DiscordCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.misc.HelpCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.misc.TiendaCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.practice.PracticeArenaAutoCreateCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.practice.PracticeMenuCommand;
-import com.podcrash.commissions.yandere.core.spigot.commands.punish.EnderSeeCommand;
-import com.podcrash.commissions.yandere.core.spigot.commands.punish.InvSeeCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.punish.BanCommand;
+import com.podcrash.commissions.yandere.core.spigot.commands.punish.Moderator;
+import com.podcrash.commissions.yandere.core.spigot.commands.punish.UnBanCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.spawn.DelSpawnCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.spawn.SetSpawnCommand;
 import com.podcrash.commissions.yandere.core.spigot.commands.spawn.SpawnCommand;
@@ -54,6 +57,7 @@ import com.podcrash.commissions.yandere.core.spigot.listener.skywars.SWPlayerEve
 import com.podcrash.commissions.yandere.core.spigot.log.LogRepository;
 import com.podcrash.commissions.yandere.core.spigot.papi.Placeholders;
 import com.podcrash.commissions.yandere.core.spigot.party.PartiesManager;
+import com.podcrash.commissions.yandere.core.spigot.punish.PunishManager;
 import com.podcrash.commissions.yandere.core.spigot.server.GlobalServerRepository;
 import com.podcrash.commissions.yandere.core.spigot.server.ServerRepository;
 import com.podcrash.commissions.yandere.core.spigot.settings.Settings;
@@ -82,8 +86,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.util.logging.Level;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
-public final class Main extends JavaPlugin implements YandereApi {
+@SuppressWarnings({"rawtypes", "unchecked", "all"})
+public final class Main extends JavaPlugin implements YandereApi<Config> {
     
     public static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     private static LyApi api;
@@ -96,6 +100,7 @@ public final class Main extends JavaPlugin implements YandereApi {
     private SoundsConfig sounds;
     private String nms_version;
     private IPlayerRepository players;
+    private PunishManager punishments;
     private ILogRepository logs;
     private ISocket socket;
     private ViaAPI<Player> viaVersionApi;
@@ -164,10 +169,10 @@ public final class Main extends JavaPlugin implements YandereApi {
             viaVersionApi = Via.getAPI();
         }
     
-        registerCommands();
         if (config.getBoolean("db.enabled")){
             final MongoDBClient mongo = new MongoDBClient(config.getString("db.urli"), config.getString("db.database"));
             players = new PlayerRepository(mongo, "players");
+            punishments = new PunishManager(mongo);
             logs = new LogRepository(mongo, "logs");
             serverRepository = new ServerRepository(mongo, "servers");
             globalServerRepository = new GlobalServerRepository(mongo, "server_settings");
@@ -258,6 +263,7 @@ public final class Main extends JavaPlugin implements YandereApi {
             }, 0L, 20L * 3600L * 24L);
         }
         //new PacketManager( this );
+        registerCommands();
         overrideSpigotDefaultMessages();
         getServer().getPluginManager().callEvent(new PluginEnableEvent(this));
     
@@ -358,10 +364,15 @@ public final class Main extends JavaPlugin implements YandereApi {
         api.getCommandService().registerCommands(new DiscordCommand());
         api.getCommandService().registerCommands(new HelpCommand());
         api.getCommandService().registerCommands(new LogCommand());
+        api.getCommandService().registerCommands(new ProfileCommand());
+        api.getCommandService().registerCommands(new BanCommand());
+        api.getCommandService().registerCommands(new Moderator());
+        api.getCommandService().registerCommands(new UnBanCommand());
+        api.getCommandService().registerCommands(new ReportCommand());
     }
     
     public void reconnectToProxy(){
-        socket.getSocket().reconnect("Reconnecting to proxy...");
+        socket.getSocket().reconnect("Reconectando al Proxy...");
     }
     
     public ProxyStats getProxyStats(){
@@ -456,4 +467,7 @@ public final class Main extends JavaPlugin implements YandereApi {
         return globalServerRepository;
     }
     
+    public PunishManager getPunishments(){
+        return punishments;
+    }
 }

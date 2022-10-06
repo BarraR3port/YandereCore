@@ -11,6 +11,7 @@ import net.lymarket.lyapi.spigot.utils.NBTItem;
 import net.lymarket.lyapi.spigot.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,6 +22,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 public abstract class MainEvents implements Listener {
@@ -164,6 +166,29 @@ public abstract class MainEvents implements Listener {
                 case "multi-lobby-menu":
                     e.setCancelled(true);
             }
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerTpEvent(PlayerTeleportEvent e){
+        try {
+            double x = e.getTo().getX();
+            double y = e.getTo().getY();
+            double z = e.getTo().getZ();
+            float yaw = e.getTo().getYaw();
+            float pitch = e.getTo().getPitch();
+            World world = e.getTo().getWorld();
+            LinkedHashMap<String, String> data = new LinkedHashMap<>();
+            data.put("  &4• &8Mundo: ", world.getName());
+            data.put("  &4• &8X: ", String.valueOf(x));
+            data.put("  &4• &8Y: ", String.valueOf(y));
+            data.put("  &4• &8Z: ", String.valueOf(z));
+            data.put("  &4• &8Pitch: ", String.valueOf(pitch));
+            data.put("  &4• &8Yaw: ", String.valueOf(yaw));
+            
+            Main.getInstance().getLogs().createLogWithProps(LogType.TP, Settings.PROXY_SERVER_NAME, "TP en " + world.getName(), e.getPlayer().getName(), data);
+            
+        } catch (NullPointerException ignored) {
         }
     }
     

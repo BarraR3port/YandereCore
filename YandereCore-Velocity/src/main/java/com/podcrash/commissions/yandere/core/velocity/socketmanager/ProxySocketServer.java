@@ -4,13 +4,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.podcrash.commissions.yandere.core.common.data.punish.ban.Ban;
+import com.podcrash.commissions.yandere.core.common.data.punish.mute.Mute;
+import com.podcrash.commissions.yandere.core.common.data.punish.report.Report;
+import com.podcrash.commissions.yandere.core.common.data.punish.warn.Warn;
 import com.podcrash.commissions.yandere.core.common.data.server.Server;
 import com.podcrash.commissions.yandere.core.common.data.server.ServerType;
 import com.podcrash.commissions.yandere.core.velocity.VMain;
 import com.podcrash.commissions.yandere.core.velocity.manager.ServerSocketManager;
+import com.podcrash.commissions.yandere.core.velocity.punish.PunishManager;
 import com.podcrash.commissions.yandere.core.velocity.utils.Utils;
 import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
 import com.velocitypowered.api.proxy.Player;
+import net.lymarket.lyapi.velocity.LyApiVelocity;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,9 +35,11 @@ public class ProxySocketServer implements Runnable {
     private Scanner in;
     private PrintWriter out;
     private Server server;
+    private final PunishManager pm;
     
     public ProxySocketServer(Socket socket){
         this.socket = socket;
+        pm = VMain.getInstance().getPunishManager();
         try {
             this.out = new PrintWriter(socket.getOutputStream(), true);
             this.in = new Scanner(socket.getInputStream());
@@ -55,6 +63,13 @@ public class ProxySocketServer implements Runnable {
         final JsonObject js = new JsonObject();
         js.addProperty("type", "UPDATE_SERVER_STATS");
         js.addProperty("stats", GSON.toJson(VMain.getInstance().getServerManager()));
+        sendMessage(js);
+    }
+    
+    public void sendServerUpdatePlayerFromDb(String uuid){
+        final JsonObject js = new JsonObject();
+        js.addProperty("type", "UPDATE_PLAYER_FROM_DB");
+        js.addProperty("uuid", uuid);
         sendMessage(js);
     }
     
@@ -85,7 +100,6 @@ public class ProxySocketServer implements Runnable {
                     }
                     final JsonObject json;
                     try {
-                        
                         JsonElement jse = new JsonParser().parse(decryptedMessage);
                         if (jse.isJsonNull() || !jse.isJsonObject()){
                             VMain.debug("Received bad data from: " + socket.getInetAddress().toString() + "\nMsg: " + decryptedMessage);
@@ -154,7 +168,23 @@ public class ProxySocketServer implements Runnable {
                                 json.remove("type");
                                 json.addProperty("type", "GLOBAL_SERVER_FETCH_POST");
                                 VMain.getInstance().getProxy().getAllServers().forEach(server -> ServerSocketManager.getSocketByServer(server.getServerInfo().getName()).ifPresent(socket -> socket.sendMessage(json)));
-    
+        
+                                //socketManager.getSocketServers().forEach(socketServer -> socketServer.sendMessage(json));
+                            }
+                            case "PUNISH" -> {
+                                String punishType = json.get("punish_type").getAsString();
+                                switch(punishType){
+                                    case "ban" ->
+                                            pm.banPlayer(LyApiVelocity.getGson().fromJson(json.get("punish"), Ban.class));
+                                    case "mute" ->
+                                            pm.mutePlayer(LyApiVelocity.getGson().fromJson(json.get("punish"), Mute.class));
+                                    case "unban" ->
+                                            pm.unBanPlayer(LyApiVelocity.getGson().fromJson(json.get("punish"), Ban.class), json.get("server_name").getAsString());
+                                    case "warn" ->
+                                            pm.warnPlayer(LyApiVelocity.getGson().fromJson(json.get("punish"), Warn.class));
+                                    case "report" ->
+                                            pm.reportPlayer(LyApiVelocity.getGson().fromJson(json.get("punish"), Report.class));
+                                }
                                 //socketManager.getSocketServers().forEach(socketServer -> socketServer.sendMessage(json));
                             }
                             case "CONNECT_TO_SERVER" -> {
@@ -200,7 +230,7 @@ public class ProxySocketServer implements Runnable {
                                         }
                                     }
                                 }
-    
+        
                             }
                             case "ERROR" -> {
                                 if (!json.has("error")) continue;
