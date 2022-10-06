@@ -1,10 +1,12 @@
 package com.podcrash.commissions.yandere.core.spigot.menu.settings.player;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.podcrash.commissions.yandere.core.common.data.level.Level;
+import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import com.podcrash.commissions.yandere.core.spigot.menu.lobby.LobbyMenu;
 import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
-import net.lymarket.lyapi.spigot.menu.UpdatableMenu;
+import net.lymarket.lyapi.spigot.menu.Menu;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
 import net.lymarket.lyapi.spigot.utils.NBTItem;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-public class PlayerSettingsMainMenu extends UpdatableMenu {
+public class PlayerSettingsMainMenu extends Menu {
     
     
     private final int[] decorateSlots = {
@@ -24,7 +26,7 @@ public class PlayerSettingsMainMenu extends UpdatableMenu {
     private final UUID targetUUID;
     
     public PlayerSettingsMainMenu(IPlayerMenuUtility playerMenuUtility){
-        super(playerMenuUtility);
+        super(playerMenuUtility, true);
         this.targetUUID = getOwner().getUniqueId();
         this.setDebug(true);
         
@@ -52,32 +54,79 @@ public class PlayerSettingsMainMenu extends UpdatableMenu {
         for ( int i : decorateSlots ){
             inventory.setItem(i, fillerMidItem);
         }
-    
-        inventory.setItem(20, new ItemBuilder(XMaterial.MAP.parseItem())
-                .setDisplayName("&c&lOpciones:")
+        User user = Main.getInstance().getPlayers().getCachedPlayer(targetUUID);
+        ItemBuilder options = new ItemBuilder(XMaterial.MAP.parseItem())
+                .setDisplayName("&9&lOpciones:")
                 .addLoreLine("&7Haz click para ver tu opciones")
                 .addLoreLine("&7y así poder cambiarlas.")
                 .addLoreLine("")
+                .addLoreLine("&f&lOpciones:")
                 .addTag("settings", "options")
-                .addTag("development", "true")
-                .build());
+                .addTag("development", "true");
+        for ( String option : user.getOptions().keySet() ){
+            options.addLoreLine(" &4• &7" + option + ": " + (user.getOption(option) ? "&aSi" : "&cNo"));
+        }
+        inventory.setItem(20, options.build());
     
-    
-        inventory.setItem(21, new ItemBuilder(XMaterial.NAME_TAG.parseItem())
-                .setDisplayName("&c&lPropiedades:")
+        ItemBuilder props = new ItemBuilder(XMaterial.NAME_TAG.parseItem())
+                .setDisplayName("&9&lPropiedades:")
                 .addLoreLine("&7Haz click para ver las propiedades")
                 .addLoreLine("&7atribuidas a tu cuenta.")
                 .addLoreLine("")
-                .addTag("settings", "options")
+                .addLoreLine("&f&lPropiedades:")
+                .addTag("settings", "props")
+                .addTag("development", "true");
+        for ( String property : user.getProperties().keySet() ){
+            props.addLoreLine(" &4• &7" + property + ": &f" + user.getProperty(property));
+        }
+        inventory.setItem(21, props.build());
+    
+        inventory.setItem(22, new ItemBuilder(XMaterial.SUNFLOWER.parseItem())
+                .setDisplayName("&e&lDinero:")
+                .addLoreLine("&7Actualmente tienes &f" + user.getCoinsFormatted())
+                .addLoreLine("&7monedas en tu cuenta.")
+                .addLoreLine("&7Haz click para ver el registro de gastos.")
+                .addLoreLine("")
+                .addTag("settings", "money")
+                .addTag("development", "true")
+                .build());
+        Level level = user.getLevel();
+        inventory.setItem(23, new ItemBuilder(XMaterial.EXPERIENCE_BOTTLE.parseItem())
+                .setDisplayName("&a&lNivel:")
+                .addLoreLine("&7Actualmente eres Nº " + level.getLevel())
+                .addLoreLine("&7y tienes &f" + level.getCurrentXp() + " &7de &f" + level.getTotalNextLevelXp() + " &7XP.")
+                .addLoreLine("&7Haz click para ver tu progreso.")
+                .addLoreLine(level.getProgressBarFormatted())
+                .addLoreLine("")
+                .addTag("settings", "level")
                 .addTag("development", "true")
                 .build());
     
-        inventory.setItem(21, new ItemBuilder(XMaterial.SUNFLOWER.parseItem())
-                .setDisplayName("&c&lDinero:")
-                .addLoreLine("&7Haz click para ver tu dinero")
-                .addLoreLine("&7atribuidas a tu cuenta.")
+        inventory.setItem(24, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
+                .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzc1NGVlZDhkMDVhMTk2YzNmYzJkMjUxMTQxN2ViNTYyNjI2MjE0MTRjZTNiM2RmYjM1NzFhZWE0ZGRkYzQ3MCJ9fX0=")
+                .setDisplayName("&3&lRecompensas:")
+                .addLoreLine("&7Actualmente tienes &f" + user.getRewards().size() + " &7recompensas.")
+                .addLoreLine("&7Haz click para ver tus recompensas")
                 .addLoreLine("")
-                .addTag("settings", "options")
+                .addTag("settings", "reward")
+                .addTag("development", "true")
+                .build());
+    
+        inventory.setItem(31, new ItemBuilder(XMaterial.BARRIER.parseItem())
+                .setDisplayName("&4&lProhibiciones:")
+                .addLoreLine("&7Actualmente tienes &f" + user.getPunishments().size() + " &7prohibiciones.")
+                .addLoreLine("&7Haz click para ver tus prohibiciones.")
+                .addLoreLine("")
+                .addTag("settings", "punish")
+                .addTag("development", "true")
+                .build());
+    
+        inventory.setItem(13, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
+                .setHeadSkin(user.getSkin())
+                .setDisplayName("&4&lRango:")
+                .addLoreLine("&7Actualmente tienes el rango &f" + user.getRank().getTabPrefix())
+                .addLoreLine("")
+                .addTag("settings", "punish")
                 .addTag("development", "true")
                 .build());
     

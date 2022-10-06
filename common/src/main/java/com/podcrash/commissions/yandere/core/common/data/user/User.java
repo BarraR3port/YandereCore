@@ -292,4 +292,8 @@ public class User {
     public void setSuffix(String suffix){
         this.suffix = suffix;
     }
+    
+    public HashMap<String, Boolean> getOptions(){
+        return options;
+    }
 }
