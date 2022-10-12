@@ -10,13 +10,13 @@ import java.util.LinkedList;
 
 public final class LobbiesCommand implements ILyCommand {
     
-    @Command(name = "lobbies", usage = "menu", description = "Menu", aliases = {"m", "ym"})
+    @Command(name = "lobbies", usage = "menu", description = "Menu")
     public CommandResponse command(CommandContext context){
         
         if (context.getSender() instanceof Player){
             final Player player = (Player) context.getSender();
             if (context.getArgs().length == 0){
-                new MultiLobbyMenu(LyApi.getPlayerMenuUtility(player)).open();
+                new MultiLobbyMenu(LyApi.getPlayerMenuUtility(player), false).open();
                 return new CommandResponse();
             }
         }

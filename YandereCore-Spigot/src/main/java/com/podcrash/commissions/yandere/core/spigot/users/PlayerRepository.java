@@ -62,6 +62,19 @@ public final class PlayerRepository extends IPlayerRepository {
         return user;
     }
     
+    
+    @Override
+    public User getCachedPlayerOrCreate(String name, UUID uuid, String address){
+        for ( User user : list.values() ){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+                return user;
+            }
+        }
+        User user = getOrCreatePlayer(name, uuid, address);
+        list.put(user.getUUID(), user);
+        return user;
+    }
+    
     @Override
     public User getPlayer(UUID uuid){
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", uuid.toString()));
@@ -92,7 +105,7 @@ public final class PlayerRepository extends IPlayerRepository {
     
     
     @Override
-    public void createPlayer(String name, UUID uuid, String address){
+    public SpigotUser createPlayer(String name, UUID uuid, String address){
         SpigotUser user = new SpigotUser(name, uuid);
         user.setAddress(address);
         user.setOption("allow-pm", true);
@@ -105,6 +118,7 @@ public final class PlayerRepository extends IPlayerRepository {
         }
         database.insertOne(TABLE_NAME, user);
         list.put(uuid, user);
+        return user;
     }
     
     @Override

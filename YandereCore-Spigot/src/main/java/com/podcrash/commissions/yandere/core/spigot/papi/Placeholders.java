@@ -107,9 +107,13 @@ public class Placeholders extends PlaceholderExpansion {
         }
         if (identifier.startsWith("server_capacity_current_")){
             String server = identifier.replace("server_capacity_current_", "");
-            return Main.getInstance().getProxyStats().getCurrentTargetServerCapacity(ServerType.valueOf(server), Main.getInstance().getGlobalServerSettings().getOrCreate());
+            return String.valueOf(Main.getInstance().getProxyStats().getCurrentTargetServerCapacity(ServerType.valueOf(server)));
         }
-        
+        if (identifier.startsWith("server_capacity_current_formatted_")){
+            String server = identifier.replace("server_capacity_current_formatted_", "");
+            return Main.getInstance().getProxyStats().getCurrentTargetServerCapacityFormatted(ServerType.valueOf(server), Main.getInstance().getGlobalServerSettings().getOrCreate());
+        }
+    
         switch(identifier){
             case "server_name":
             case "server":{

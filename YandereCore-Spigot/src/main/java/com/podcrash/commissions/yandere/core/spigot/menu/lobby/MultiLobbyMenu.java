@@ -15,18 +15,18 @@ import org.bukkit.inventory.ItemStack;
 
 public class MultiLobbyMenu extends UpdatableMenu {
     
-    private final ServerType serverType;
+    private ServerType serverType;
     private final int[] serverSlot = {
             10, 11, 12, 13, 14, 15, 16,
             19, 20, 21, 22, 23, 24, 25};
     
-    public MultiLobbyMenu(IPlayerMenuUtility playerMenuUtility, ServerType serverType){
-        super(playerMenuUtility, true);
+    public MultiLobbyMenu(IPlayerMenuUtility playerMenuUtility, ServerType serverType, boolean linked){
+        super(playerMenuUtility, linked);
         this.serverType = serverType;
     }
     
-    public MultiLobbyMenu(IPlayerMenuUtility playerMenuUtility){
-        super(playerMenuUtility, true);
+    public MultiLobbyMenu(IPlayerMenuUtility playerMenuUtility, boolean linked){
+        super(playerMenuUtility, linked);
         this.serverType = Settings.SERVER_TYPE;
     }
     
@@ -36,6 +36,8 @@ public class MultiLobbyMenu extends UpdatableMenu {
             case SKY_WARS:
                 return "&4• &8Lobbies de &eSky Wars";
             case BED_WARS:
+                serverType = ServerType.LOBBY_BED_WARS;
+                return "&4• &8Lobbies de &eBed Wars";
             case LOBBY_BED_WARS:
                 return "&4• &8Lobbies de &eBed Wars";
             case PRACTICE:
@@ -51,7 +53,7 @@ public class MultiLobbyMenu extends UpdatableMenu {
     
     @Override
     public int getSlots(){
-        return 36;
+        return 45;
     }
     
     @Override
@@ -80,7 +82,7 @@ public class MultiLobbyMenu extends UpdatableMenu {
                             .build()
             );
         }
-        inventory.setItem(31, super.CLOSE_ITEM);
+        inventory.setItem(40, super.CLOSE_ITEM);
         
     }
     
@@ -101,7 +103,11 @@ public class MultiLobbyMenu extends UpdatableMenu {
             }
             e.setCancelled(true);
         } else if (nbtItem.hasTag("ly-menu-close")){
-            new LobbyMenu(playerMenuUtility).open();
+            if (isLinked()){
+                new LobbyMenu(playerMenuUtility).open();
+            } else {
+                getOwner().closeInventory();
+            }
         }
         
     }

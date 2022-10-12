@@ -478,7 +478,7 @@ public final class SWPlayerEvents extends MainEvents {
             if (nbtItem.hasTag("lobby-item")){
                 new LobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
             } else if (nbtItem.hasTag("lobby-multi-lobby")){
-                new MultiLobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
+                new MultiLobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer()), true).open();
             } else if (nbtItem.hasTag("command")){
                 String command = nbtItem.getTag("command").replace("_", " ");
                 e.getPlayer().performCommand(command);
@@ -539,10 +539,10 @@ public final class SWPlayerEvents extends MainEvents {
                     return;
                 }
                 Main.getInstance().getCoolDownManager().removeCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
-                
+    
                 User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
                 JoinSkyWarsArenaType currentJoinArenaType = user.getJoinSkyWarsArenaType();
-                
+    
                 if (rightClick){
                     if (!this.plugin.getGm().addRandomGame(p, currentJoinArenaType.name())){
                         p.sendMessage(Utils.format("&cNo se ha encontrado una partida de SkyWars en modo &e" + currentJoinArenaType.name().toLowerCase() + "&c."));
@@ -550,23 +550,43 @@ public final class SWPlayerEvents extends MainEvents {
                     e.setCancelled(true);
                     return;
                 }
-                user.nextJoinArenaType(Settings.SERVER_TYPE);
-                Main.getInstance().getPlayers().savePlayer(user);
-                switch(currentJoinArenaType){
-                    case SOLO:
-                        p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_TEAM.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_TEAM.getItem());
-                        break;
-                    case TEAM:
-                        p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_RANKED.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_RANKED.getItem());
-                        break;
-                    case RANKED:
-                        p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getItem());
-                        break;
-                    default:
-                        p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_SOLO.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_SOLO.getItem());
-                        break;
+                boolean next = !p.isSneaking();
+                if (next){
+                    user.nextJoinArenaType(Settings.SERVER_TYPE);
+                    Main.getInstance().getPlayers().savePlayer(user);
+                    switch(currentJoinArenaType){
+                        case SOLO:
+                            p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_TEAM.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_TEAM.getItem());
+                            break;
+                        case TEAM:
+                            p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_RANKED.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_RANKED.getItem());
+                            break;
+                        case RANKED:
+                            p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getItem());
+                            break;
+                        default:
+                            p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_SOLO.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_SOLO.getItem());
+                            break;
+                    }
+                } else {
+                    user.prevJoinArenaType(Settings.SERVER_TYPE);
+                    Main.getInstance().getPlayers().savePlayer(user);
+                    switch(currentJoinArenaType){
+                        case SOLO:
+                            p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_RANDOM.getItem());
+                            break;
+                        case TEAM:
+                            p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_SOLO.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_SOLO.getItem());
+                            break;
+                        case RANKED:
+                            p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_TEAM.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_TEAM.getItem());
+                            break;
+                        default:
+                            p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_SKYWARS_RANKED.getSlot(), Items.LOBBY_JOIN_ARENA_SKYWARS_RANKED.getItem());
+                            break;
+                    }
                 }
-                Main.getInstance().getCoolDownManager().addCoolDown(new LobbyCoolDown(p.getUniqueId(), 3));
+                Main.getInstance().getCoolDownManager().addCoolDown(new LobbyCoolDown(p.getUniqueId(), 1));
                 p.updateInventory();
             }
         }

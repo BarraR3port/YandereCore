@@ -13,6 +13,13 @@ public class ServerEvents {
     public void onKickedFromServerEvent(KickedFromServerEvent e){
         final String serverName = e.getServer().getServerInfo().getName();
         final ServerType serverType = ServerType.match(serverName);
+        if (e.getServerKickReason().isPresent()){
+            String reason = e.getServerKickReason().get().toString();
+            if (reason.contains("Outdated server!")){
+                e.setResult(KickedFromServerEvent.DisconnectPlayer.create(Utils.format("&c&l¡El servidor está iniciándose!")));
+                return;
+            }
+        }
         if (serverType.equals(ServerType.BED_WARS)){
             String lobby = VMain.getInstance().getServerManager().getRandomServerByType(ServerType.LOBBY_BED_WARS).getProxyName();
             if (lobby.equalsIgnoreCase("EMPTY")){

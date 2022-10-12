@@ -188,26 +188,51 @@ public final class LBWPlayerEvents extends LobbyPlayerEvents {
             p.updateInventory();
             return true;
         }
-        
-        user.nextJoinArenaType(Settings.SERVER_TYPE);
-        Main.getInstance().getPlayers().savePlayer(user);
-        switch(currentJoinArenaType){
-            case SOLO:
-                p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_DUO.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_DUO.getItem());
-                break;
-            case DUO:
-                p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3.getItem());
-                break;
-            case _3V3V3V3:
-                p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4.getItem());
-                break;
-            case _4V4V4V4:
-                p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_RANDOM.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_RANDOM.getItem());
-                break;
-            default:
-                p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_SOLO.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_SOLO.getItem());
-                break;
+    
+        boolean next = !p.isSneaking();
+    
+        if (next){
+            user.nextJoinArenaType(Settings.SERVER_TYPE);
+            Main.getInstance().getPlayers().savePlayer(user);
+            switch(currentJoinArenaType){
+                case SOLO:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_DUO.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_DUO.getItem());
+                    break;
+                case DUO:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3.getItem());
+                    break;
+                case _3V3V3V3:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4.getItem());
+                    break;
+                case _4V4V4V4:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_RANDOM.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_RANDOM.getItem());
+                    break;
+                default:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_SOLO.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_SOLO.getItem());
+                    break;
+            }
+        } else {
+            user.prevJoinArenaType(Settings.SERVER_TYPE);
+            Main.getInstance().getPlayers().savePlayer(user);
+            switch(currentJoinArenaType){
+                case SOLO:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_RANDOM.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_RANDOM.getItem());
+                    break;
+                case DUO:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_SOLO.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_SOLO.getItem());
+                    break;
+                case _3V3V3V3:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_DUO.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_DUO.getItem());
+                    break;
+                case _4V4V4V4:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_3V3V3V3.getItem());
+                    break;
+                default:
+                    p.getInventory().setItem(Items.LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4.getSlot(), Items.LOBBY_JOIN_ARENA_BEDWARS_4V4V4V4.getItem());
+                    break;
+            }
         }
+    
         Main.getInstance().getCoolDownManager().addCoolDown(new LobbyCoolDown(p.getUniqueId(), 1));
         p.updateInventory();
         return true;

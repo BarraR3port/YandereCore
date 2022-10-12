@@ -76,7 +76,7 @@ public class LobbyMenu extends UpdatableMenu {
                         break;
                     default:{
                         if (e.getClick().isRightClick()){
-                            new MultiLobbyMenu(playerMenuUtility, serverType).open();
+                            new MultiLobbyMenu(playerMenuUtility, serverType, true).open();
                         } else {
                             if (proxy_server_name.equals(Settings.PROXY_SERVER_NAME)){
                                 super.checkSomething(p, e.getSlot(), item, "&cYa estás conectado en este server.", "", this.getMenuUUID());
@@ -149,7 +149,7 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine("")
                 .addLoreLine("&3&oEn Desarrollo")
                 .addLoreLine("")
-                .addTag("settings", "settings")
+                .addTag("friends", "friends")
                 .addTag("development", "true")
                 .build());
     
@@ -159,10 +159,30 @@ public class LobbyMenu extends UpdatableMenu {
                 .addLoreLine("&7Haz click para ver los lobbies")
                 .addLoreLine("&7disponibles dentro del servidor.")
                 .addLoreLine("")
+                .addLoreLine("&7&oEstado: &8...")
+                .addLoreLine("")
                 .build());
-        inventory.setItem(23, new ItemBuilder(Items.SKY_WARS_BASE.clone()).build());
-        inventory.setItem(24, new ItemBuilder(Items.BED_WARS_BASE.clone()).build());
-        inventory.setItem(25, new ItemBuilder(Items.PRACTICE_BASE.clone()).build());
+        inventory.setItem(23, new ItemBuilder(Items.SKY_WARS_BASE.clone())
+                .addLoreLine("&7&oEstado: " + (globalServerSettings.isSkyWarsInDevelopment() ? "&3&oEn Desarrollo" : "&8..."))
+                .addLoreLine("")
+                .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : "&7Jugadores en linea: &8...")
+                .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : ProxyStats.getDefaultServerCapacity())
+                .addLoreLine(globalServerSettings.isSkyWarsInDevelopment() ? null : "")
+                .build());
+        inventory.setItem(24, new ItemBuilder(Items.BED_WARS_BASE.clone())
+                .addLoreLine("&7&oEstado: " + (globalServerSettings.isBedWarsInDevelopment() ? "&3&oEn Desarrollo" : "&8..."))
+                .addLoreLine("")
+                .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : "&7Jugadores en linea: &8...")
+                .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : ProxyStats.getDefaultServerCapacity())
+                .addLoreLine(globalServerSettings.isBedWarsInDevelopment() ? null : "")
+                .build());
+        inventory.setItem(25, new ItemBuilder(Items.PRACTICE_BASE.clone())
+                .addLoreLine("&7&oEstado: " + (globalServerSettings.isPracticeInDevelopment() ? "&3&oEn Desarrollo" : "&8..."))
+                .addLoreLine("")
+                .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : "&7Jugadores en linea: &8...")
+                .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : ProxyStats.getDefaultServerCapacity())
+                .addLoreLine(globalServerSettings.isPracticeInDevelopment() ? null : "")
+                .build());
     }
     
     @Override

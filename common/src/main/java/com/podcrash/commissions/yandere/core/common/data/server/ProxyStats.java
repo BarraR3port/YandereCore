@@ -80,12 +80,34 @@ public final class ProxyStats {
         return progress + " &e" + formattedPercentage + "%";
     }
     
-    public String getCurrentTargetServerCapacity(ServerType type, GlobalServerSettings settings){
+    public static String getDefaultServerCapacity(){
+        int maxPlayers = 1000;
+        int currentPlayers = 0;
+        double l1 = ((maxPlayers - currentPlayers) / (double) (maxPlayers)) * 10;
+        int locked = (int) l1;
+        int unlocked = 10 - locked;
+        if (locked < 0 || unlocked < 0){
+            locked = 10;
+            unlocked = 0;
+        }
+        String progress = "&8 [{progress}&8]".replace("{progress}", "&c" + String.valueOf(new char[unlocked]).replace("\0", "■") + "&7" + String.valueOf(new char[locked]).replace("\0", "■"));
+        double percentage = ((double) currentPlayers / (double) maxPlayers) * 100;
+        String formattedPercentage = new DecimalFormat("####.#").format(percentage);
+        return progress + " &e" + formattedPercentage + "%";
+    }
+    
+    public int getCurrentTargetServerCapacity(ServerType type){
         int serversSize = (int) servers.values().stream().filter(server -> server.getServerType() == type).count();
-        if (serversSize == 0) return null;
+        if (serversSize == 0) return 0;
+        return servers.values().stream().filter(server -> server.getServerType().equals(type)).mapToInt(Server::getOnlinePlayers).sum();
+    }
+    
+    public String getCurrentTargetServerCapacityFormatted(ServerType type, GlobalServerSettings settings){
+        int current = getCurrentTargetServerCapacity(type);
+        int serversSize = (int) servers.values().stream().filter(server -> server.getServerType() == type).count();
+        if (serversSize == 0) return current + "/" + 75;
         int maxPlayers = settings.getMax(type) * serversSize;
-        int currentPlayers = servers.values().stream().filter(server -> server.getServerType().equals(type)).mapToInt(Server::getOnlinePlayers).sum();
-        return currentPlayers + "/" + maxPlayers;
+        return getCurrentTargetServerCapacity(type) + "/" + maxPlayers;
     }
     
 }

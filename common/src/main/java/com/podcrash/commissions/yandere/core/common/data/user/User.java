@@ -191,6 +191,7 @@ public class User {
     }
     
     public HashMap<UUID, PunishType> getPunishments(){
+        if (punishments == null) return new HashMap<>();
         return this.punishments;
     }
     
@@ -240,6 +241,24 @@ public class User {
         }
     }
     
+    public void prevPlayerVisibility(){
+        PlayerVisibility visibility = PlayerVisibility.valueOf(properties.get("lobby-player-visibility"));
+        switch(visibility){
+            case ALL:{
+                properties.put("lobby-player-visibility", PlayerVisibility.NONE.toString());
+                break;
+            }
+            case RANKS:{
+                properties.put("lobby-player-visibility", PlayerVisibility.ALL.toString());
+                break;
+            }
+            case NONE:{
+                properties.put("lobby-player-visibility", PlayerVisibility.RANKS.toString());
+                break;
+            }
+        }
+    }
+    
     public void nextJoinArenaType(ServerType serverType){
         switch(serverType){
             case SKY_WARS:{
@@ -250,6 +269,23 @@ public class User {
             case LOBBY_BED_WARS:
             case BED_WARS:{
                 JoinBedWarsArenaType type = JoinBedWarsArenaType.valueOf(properties.get("lobby-bw-join-type")).getNext();
+                properties.replace("lobby-bw-join-type", type.toString());
+                break;
+            }
+            
+        }
+    }
+    
+    public void prevJoinArenaType(ServerType serverType){
+        switch(serverType){
+            case SKY_WARS:{
+                JoinSkyWarsArenaType type = JoinSkyWarsArenaType.valueOf(properties.get("lobby-sw-join-type")).getPrevious();
+                properties.replace("lobby-sw-join-type", type.toString());
+                break;
+            }
+            case LOBBY_BED_WARS:
+            case BED_WARS:{
+                JoinBedWarsArenaType type = JoinBedWarsArenaType.valueOf(properties.get("lobby-bw-join-type")).getPrevious();
                 properties.replace("lobby-bw-join-type", type.toString());
                 break;
             }

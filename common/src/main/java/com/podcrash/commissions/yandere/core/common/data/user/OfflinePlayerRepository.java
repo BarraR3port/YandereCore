@@ -47,6 +47,11 @@ public final class OfflinePlayerRepository extends IPlayerRepository {
     }
     
     @Override
+    public User getCachedPlayerOrCreate(String name, UUID uuid, String address){
+        return null;
+    }
+    
+    @Override
     public User getPlayer(UUID uuid){
         return getCachedPlayer(uuid);
     }
@@ -57,10 +62,11 @@ public final class OfflinePlayerRepository extends IPlayerRepository {
     }
     
     @Override
-    public void createPlayer(String name, UUID uuid, String address){
+    public OfflineUser createPlayer(String name, UUID uuid, String address){
         OfflineUser user = new OfflineUser(name, uuid);
         user.setAddress(address);
         list.put(uuid, user);
+        return user;
     }
     
     @Override

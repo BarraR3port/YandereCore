@@ -81,7 +81,7 @@ public abstract class LobbyPlayerEvents extends MainEvents {
         if (nbtItem.hasTag("lobby-item")){
             new LobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
         } else if (nbtItem.hasTag("lobby-multi-lobby")){
-            new MultiLobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
+            new MultiLobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer()), true).open();
         } else if (nbtItem.hasTag("command")){
             String command = nbtItem.getTag("command").replace("_", " ");
             e.getPlayer().performCommand(command);
@@ -93,39 +93,73 @@ public abstract class LobbyPlayerEvents extends MainEvents {
                 return;
             }
             Main.getInstance().getCoolDownManager().removeCoolDown(p.getUniqueId(), CoolDownType.ITEM_USE);
-            
+            boolean next = !p.isSneaking();
             User user = Main.getInstance().getPlayers().getCachedPlayer(p.getUniqueId());
             PlayerVisibility currentPlayerVisibility = user.getPlayerVisibility();
-            user.nextPlayerVisibility();
-            Main.getInstance().getPlayers().savePlayer(user);
-            for ( Player player : Bukkit.getOnlinePlayers() ){
-                if (player.getUniqueId().equals(p.getUniqueId())) continue;
+            if (next){
+                user.nextPlayerVisibility();
+                Main.getInstance().getPlayers().savePlayer(user);
+                for ( Player player : Bukkit.getOnlinePlayers() ){
+                    if (player.getUniqueId().equals(p.getUniqueId())) continue;
+                    switch(currentPlayerVisibility){
+                        case ALL:
+                            final User spigotUser = Main.getInstance().getPlayers().getCachedPlayer(player.getUniqueId());
+                            if (spigotUser.getRank() == Rank.USUARIO){
+                                p.hidePlayer(player);
+                            }
+                            break;
+                        case RANKS:
+                            p.hidePlayer(player);
+                            break;
+                        case NONE:
+                            p.showPlayer(player);
+                            break;
+                    }
+                }
                 switch(currentPlayerVisibility){
                     case ALL:
-                        final User spigotUser = Main.getInstance().getPlayers().getCachedPlayer(player.getUniqueId());
-                        if (spigotUser.getRank() == Rank.USUARIO){
-                            p.hidePlayer(player);
-                        }
+                        p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_RANKS.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_RANKS.getItem());
                         break;
                     case RANKS:
-                        p.hidePlayer(player);
+                        p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_NONE.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_NONE.getItem());
                         break;
                     case NONE:
-                        p.showPlayer(player);
+                        p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_ALL.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_ALL.getItem());
+                        break;
+                }
+            } else {
+                user.prevPlayerVisibility();
+                Main.getInstance().getPlayers().savePlayer(user);
+                for ( Player player : Bukkit.getOnlinePlayers() ){
+                    if (player.getUniqueId().equals(p.getUniqueId())) continue;
+                    switch(currentPlayerVisibility){
+                        case ALL:
+                            p.showPlayer(player);
+                            break;
+                        case RANKS:
+                            final User spigotUser = Main.getInstance().getPlayers().getCachedPlayer(player.getUniqueId());
+                            if (spigotUser.getRank() == Rank.USUARIO){
+                                p.showPlayer(player);
+                            }
+                            break;
+                        case NONE:
+                            p.hidePlayer(player);
+                            break;
+                    }
+                }
+                switch(currentPlayerVisibility){
+                    case ALL:
+                        p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_NONE.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_NONE.getItem());
+                        break;
+                    case RANKS:
+                        p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_ALL.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_ALL.getItem());
+                        break;
+                    case NONE:
+                        p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_RANKS.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_RANKS.getItem());
                         break;
                 }
             }
-            switch(currentPlayerVisibility){
-                case ALL:
-                    p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_RANKS.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_RANKS.getItem());
-                    break;
-                case RANKS:
-                    p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_NONE.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_NONE.getItem());
-                    break;
-                case NONE:
-                    p.getInventory().setItem(Items.LOBBY_PLAYER_VISIBILITY_ALL.getSlot(), Items.LOBBY_PLAYER_VISIBILITY_ALL.getItem());
-                    break;
-            }
+    
             Main.getInstance().getCoolDownManager().addCoolDown(new LobbyCoolDown(p.getUniqueId(), 1));
             p.updateInventory();
         } else if (nbtItem.hasTag("lobby-player-join-arena")){
@@ -256,11 +290,15 @@ public abstract class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawnEvent(PlayerRespawnEvent e){
+        if (e.getPlayer().hasMetadata("NPC"))
+            return;
         Items.setLobbyItems(e.getPlayer());
     }
     
     @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawnEvent(PlayerMoveEvent e){
+        if (e.getPlayer().hasMetadata("NPC"))
+            return;
         if (e.getPlayer().getLocation().getY() < -4){
             e.getPlayer().teleport(e.getPlayer().getWorld().getSpawnLocation());
         }
@@ -291,6 +329,8 @@ public abstract class LobbyPlayerEvents extends MainEvents {
     
     @EventHandler
     public void onPlayerMoveEvent(PlayerMoveEvent e){
+        if (e.getPlayer().hasMetadata("NPC"))
+            return;
         if (!Settings.DEBUG){
             if (e.getTo().getBlockY() <= -80){
                 e.getPlayer().teleport(e.getPlayer().getWorld().getSpawnLocation());

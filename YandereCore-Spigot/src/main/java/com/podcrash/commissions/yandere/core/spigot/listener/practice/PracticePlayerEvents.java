@@ -119,7 +119,7 @@ public final class PracticePlayerEvents extends MainEvents {
         if (nbtItem.hasTag("lobby-item")){
             new LobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
         } else if (nbtItem.hasTag("lobby-multi-lobby")){
-            new MultiLobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer())).open();
+            new MultiLobbyMenu(LyApi.getPlayerMenuUtility(e.getPlayer()), true).open();
         } else if (nbtItem.hasTag("command")){
             String command = nbtItem.getTag("command").replace("_", " ");
             e.getPlayer().performCommand(command);

@@ -37,17 +37,20 @@ public abstract class IPlayerRepository extends MongoDB<UUID, User> {
     
     public abstract User getPlayer(String name);
     
+    public abstract User getCachedPlayerOrCreate(String name, UUID uuid, String address);
+    
     public abstract User getPlayer(UUID uuid);
     
     public abstract User getPlayer(UUID uuid, String name);
     
-    public abstract void createPlayer(String name, UUID uuid, String address);
+    public abstract User createPlayer(String name, UUID uuid, String address);
     
-    public void getOrCreatePlayer(String name, UUID uuid, String address){
+    public User getOrCreatePlayer(String name, UUID uuid, String address){
         User user = getPlayer(uuid, name);
         if (user == null){
-            createPlayer(name, uuid, address);
+            user = createPlayer(name, uuid, address);
         }
+        return user;
     }
     
     public void unloadPlayer(UUID uuid){

@@ -42,13 +42,25 @@ public class PlayerRepository extends IPlayerRepository {
                 return user;
             }
         }
-        
+    
         Document doc = database.findOneFast(TABLE_NAME, Filters.eq("name", name));
         if (doc == null) throw new UserNotFoundException(name);
         User user = Api.getGson().fromJson(doc.toJson(), User.class);
         if (user == null){
             throw new UserNotFoundException(name);
         }
+        list.put(user.getUUID(), user);
+        return user;
+    }
+    
+    @Override
+    public User getCachedPlayerOrCreate(String name, UUID uuid, String address){
+        for ( User user : list.values() ){
+            if (user.getName().startsWith(name) || user.getName().equalsIgnoreCase(name)){
+                return user;
+            }
+        }
+        User user = getOrCreatePlayer(name, uuid, address);
         list.put(user.getUUID(), user);
         return user;
     }
@@ -86,7 +98,7 @@ public class PlayerRepository extends IPlayerRepository {
     
     
     @Override
-    public void createPlayer(String name, UUID uuid, String address){
+    public User createPlayer(String name, UUID uuid, String address){
         User user = new User(name, uuid);
         user.setAddress(address);
         final net.luckperms.api.model.user.User luckPermsUser = LuckPermsProvider.get().getUserManager().getUser(uuid);
@@ -95,6 +107,7 @@ public class PlayerRepository extends IPlayerRepository {
         }
         database.insertOne(TABLE_NAME, user);
         list.put(uuid, user);
+        return user;
     }
     
     @Override

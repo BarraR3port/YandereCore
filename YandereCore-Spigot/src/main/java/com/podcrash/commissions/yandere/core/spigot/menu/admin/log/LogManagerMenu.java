@@ -8,6 +8,7 @@ import com.podcrash.commissions.yandere.core.common.data.logs.LogType;
 import com.podcrash.commissions.yandere.core.common.data.user.User;
 import com.podcrash.commissions.yandere.core.spigot.Main;
 import net.lymarket.lyapi.spigot.menu.IPlayerMenuUtility;
+import net.lymarket.lyapi.spigot.menu.Menu;
 import net.lymarket.lyapi.spigot.menu.PaginatedMenu;
 import net.lymarket.lyapi.spigot.utils.ItemBuilder;
 import net.lymarket.lyapi.spigot.utils.NBTItem;
@@ -29,14 +30,27 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
     private LogType filter;
     private int maxItems = 0;
     private boolean loading = true;
+    private final Menu prevMenu;
+    private boolean locked;
+    
+    
+    public LogManagerMenu(IPlayerMenuUtility playerMenuUtility, User targetUser, Menu prevMenu){
+        this(playerMenuUtility, targetUser, LogMenuDisplayType.PLAYER, DBOrderType.DATE_ASCENDING, LogType.UNKNOWN, false, prevMenu);
+    }
     
     public LogManagerMenu(IPlayerMenuUtility playerMenuUtility, User targetUser){
-        super(playerMenuUtility, true);
-        filter = LogType.UNKNOWN;
-        orderType = DBOrderType.DATE_ASCENDING;
+        this(playerMenuUtility, targetUser, LogMenuDisplayType.PLAYER, DBOrderType.DATE_ASCENDING, LogType.UNKNOWN, false, null);
+    }
+    
+    public LogManagerMenu(IPlayerMenuUtility playerMenuUtility, User targetUser, LogMenuDisplayType type, DBOrderType orderType, LogType filer, boolean locked, Menu prevMenu){
+        super(playerMenuUtility, prevMenu != null);
+        this.prevMenu = prevMenu;
+        this.filter = filer;
+        this.orderType = orderType;
         this.user = targetUser;
         super.maxItemsPerPage = slots.length;
-        type = LogMenuDisplayType.PLAYER;
+        this.type = type;
+        this.locked = locked;
         int[] borderSlots = {
                 9, 10, 11, 12, 13, 14, 15, 16, 17,
                 18, 26,
@@ -49,12 +63,13 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
     }
     
     public LogManagerMenu(IPlayerMenuUtility playerMenuUtility){
-        super(playerMenuUtility, true);
+        super(playerMenuUtility, false);
         filter = LogType.UNKNOWN;
         orderType = DBOrderType.DATE_ASCENDING;
         this.user = Main.getInstance().getPlayers().getCachedPlayer(getOwner().getUniqueId());
         super.maxItemsPerPage = slots.length;
         type = LogMenuDisplayType.ALL;
+        this.prevMenu = null;
         int[] borderSlots = {
                 9, 10, 11, 12, 13, 14, 15, 16, 17,
                 18, 26,
@@ -230,41 +245,53 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                     .addTag("move-amount", 10)
                     .build());
         }
+    
+        if (locked){
+            inventory.setItem(27, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
+                    .setHeadSkin("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2E0ZmFiM2ZkOTdlYjdlY2Y0OGFiNGZkMzI3ZTA5M2U4ODZmNGUyMTdhYWI2OTU4NTMxM2MyN2E1MDM1ODMxYSJ9fX0=")
+                    .setDisplayName("&eRe Cargar Página ⇝ &a")
+                    .addLoreLine(" &4• &eClick para recargar la página.")
+                    .addTag("re-charge", "re-charge")
+                    .build());
+        } else {
+            inventory.setItem(18, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
+                    .setHeadSkin(orderType == DBOrderType.DATE_ASCENDING ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRhMDI3NDc3MTk3YzZmZDdhZDMzMDE0NTQ2ZGUzOTJiNGE1MWM2MzRlYTY4YzhiN2JjYzAxMzFjODNlM2YifX19" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmNjYmY5ODgzZGQzNTlmZGYyMzg1YzkwYTQ1OWQ3Mzc3NjUzODJlYzQxMTdiMDQ4OTVhYzRkYzRiNjBmYyJ9fX0=")
+                    .setDisplayName("&eOrden por Fecha ⇝ &a")
+                    .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
+                    .addLoreLine(" &4• &eClick para cambiar a: " + DBOrderType.DATE_ASCENDING.getOrderName())
+                    .addTag("order", DBOrderType.DATE_ASCENDING.name())
+                    .setEnchanted(orderType == DBOrderType.DATE_ASCENDING)
+                    .build());
         
-        inventory.setItem(18, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
-                .setHeadSkin(orderType == DBOrderType.DATE_ASCENDING ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRhMDI3NDc3MTk3YzZmZDdhZDMzMDE0NTQ2ZGUzOTJiNGE1MWM2MzRlYTY4YzhiN2JjYzAxMzFjODNlM2YifX19" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmNjYmY5ODgzZGQzNTlmZGYyMzg1YzkwYTQ1OWQ3Mzc3NjUzODJlYzQxMTdiMDQ4OTVhYzRkYzRiNjBmYyJ9fX0=")
-                .setDisplayName("&eOrden por Fecha ⇝ &a")
-                .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
-                .addLoreLine(" &4• &eClick para cambiar a: " + DBOrderType.DATE_ASCENDING.getOrderName())
-                .addTag("order", DBOrderType.DATE_ASCENDING.name())
-                .setEnchanted(orderType == DBOrderType.DATE_ASCENDING)
-                .build());
+            if (type.equals(LogMenuDisplayType.ALL)){
+                inventory.setItem(27, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
+                        .setHeadSkin(
+                                (orderType == DBOrderType.ALPHABETICAL_ASCENDING || orderType == DBOrderType.ALPHABETICAL_DESCENDING
+                                        ? (orderType == DBOrderType.ALPHABETICAL_ASCENDING ?
+                                        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjBhZmQ3NzdkNTU3YTIwN2JhYzdhYWQ4NDIxZmRmNzg4ZDY2ODU4NzNjNDk1MTVkNTUyOTFlOTMwNjk5ZiJ9fX0=" :
+                                        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzYxNTdiOWMxMDEzMTI4MzhiMTI4ZTcxZDU1YmZjOWFkNGUyNmI1OTE5YTczODA3YjEzNDY2YTc2ZDVlMCJ9fX0=")
+                                        : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTdkZDM0OTI0ZDJiNmEyMTNhNWVkNDZhZTU3ODNmOTUzNzNhOWVmNWNlNWM4OGY5ZDczNjcwNTk4M2I5NyJ9fX0="))
+                    
+                    
+                        .setDisplayName("&eOrden Alfabético ⇝ &a")
+                        .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
+                        .addLoreLine(" &4• &eSiguiente Orden: " + (orderType == DBOrderType.ALPHABETICAL_DESCENDING ? DBOrderType.DATE_ASCENDING.getOrderName() : DBOrderType.ALPHABETICAL_DESCENDING.getOrderName()))
+                        .addLoreLine(" &4• &eClick para cambiar el orden.")
+                        .addTag("order", orderType == DBOrderType.ALPHABETICAL_DESCENDING ? DBOrderType.ALPHABETICAL_ASCENDING.name() : DBOrderType.ALPHABETICAL_DESCENDING.name())
+                        .setEnchanted(orderType == DBOrderType.ALPHABETICAL_DESCENDING || orderType == DBOrderType.ALPHABETICAL_ASCENDING)
+                        .build());
+            }
         
-        inventory.setItem(27, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
-                .setHeadSkin(
-                        (orderType == DBOrderType.ALPHABETICAL_ASCENDING || orderType == DBOrderType.ALPHABETICAL_DESCENDING
-                                ? (orderType == DBOrderType.ALPHABETICAL_ASCENDING ?
-                                "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjBhZmQ3NzdkNTU3YTIwN2JhYzdhYWQ4NDIxZmRmNzg4ZDY2ODU4NzNjNDk1MTVkNTUyOTFlOTMwNjk5ZiJ9fX0=" :
-                                "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzYxNTdiOWMxMDEzMTI4MzhiMTI4ZTcxZDU1YmZjOWFkNGUyNmI1OTE5YTczODA3YjEzNDY2YTc2ZDVlMCJ9fX0=")
-                                : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTdkZDM0OTI0ZDJiNmEyMTNhNWVkNDZhZTU3ODNmOTUzNzNhOWVmNWNlNWM4OGY5ZDczNjcwNTk4M2I5NyJ9fX0="))
-        
-        
-                .setDisplayName("&eOrden Alfabético ⇝ &a")
-                .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
-                .addLoreLine(" &4• &eSiguiente Orden: " + (orderType == DBOrderType.ALPHABETICAL_DESCENDING ? DBOrderType.DATE_ASCENDING.getOrderName() : DBOrderType.ALPHABETICAL_DESCENDING.getOrderName()))
-                .addLoreLine(" &4• &eClick para cambiar el orden.")
-                .addTag("order", orderType == DBOrderType.ALPHABETICAL_DESCENDING ? DBOrderType.ALPHABETICAL_ASCENDING.name() : DBOrderType.ALPHABETICAL_DESCENDING.name())
-                .setEnchanted(orderType == DBOrderType.ALPHABETICAL_DESCENDING || orderType == DBOrderType.ALPHABETICAL_ASCENDING)
-                .build());
-        
-        inventory.setItem(36, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
-                .setHeadSkin(orderType == DBOrderType.DATE_DESCENDING ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY3NDE2Y2U5ZTgyNmU0ODk5YjI4NGJiMGFiOTQ4NDNhOGY3NTg2ZTUyYjcxZmMzMTI1ZTAyODZmOTI2YSJ9fX0=" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzI0MzE5MTFmNDE3OGI0ZDJiNDEzYWE3ZjVjNzhhZTQ0NDdmZTkyNDY5NDNjMzFkZjMxMTYzYzBlMDQzZTBkNiJ9fX0=")
-                .setDisplayName("&eOrden por Fecha ⇝ &a")
-                .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
-                .addLoreLine(" &4• &eClick para cambiar a: " + DBOrderType.DATE_DESCENDING.getOrderName())
-                .addTag("order", DBOrderType.DATE_DESCENDING.name())
-                .setEnchanted(orderType == DBOrderType.DATE_DESCENDING)
-                .build());
+            inventory.setItem(36, new ItemBuilder(XMaterial.PLAYER_HEAD.parseItem())
+                    .setHeadSkin(orderType == DBOrderType.DATE_DESCENDING ? "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmY3NDE2Y2U5ZTgyNmU0ODk5YjI4NGJiMGFiOTQ4NDNhOGY3NTg2ZTUyYjcxZmMzMTI1ZTAyODZmOTI2YSJ9fX0=" : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzI0MzE5MTFmNDE3OGI0ZDJiNDEzYWE3ZjVjNzhhZTQ0NDdmZTkyNDY5NDNjMzFkZjMxMTYzYzBlMDQzZTBkNiJ9fX0=")
+                    .setDisplayName("&eOrden por Fecha ⇝ &a")
+                    .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
+                    .addLoreLine(" &4• &eClick para cambiar a: " + DBOrderType.DATE_DESCENDING.getOrderName())
+                    .addTag("order", DBOrderType.DATE_DESCENDING.name())
+                    .setEnchanted(orderType == DBOrderType.DATE_DESCENDING)
+                    .build());
+        }
+    
     }
     
     @Override
@@ -279,6 +306,13 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
         final ItemStack item = e.getCurrentItem();
         NBTItem nbtItem = new NBTItem(item);
         if (nbtItem.hasTag("ly-menu-close")){
+            if (this.isLinked()){
+                if (prevMenu != null){
+                    prevMenu.open();
+                }
+            } else {
+                getOwner().closeInventory();
+            }
             //new AdminMenu(this.playerMenuUtility, user).open();
         }
         if (loading){
@@ -286,33 +320,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
             e.setCancelled(true);
             return;
         }
-        if (nbtItem.hasTag("ly-menu-next")){
-            loading = true;
-            nextPage();
-            getOwner().updateInventory();
-        } else if (nbtItem.hasTag("ly-menu-previous")){
-            loading = true;
-            prevPage();
-            getOwner().updateInventory();
-        } else if (nbtItem.hasTag("filter")){
-            LogType postFiler = LogType.valueOf(nbtItem.getString("filter"));
-            if (postFiler == filter)
-                return;
-            loading = true;
-            filter = postFiler;
-            page = 0;
-            index = 0;
-            reloadPage();
-        } else if (nbtItem.hasTag("order")){
-            DBOrderType order = DBOrderType.valueOf(nbtItem.getString("order"));
-            if (order == orderType)
-                return;
-            loading = true;
-            orderType = order;
-            page = 0;
-            index = 0;
-            reloadPage();
-        } else if (nbtItem.hasTag("go")){
+        if (nbtItem.hasTag("go")){
             String type = nbtItem.getString("go");
             if (type.equals("back")){
                 int amount = nbtItem.getInteger("move-amount");
@@ -329,9 +337,44 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                 reloadPage();
             }
         }
+        if (locked){
+            if (nbtItem.hasTag("re-charge")){
+                loading = true;
+                reloadPage();
+            }
+        } else {
+            if (nbtItem.hasTag("ly-menu-next")){
+                loading = true;
+                nextPage();
+                getOwner().updateInventory();
+            } else if (nbtItem.hasTag("ly-menu-previous")){
+                loading = true;
+                prevPage();
+                getOwner().updateInventory();
+            } else if (nbtItem.hasTag("filter")){
+                LogType postFiler = LogType.valueOf(nbtItem.getString("filter"));
+                if (postFiler == filter)
+                    return;
+                loading = true;
+                filter = postFiler;
+                page = 0;
+                index = 0;
+                reloadPage();
+            } else if (nbtItem.hasTag("order")){
+                DBOrderType order = DBOrderType.valueOf(nbtItem.getString("order"));
+                if (order == orderType)
+                    return;
+                loading = true;
+                orderType = order;
+                page = 0;
+                index = 0;
+                reloadPage();
+            }
+        
+        }
     }
     
-    private enum LogMenuDisplayType {
+    public enum LogMenuDisplayType {
         PLAYER,
         ALL,
     }

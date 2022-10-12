@@ -198,4 +198,20 @@ public abstract class ILogRepository extends MongoDB<UUID, Log> {
         }
         return 0;
     }
+    
+    public LinkedList<Log> getPlayerLogs(String name){
+        LinkedList<Log> list = new LinkedList<>();
+        try {
+            MongoCollection<Document> collection = database.getDatabase().getCollection(TABLE_NAME);
+            FindIterable<Document> documents = collection.find(eq("owner", name));
+            MongoCursor<Document> cursor = documents.cursor();
+            while (cursor.hasNext()) {
+                Log current = database.getGson().fromJson(cursor.next().toJson(), Log.class);
+                list.add(current);
+            }
+        } catch (MongoTimeoutException TimeOut) {
+            TimeOut.printStackTrace();
+        }
+        return list;
+    }
 }

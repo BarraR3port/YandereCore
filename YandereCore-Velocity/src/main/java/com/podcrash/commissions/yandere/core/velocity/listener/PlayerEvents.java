@@ -143,9 +143,9 @@ public class PlayerEvents {
     
     @Subscribe
     public void onPlayerLogin(LoginEvent e){
-        User player = VMain.getInstance().getPlayers().getCachedPlayer(e.getPlayer().getUsername());
-        if (player == null) return;
         String address = e.getPlayer().getRemoteAddress().getAddress().toString().split(":")[0].replace("/", "");
+        User player = VMain.getInstance().getPlayers().getCachedPlayerOrCreate(e.getPlayer().getUsername(), e.getPlayer().getUniqueId(), address);
+        if (player == null) return;
         Date currentDate = new Date();
         for ( Ban ban : pm.getBans().getBansByIp(address) ){
             System.out.println("Current Date: " + currentDate);
