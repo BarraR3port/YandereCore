@@ -26,11 +26,11 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
             19, 20, 21, 22, 23, 24, 25,
             28, 29, 30, 31, 32, 33, 34,
             37, 38, 39, 40, 41, 42, 43};
+    private final Menu prevMenu;
     private DBOrderType orderType;
     private LogType filter;
     private int maxItems = 0;
     private boolean loading = true;
-    private final Menu prevMenu;
     private boolean locked;
     
     
@@ -271,8 +271,8 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                                         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjBhZmQ3NzdkNTU3YTIwN2JhYzdhYWQ4NDIxZmRmNzg4ZDY2ODU4NzNjNDk1MTVkNTUyOTFlOTMwNjk5ZiJ9fX0=" :
                                         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzYxNTdiOWMxMDEzMTI4MzhiMTI4ZTcxZDU1YmZjOWFkNGUyNmI1OTE5YTczODA3YjEzNDY2YTc2ZDVlMCJ9fX0=")
                                         : "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTdkZDM0OTI0ZDJiNmEyMTNhNWVkNDZhZTU3ODNmOTUzNzNhOWVmNWNlNWM4OGY5ZDczNjcwNTk4M2I5NyJ9fX0="))
-                    
-                    
+        
+        
                         .setDisplayName("&eOrden Alfabético ⇝ &a")
                         .addLoreLine(" &4• &7Orden actual: &f" + orderType.getOrderName())
                         .addLoreLine(" &4• &eSiguiente Orden: " + (orderType == DBOrderType.ALPHABETICAL_DESCENDING ? DBOrderType.DATE_ASCENDING.getOrderName() : DBOrderType.ALPHABETICAL_DESCENDING.getOrderName()))
@@ -370,7 +370,7 @@ public class LogManagerMenu extends PaginatedMenu<Log> {
                 index = 0;
                 reloadPage();
             }
-        
+    
         }
     }
     

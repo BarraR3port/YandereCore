@@ -15,10 +15,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class MultiLobbyMenu extends UpdatableMenu {
     
-    private ServerType serverType;
     private final int[] serverSlot = {
             10, 11, 12, 13, 14, 15, 16,
             19, 20, 21, 22, 23, 24, 25};
+    private ServerType serverType;
     
     public MultiLobbyMenu(IPlayerMenuUtility playerMenuUtility, ServerType serverType, boolean linked){
         super(playerMenuUtility, linked);
