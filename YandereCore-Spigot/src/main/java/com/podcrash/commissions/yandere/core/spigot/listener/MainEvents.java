@@ -139,7 +139,7 @@ public abstract class MainEvents implements Listener {
         }
     }
     
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerCommand(PlayerCommandPreprocessEvent e){
         Main.getInstance().getLogs().createLog(LogType.COMMAND, Settings.PROXY_SERVER_NAME, e.getMessage(), e.getPlayer().getName());
     }

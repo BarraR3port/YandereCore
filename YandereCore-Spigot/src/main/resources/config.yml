@@ -1,4 +1,4 @@
-config-version: 1.1
+config-version: 1.2
 global:
   prefix: " &8&l» "
   server-type: "" #LOBBY, REGISTRO, SKY_WARS, LOBBY_BED_WARS, BED_WARS, TNT_TAG, PRACTICE, SURVIVAL
@@ -24,3 +24,31 @@ db:
   password: JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK
   database: yandere
   urli: "mongodb://yandere:JF993KKLALLDJJ2KLALLGJASKJ29I9ASDK@172.18.0.1:27017/"
+commands-hidden:
+  - "?"
+  - "about"
+  - "plugins"
+  - "pl"
+  - "ver"
+  - "version"
+  - "icanhasbukkit"
+  - "worldedit"
+  - "fawe"
+  - "fawecancel"
+  - "velocity"
+  - "anvil"
+  - ";"
+  - "we"
+  - "brush"
+  - "vis"
+  - "visual"
+  - "visualize"
+commands-hidden-starts-with:
+  - "//"
+  - "/bukkit"
+  - "/worldedit"
+  - "/luckperms"
+  - "/placeholderapi"
+  - "/jumppads"
+  - "/fastasyncworldedit"
+  - "/holographicdisplays"

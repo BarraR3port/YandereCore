@@ -52,6 +52,7 @@ public class ServerRepository extends IServerRepository {
                 database.insertOne(TABLE_NAME, server);
                 this.server = server;
                 Main.getInstance().getConfig().set("web.uuid", server.getUuid().toString());
+                Main.getInstance().getConfig().set("config-version", 1.1);
                 Main.getInstance().saveConfig();
             } else {
                 Document doc = database.findOneFast(TABLE_NAME, Filters.eq("uuid", serverID));

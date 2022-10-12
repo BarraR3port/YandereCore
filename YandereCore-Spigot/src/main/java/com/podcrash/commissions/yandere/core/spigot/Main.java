@@ -46,6 +46,7 @@ import com.podcrash.commissions.yandere.core.spigot.inv.InvManager;
 import com.podcrash.commissions.yandere.core.spigot.items.Items;
 import com.podcrash.commissions.yandere.core.spigot.lang.ESLang;
 import com.podcrash.commissions.yandere.core.spigot.listener.DefaultEvents;
+import com.podcrash.commissions.yandere.core.spigot.listener.PacketManager;
 import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.BWPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.bedwars.lobby.LBWPlayerEvents;
 import com.podcrash.commissions.yandere.core.spigot.listener.lobby.MainLobbyPlayerEvents;
@@ -265,6 +266,7 @@ public final class Main extends JavaPlugin implements YandereApi<Config> {
         //new PacketManager( this );
         registerCommands();
         overrideSpigotDefaultMessages();
+        new PacketManager(this);
         getServer().getPluginManager().callEvent(new PluginEnableEvent(this));
         
     }
@@ -456,7 +458,7 @@ public final class Main extends JavaPlugin implements YandereApi<Config> {
     }
     
     public void overrideSpigotDefaultMessages(){
-        org.spigotmc.SpigotConfig.unknownCommandMessage = Utils.format("  &8&l▸ &cComando no encontrado, usa &e/ayuda &cpa ver los comandos disponibles.");
+        org.spigotmc.SpigotConfig.unknownCommandMessage = Utils.format(" &8&l▸ &cComando no encontrado, usa &e/ayuda &cpa ver los comandos disponibles.");
     }
     
     public IServerRepository getServerRepository(){
