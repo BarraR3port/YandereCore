@@ -33,13 +33,12 @@ public class ChatClearCommand implements ILyCommand {
                     Bukkit.broadcastMessage(Main.getLang().getMSG("chat.clear.all", "player", p.getName()));
                 }
                 return new CommandResponse();
+            } else {
+                for ( int i = 0; i < 100; i++ ){
+                    p.sendMessage("");
+                }
+                Main.getLang().sendMsg(p, "chat.clear.own");
             }
-            Utils.sendMessage(p, "&8| &eComandos Para Limpiar el Chat &8|");
-            Utils.sendMessage(p, " ");
-            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/cc &e<jugador>", Arrays.asList("&7Con este comando le limpias", "&7el chat a un jugador específico."), "/cc "));
-            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/cc own", Arrays.asList("&7Con este comando limpias", "&7tu propio chat."), "/cc own"));
-            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/cc all", Arrays.asList("&7Con este comando le limpias", "&7teleport an specific location."), "/cc all"));
-            Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/cc all -s", Arrays.asList("&7Con este comando le limpias", "&7teleport an specific location."), "/cc all -s"));
             return new CommandResponse();
         } else if (context.getArg(0).equalsIgnoreCase("help")){
             Utils.sendMessage(p, "&8| &eComandos Para Limpiar el Chat &8|");
