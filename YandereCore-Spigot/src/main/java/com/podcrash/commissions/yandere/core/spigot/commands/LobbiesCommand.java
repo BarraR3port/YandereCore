@@ -17,12 +17,12 @@ public final class LobbiesCommand implements ILyCommand {
             final Player player = (Player) context.getSender();
             if (context.getArgs().length == 0){
                 new MultiLobbyMenu(LyApi.getPlayerMenuUtility(player), false).open();
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
         }
-        
-        
-        return new CommandResponse();
+    
+    
+        return CommandResponse.accept();
     }
     
     @Tab

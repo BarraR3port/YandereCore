@@ -16,7 +16,7 @@ public class FlyCommand implements ILyCommand {
     public CommandResponse command(CommandContext context){
         if (!(context.getSender() instanceof Player)){
             Main.getLang().sendErrorMsg(context.getSender(), "only-players-can-use-this-command");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         Player p = (Player) context.getSender();
         if (context.getArgs().length == 0){
@@ -25,7 +25,7 @@ public class FlyCommand implements ILyCommand {
             p.setFlying(!fly);
             Main.getLang().sendMsg(p, "fly.chang", "fly", p.getAllowFlight() ? "&aActivado" : "&cDesactivado");
         } else {
-            if (!p.hasPermission("yandere.fly.others")) return new CommandResponse("yandere.fly.others");
+            if (!p.hasPermission("yandere.fly.others")) return CommandResponse.deny("yandere.fly.others");
             Player target = Bukkit.getPlayer(context.getArg(0));
             if (target != null){
                 boolean fly = target.getAllowFlight();
@@ -40,7 +40,7 @@ public class FlyCommand implements ILyCommand {
                 Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
             }
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

@@ -26,7 +26,7 @@ public class TpAllCommand implements ILyCommand {
                 Utils.sendMessage(context.getSender(), " ");
                 Utils.sendMessage(context.getSender(), Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/tp &e<jugador>", Arrays.asList("&7Con este comando ", "&7teleport to a friend."), "/tp "));
                 Utils.sendMessage(context.getSender(), Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageRunCommand("&c/tp &ex y z", Arrays.asList("&7Con este comando ", "&7teleport an specific location."), "/tp "));
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
         }
         if (context.getSender() instanceof Player){
@@ -42,13 +42,13 @@ public class TpAllCommand implements ILyCommand {
                 Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessage("&c/tpacept <id>", Arrays.asList("&7Con este comando ", "&7accept a Tpa request.")));
                 Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessage("&c/tpadeny <id>", Arrays.asList("&7Con este comando ", "&7deny a Tpa request.")));
                 */
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
         } else {
             Main.getLang().sendErrorMsg(context.getSender(), "only-players-can-use-this-command");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

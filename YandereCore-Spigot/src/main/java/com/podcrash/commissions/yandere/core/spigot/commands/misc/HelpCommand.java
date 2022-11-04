@@ -29,7 +29,7 @@ public class HelpCommand implements ILyCommand {
                 }
             }
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

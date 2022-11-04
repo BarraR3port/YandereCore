@@ -35,39 +35,39 @@ public class AdminCommand implements ILyCommand {
                 Main.getInstance().registerCommands();
                 Utils.sendMessage(context.getSender(), "&c&lYandere reloaded Successfully!");
                 Main.getInstance().getGlobalServerSettings().fetch();
-                return new CommandResponse();
+                return CommandResponse.accept();
             } else if (context.getArg(0).equalsIgnoreCase("debug")){
                 Settings.DEBUG = !Settings.DEBUG;
                 Main.getInstance().getConfig().set("global.debug", Settings.DEBUG);
                 Main.getInstance().getConfig().saveData();
                 Utils.sendMessage(context.getSender(), "&c&lYandere &cDEBUG " + (Settings.DEBUG ? "&aEnabled" : "&cDisabled"));
-                return new CommandResponse();
+                return CommandResponse.accept();
             } else if (context.getArg(0).equalsIgnoreCase("menu")){
                 if (context.getSender() instanceof Player){
                     Player player = (Player) context.getSender();
                     new ServerSettings(LyApi.getPlayerMenuUtility(player)).open();
                 }
-                return new CommandResponse();
+                return CommandResponse.accept();
             } else if (context.getArg(0).equalsIgnoreCase("fetch-global-settings")){
                 Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for Global Settings updates");
                 Main.getInstance().getGlobalServerSettings().fetch();
-                return new CommandResponse();
+                return CommandResponse.accept();
             } else if (context.getArg(0).equalsIgnoreCase("fetch-global-settings-general")){
                 Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for Global Settings updates (General)");
                 Main.getInstance().getGlobalServerSettings().fetch();
                 Main.getInstance().getSocket().sendCheckGlobalServerStatsFetchData();
-                return new CommandResponse();
+                return CommandResponse.accept();
             } else if (context.getArg(0).equalsIgnoreCase("refresh-plugins")){
                 Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for plugin updates");
                 Main.getInstance().getServerRepository().checkForPluginsUpdates();
-                return new CommandResponse();
+                return CommandResponse.accept();
             } else if (context.getArg(0).equalsIgnoreCase("refresh-plugins-general")){
                 Utils.sendMessage(context.getSender(), "&c&lYandere &7- Checking for plugin updates (General)");
                 Main.getInstance().getSocket().sendCheckPluginUpdates();
-                return new CommandResponse();
+                return CommandResponse.accept();
             } /*else if(context.getArg(0).equalsIgnoreCase("test-reload")){
                 LyApi.reloadConfigs();
-                return new CommandResponse();
+                return CommandResponse.accept();
             }*/
         }
         if (context.getSender() instanceof Player){
@@ -83,21 +83,21 @@ public class AdminCommand implements ILyCommand {
                     Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin homes <usuario>", Arrays.asList("&7Con este comando ves los homes de", "&7un usuario específico."), "/admin homes "));
                     Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageSuggestCommand("&c/admin reload", Arrays.asList("&7Con este comando se recarga", "&7la información de la config."), "/admin reload"));
                     Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageRunCommand("&c/admin debug", Arrays.asList("&7Con este comando activas o desactivas", "&7el modo debug."), "/admin debug"));
-                    return new CommandResponse();
+                    return CommandResponse.accept();
                 }
             } else if (context.getArgs().length == 2){
                 if (context.getArg(0).equalsIgnoreCase("menu")){
                     final User target = Main.getInstance().getPlayers().getCachedPlayer(context.getArg(1));
                     new AdminMenu(LyApi.getPlayerMenuUtility(p), target).open();
-                    return new CommandResponse();
+                    return CommandResponse.accept();
                 }
             }
             //final User target = Main.getInstance().getPlayers().getCachedPlayer(p.getName());
             //new AdminMenu(LyApi.getPlayerMenuUtility(p), target).open();
             new ServerSettings(LyApi.getPlayerMenuUtility(p)).open();
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
-        return new CommandResponse("yandere.admin");
+        return CommandResponse.deny("yandere.admin");
     }
     
     @Tab

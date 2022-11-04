@@ -18,17 +18,17 @@ public final class DelSpawnCommand implements ILyCommand {
             
             if (!p.hasPermission("yandere.admin")){
                 if (!p.hasPermission("yandere.admin.delspawn"))
-                    return new CommandResponse("yandere.admin.delspawn");
-                return new CommandResponse("yandere.admin");
+                    return CommandResponse.deny("yandere.admin.delspawn");
+                return CommandResponse.deny("yandere.admin");
             }
             
             Main.getInstance().getConfig().set("spawn.location", null);
             Main.getInstance().getConfig().saveData();
             
         }
-        
-        
-        return new CommandResponse();
+    
+    
+        return CommandResponse.accept();
     }
     
     

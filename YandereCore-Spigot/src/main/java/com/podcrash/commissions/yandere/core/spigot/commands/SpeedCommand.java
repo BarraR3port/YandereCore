@@ -14,14 +14,14 @@ public class SpeedCommand implements ILyCommand {
         
         if (!(context.getSender() instanceof Player)){
             Main.getLang().sendErrorMsg(context.getSender(), "only-players-can-use-this-command");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         
         Player p = (Player) context.getSender();
         
         if (context.getArgs().length == 0){
             Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/speed <velocidad>");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         
         try {
@@ -40,12 +40,12 @@ public class SpeedCommand implements ILyCommand {
             } else {
                 p.sendMessage("§cEl número que has ingresado no es válido. §a(1-10)");
             }
-            return new CommandResponse();
+            return CommandResponse.accept();
             
         } catch (NumberFormatException numex) {
             
             p.sendMessage("§cLa velocidad debe de ser un número entero.");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         
     }

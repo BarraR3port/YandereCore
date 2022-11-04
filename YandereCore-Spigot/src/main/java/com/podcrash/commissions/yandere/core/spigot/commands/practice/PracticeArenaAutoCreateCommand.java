@@ -31,10 +31,10 @@ public class PracticeArenaAutoCreateCommand implements ILyCommand {
                 } else {
                     p.sendMessage("Arena not found.");
                 }
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

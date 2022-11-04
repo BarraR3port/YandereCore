@@ -17,7 +17,7 @@ public final class GamemodeManager {
         if (!(sender instanceof Player)){
             if (argsLength == 1){
                 sendWrongSyntax(sender);
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             Player target = Bukkit.getPlayer(targetName);
             if (target != null){
@@ -27,10 +27,10 @@ public final class GamemodeManager {
                 map.put("player", target.getName());
                 map.put("gamemode", gamemodeText);
                 Main.getLang().sendMsg(sender, "gamemode.change-other", map);
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             Main.getLang().sendErrorMsg(sender, "player.not-found", "player", targetName);
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         
         Player p = (Player) sender;
@@ -39,7 +39,7 @@ public final class GamemodeManager {
             if (argsLength == 1 || (argsLength == 0 && targetName == null)){
                 p.setGameMode(gamemode);
                 Main.getLang().sendMsg(p, "gamemode.change", "gamemode", gamemodeText);
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             
             Player target = Bukkit.getPlayer(targetName);
@@ -50,12 +50,12 @@ public final class GamemodeManager {
                 map.put("player", target.getName());
                 map.put("gamemode", gamemodeText);
                 Main.getLang().sendMsg(p, "gamemode.change-other", map);
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             Main.getLang().sendErrorMsg(sender, "player.not-found", "player", targetName);
-            return new CommandResponse();
+            return CommandResponse.accept();
         } else {
-            return new CommandResponse("yandere.gamemode." + gamemode.name().toLowerCase());
+            return CommandResponse.deny("yandere.gamemode." + gamemode.name().toLowerCase());
         }
     }
     

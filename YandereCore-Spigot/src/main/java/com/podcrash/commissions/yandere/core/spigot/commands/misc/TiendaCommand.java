@@ -27,7 +27,7 @@ public class TiendaCommand implements ILyCommand {
                 }
             }
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

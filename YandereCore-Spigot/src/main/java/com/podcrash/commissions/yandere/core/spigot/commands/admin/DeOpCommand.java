@@ -15,7 +15,7 @@ public class DeOpCommand implements ILyCommand {
     public CommandResponse command(CommandContext context){
         if (context.getArgs().length == 0){
             Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/deop <jugador>");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         
         OfflinePlayer target = Bukkit.getOfflinePlayer(context.getArg(0));
@@ -23,7 +23,7 @@ public class DeOpCommand implements ILyCommand {
         if (target != null && target.hasPlayedBefore()){
             if (!target.isOp()){
                 Main.getLang().sendErrorMsg(context.getSender(), "player.not-op", "player", target.getName());
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             target.setOp(false);
             
@@ -35,7 +35,7 @@ public class DeOpCommand implements ILyCommand {
         } else {
             Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

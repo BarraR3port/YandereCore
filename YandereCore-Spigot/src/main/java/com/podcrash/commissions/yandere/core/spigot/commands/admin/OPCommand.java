@@ -17,7 +17,7 @@ public class OPCommand implements ILyCommand {
     public CommandResponse command(CommandContext context){
         if (context.getArgs().length == 0){
             Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/op <jugador>");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         
         OfflinePlayer target = Bukkit.getOfflinePlayer(context.getArg(0));
@@ -25,7 +25,7 @@ public class OPCommand implements ILyCommand {
         if (target != null && (target.hasPlayedBefore() || target.isOnline())){
             if (target.isOp()){
                 Main.getLang().sendErrorMsg(context.getSender(), "player.already-op", "player", target.getName());
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             target.setOp(true);
             Main.getLang().sendMsg(context.getSender(), "player.oped-other", "player", target.getName());
@@ -37,7 +37,7 @@ public class OPCommand implements ILyCommand {
         } else {
             Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

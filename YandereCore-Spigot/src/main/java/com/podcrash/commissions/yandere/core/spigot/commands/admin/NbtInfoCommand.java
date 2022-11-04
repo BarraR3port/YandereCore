@@ -20,13 +20,13 @@ public class NbtInfoCommand implements ILyCommand {
     public CommandResponse command(CommandContext context){
         if (!(context.getSender() instanceof Player)){
             Utils.sendMessage(context.getSender(), "You must be a player to use this command!");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         Player p = (Player) context.getSender();
         
         if (p.getItemInHand() == null){
             Utils.sendMessage(p, "You must be holding an item to use this command!");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         
         ItemStack i = CraftItemStack.asNMSCopy(p.getItemInHand());
@@ -45,9 +45,9 @@ public class NbtInfoCommand implements ILyCommand {
         } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException | ClassCastException x) {
             x.printStackTrace();
         }
-        
-        
-        return new CommandResponse();
+    
+    
+        return CommandResponse.accept();
     }
     
     @Tab

@@ -21,24 +21,24 @@ public final class MenuCommand implements ILyCommand {
             final Player player = (Player) context.getSender();
             if (context.getArgs().length == 0){
                 new LobbyMenu(LyApi.getPlayerMenuUtility(player)).open();
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             if (context.getArgs().length == 1){
                 switch(context.getArg(0).toUpperCase()){
                     case "LOBBY":
                         new MultiLobbyMenu(LyApi.getPlayerMenuUtility(player), ServerType.LOBBY, false).open();
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     case "BED_WARS":
                     case "BEDWARS":
                         new MultiLobbyMenu(LyApi.getPlayerMenuUtility(player), ServerType.LOBBY_BED_WARS, false).open();
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     case "SKY_WARS":
                     case "SKYWARS":
                         new MultiLobbyMenu(LyApi.getPlayerMenuUtility(player), ServerType.SKY_WARS, false).open();
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     case "PRACTICE":
                         new MultiLobbyMenu(LyApi.getPlayerMenuUtility(player), ServerType.PRACTICE, false).open();
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     default:
                         if (player.hasPermission("yandere.menu.other")){
                             final String userName = context.getArg(0);
@@ -49,14 +49,14 @@ public final class MenuCommand implements ILyCommand {
                                 Main.getLang().sendErrorMsg(player, "player.not-found", "player", userName);
                             }
                         } else {
-                            return new CommandResponse("yandere.menu.other");
+                            return CommandResponse.deny("yandere.menu.other");
                         }
                 }
             }
         }
-        
-        
-        return new CommandResponse();
+    
+    
+        return CommandResponse.accept();
     }
     
     @Tab

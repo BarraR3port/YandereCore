@@ -24,7 +24,7 @@ public class InvSeeCommand implements ILyCommand {
                         Main.getLang().sendMsg(p, "inventory.inv-see.open", "player", context.getArg(0));
                         Main.getInstance().getInvManager().manage(p, p2);
                     } else {
-                        return new CommandResponse("yandere.invsee");
+                        return CommandResponse.deny("yandere.invsee");
                     }
                 } else {
                     Main.getLang().sendErrorMsg(p, "player.not-online", "player", context.getArg(0));
@@ -40,7 +40,7 @@ public class InvSeeCommand implements ILyCommand {
                         "invsee "));
             }
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

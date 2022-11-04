@@ -20,8 +20,8 @@ public final class SetSpawnCommand implements ILyCommand {
             
             if (!p.hasPermission("yandere.admin")){
                 if (!p.hasPermission("yandere.admin.setspawn"))
-                    return new CommandResponse("yandere.admin.setspawn");
-                return new CommandResponse("yandere.admin");
+                    return CommandResponse.deny("yandere.admin.setspawn");
+                return CommandResponse.deny("yandere.admin");
             }
             Main.getLang().sendMsg(p, "spawn.set", "location", p.getLocation().getBlockX() + " " + p.getLocation().getBlockY() + " " + p.getLocation().getBlockZ());
             final Location loc = p.getLocation();
@@ -31,9 +31,9 @@ public final class SetSpawnCommand implements ILyCommand {
             Main.getInstance().getConfig().saveData();
             
         }
-        
-        
-        return new CommandResponse();
+    
+    
+        return CommandResponse.accept();
     }
     
     

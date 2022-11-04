@@ -17,14 +17,14 @@ public class HealCommand implements ILyCommand {
         if (context.getArgs().length == 0){
             if (!(context.getSender() instanceof Player)){
                 Bukkit.getConsoleSender().sendMessage("§cUso correcto: §3/heal <jugador>");
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             Player p = (Player) context.getSender();
             p.setFireTicks(0);
             p.setFoodLevel(20);
             p.setHealth(p.getMaxHealth());
             Main.getLang().sendMsg(p, "health.set");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         
         Player target = Bukkit.getPlayer(context.getArg(0));
@@ -35,14 +35,14 @@ public class HealCommand implements ILyCommand {
                 target.setHealth(target.getMaxHealth());
                 Main.getLang().sendMsg(target, "health.set");
                 Main.getLang().sendMsg(context.getSender(), "health.set-other", "player", target.getName());
-                return new CommandResponse();
+                return CommandResponse.accept();
             } else {
-                return new CommandResponse("yandere.health.set.other");
+                return CommandResponse.deny("yandere.health.set.other");
             }
         }
         
         Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

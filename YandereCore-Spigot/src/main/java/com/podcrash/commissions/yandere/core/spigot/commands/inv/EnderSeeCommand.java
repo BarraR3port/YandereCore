@@ -24,7 +24,7 @@ public class EnderSeeCommand implements ILyCommand {
                         Main.getLang().sendMsg(p, "inventory.ender-inv-see.open", "player", context.getArg(0));
                         Main.getInstance().getEndInvManager().manage(p, p2);
                     } else {
-                        return new CommandResponse("yandere.endersee");
+                        return CommandResponse.deny("yandere.endersee");
                     }
                 } else {
                     Main.getLang().sendErrorMsg(p, "player.not-online", "player", context.getArg(0));
@@ -39,8 +39,8 @@ public class EnderSeeCommand implements ILyCommand {
                         "endersee "));
             }
         }
-        
-        return new CommandResponse();
+    
+        return CommandResponse.accept();
     }
     
     @Tab

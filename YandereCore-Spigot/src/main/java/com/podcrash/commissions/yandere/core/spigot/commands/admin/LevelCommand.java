@@ -33,14 +33,14 @@ public class LevelCommand implements ILyCommand {
                                 "&7XP: &c" + user.getLevel().getFormattedCurrentXp(),
                                 "&7XP Necesario: &c" + user.getLevel().getFormattedRequiredXp(),
                                 user.getLevel().getProgressBarFormatted())));
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             
         }
         
         if (context.getArgs().length < 2){
             Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/level <add|get|set> <jugador> <cantidad>");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         if (context.getSender().hasPermission("yandere.level.get") || context.getSender().hasPermission("yandere.level.add") || context.getSender().hasPermission("yandere.level.set")){
             
@@ -54,7 +54,7 @@ public class LevelCommand implements ILyCommand {
                         replacements.put("player", context.getArg(1));
                         replacements.put("level", String.valueOf(user.getLevel().getLevel()));
                         Main.getLang().sendMsg(context.getSender(), "level.other", replacements);
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     }
                     try {
                         int amount = Integer.parseInt(context.getArg(2));
@@ -68,12 +68,12 @@ public class LevelCommand implements ILyCommand {
                             if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                                 Main.getLang().sendMsg(context.getSender(), "level.change.add", replacements);
                             }
-                            return new CommandResponse();
+                            return CommandResponse.accept();
                         }
                         if (context.getArg(0).equalsIgnoreCase("set")){
                             if (amount < 0){
                                 Main.getLang().sendErrorMsg(context.getSender(), "player.level.remove.not-enough", "player", context.getArg(1));
-                                return new CommandResponse();
+                                return CommandResponse.accept();
                             }
     
                             Main.getInstance().getPlayers().setPlayerLevel(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
@@ -81,23 +81,23 @@ public class LevelCommand implements ILyCommand {
                             if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                                 Main.getLang().sendMsg(context.getSender(), "level.change.set", replacements);
                             }
-                            return new CommandResponse();
+                            return CommandResponse.accept();
                         }
                         
                     } catch (NumberFormatException numex) {
                         Main.getLang().sendErrorMsg(context.getSender(), "player.level.amount.invalid");
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     }
-                    return new CommandResponse();
+                    return CommandResponse.accept();
                 } catch (UserNotFoundException ignored) {
                     Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
-                    new CommandResponse();
+                    CommandResponse.accept();
                 }
             }
         } else {
-            new CommandResponse("yandere.level.get | yandere.level.set | yandere.level.add");
+            CommandResponse.deny("yandere.level.get | yandere.level.set | yandere.level.add");
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

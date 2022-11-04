@@ -34,14 +34,14 @@ public class XPCommand implements ILyCommand {
                                 "&7XP: &c" + user.getLevel().getFormattedCurrentXp(),
                                 "&7XP Necesario: &c" + user.getLevel().getFormattedRequiredXp(),
                                 user.getLevel().getProgressBarFormatted())));
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             
         }
         
         if (context.getArgs().length < 2){
             Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/xp <add|get|set> <jugador> <cantidad>");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         if (context.getSender().hasPermission("yandere.xp.get") || context.getSender().hasPermission("yandere.xp.add") || context.getSender().hasPermission("yandere.xp.set")){
             if (context.getArg(0).equalsIgnoreCase("add") || context.getArg(0).equalsIgnoreCase("get") || context.getArg(0).equalsIgnoreCase("set")){
@@ -55,7 +55,7 @@ public class XPCommand implements ILyCommand {
                         replacements.put("level", String.valueOf(user.getLevel().getLevel()));
                         replacements.put("xp", user.getLevel().getFormattedCurrentXp());
                         Main.getLang().sendMsg(context.getSender(), "xp.other", replacements);
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     }
                     
                     try {
@@ -72,37 +72,37 @@ public class XPCommand implements ILyCommand {
                             if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                                 Main.getLang().sendMsg(context.getSender(), "xp.change.add", replacements);
                             }
-                            return new CommandResponse();
+                            return CommandResponse.accept();
                         }
                         if (context.getArg(0).equalsIgnoreCase("set")){
                             if (amount < 0){
                                 Main.getLang().sendErrorMsg(context.getSender(), "player.xp.remove.not-enough", "player", context.getArg(1));
-                                return new CommandResponse();
+                                return CommandResponse.accept();
                             }
                             Main.getInstance().getPlayers().setPlayerXp(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
                             
                             if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                                 Main.getLang().sendMsg(context.getSender(), "xp.change.set", replacements);
                             }
-                            return new CommandResponse();
+                            return CommandResponse.accept();
                         }
                         
                     } catch (NumberFormatException numex) {
                         Main.getLang().sendErrorMsg(context.getSender(), "player.xp.amount.invalid");
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     }
                     
                 } catch (UserNotFoundException ignored) {
                     Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
-                    new CommandResponse();
+                    CommandResponse.accept();
                 }
-                
-                return new CommandResponse();
+    
+                return CommandResponse.accept();
             }
         } else {
-            return new CommandResponse("yandere.xp.get | yandere.xp.set | yandere.xp.add");
+            return CommandResponse.deny("yandere.xp.get | yandere.xp.set | yandere.xp.add");
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

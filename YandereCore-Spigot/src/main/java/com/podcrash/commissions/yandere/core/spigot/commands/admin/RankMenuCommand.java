@@ -32,7 +32,7 @@ public class RankMenuCommand implements ILyCommand {
                 context.getSender().sendMessage("§e- §dEstablece el rango a un jugador §e- §d/rank set <jugador> (rango)");
             }
             context.getSender().sendMessage("§b§m----------------------------------------------------");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         
         if (context.getArg(0).equalsIgnoreCase("set")){
@@ -57,7 +57,7 @@ public class RankMenuCommand implements ILyCommand {
             } else {
                 Main.getLang().sendErrorMsg(context.getSender(), "wrong-command", "command", "/rank set <jugador> (rango)");
             }
-            return new CommandResponse();
+            return CommandResponse.accept();
         } else if (context.getArg(0).equalsIgnoreCase("editor")){
             if (context.getArgs().length == 2){
                 final String target = context.getArg(1);
@@ -70,9 +70,9 @@ public class RankMenuCommand implements ILyCommand {
             } else {
                 Main.getLang().sendErrorMsg(context.getSender(), "wrong-command", "command", "/rank set <jugador> (rango)");
             }
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
-        return new CommandResponse("yandere.rank");
+        return CommandResponse.deny("yandere.rank");
     }
     
     

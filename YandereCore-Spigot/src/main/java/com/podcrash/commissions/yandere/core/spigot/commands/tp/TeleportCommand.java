@@ -25,11 +25,11 @@ public class TeleportCommand implements ILyCommand {
             switch(context.getArgs().length){
                 case 1:{
                     TpManager.teleportToPlayer(p, context.getArg(0));
-                    return new CommandResponse();
+                    return CommandResponse.accept();
                 }
                 case 2:{
                     TpManager.teleportPlayerToPlayer(p, context.getArg(0), context.getArg(1));
-                    return new CommandResponse();
+                    return CommandResponse.accept();
                 }
                 case 3:{
                     if (p.hasPermission("yandere.tp.coords")){
@@ -45,14 +45,14 @@ public class TeleportCommand implements ILyCommand {
                                 Sounds.BAD_SOUND.play(p);
                                 Utils.sendMessage(p, "&cNo hemos logrado teletransportarte hacia " + x + ", " + y + ", " + z + "&c.");
                             }
-                            return new CommandResponse();
+                            return CommandResponse.accept();
                         } catch (NumberFormatException numex) {
                             Sounds.BAD_SOUND.play(p);
                             Utils.sendMessage(p, "&cNo hemos logrado teletransportarte hacia " + context.getArg(0) + ", " + context.getArg(1) + ", " + context.getArg(2) + "&c.");
-                            return new CommandResponse();
+                            return CommandResponse.accept();
                         }
                     } else {
-                        return new CommandResponse("yandere.tp.coords");
+                        return CommandResponse.deny("yandere.tp.coords");
                     }
                     
                 }
@@ -65,13 +65,13 @@ public class TeleportCommand implements ILyCommand {
                     Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessage("&c/tpacept <id>", Arrays.asList("&7Con este comando ", "&7accept a Tpa request.")));
                     Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessage("&c/tpadeny <id>", Arrays.asList("&7Con este comando ", "&7deny a Tpa request.")));
                     *///Utils.sendMessage( p , Utils.formatTC( "  &8&l▸ " ) , Utils.hoverOverMessageSuggestCommand( "&c/tp <jugador> <jugador>" , Arrays.asList( "&7Con este comando " , "&7remove a friend from your FriendList." ) , "/friends remove " ) );
-                    return new CommandResponse();
+                    return CommandResponse.accept();
                 }
             }
             
         } else {
             Main.getLang().sendErrorMsg(context.getSender(), "only-players-can-use-this-command");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
     }
     

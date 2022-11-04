@@ -30,7 +30,7 @@ public class CoinsCommand implements ILyCommand {
                     replacements.put("player", context.getArg(0));
                     replacements.put("amount", String.valueOf(user.getCoins()));
                     Main.getLang().sendMsg(context.getSender(), "coins.amount.other", replacements);
-                    return new CommandResponse();
+                    return CommandResponse.accept();
                 }
                 try {
                     int amount = Integer.parseInt(context.getArg(2));
@@ -43,19 +43,19 @@ public class CoinsCommand implements ILyCommand {
                         if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                             Main.getLang().sendMsg(context.getSender(), "coins.change.add", replacements);
                         }
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     }
                     
                     if (context.getArg(0).equalsIgnoreCase("remove")){
                         if (user.getCoins() <= 0){
                             Main.getLang().sendErrorMsg(context.getSender(), "player.coins.remove.not-enough", "player", context.getArg(1));
-                            return new CommandResponse();
+                            return CommandResponse.accept();
                         }
                         Main.getInstance().getPlayers().removeCoins(user, amount, GainSource.COMMAND, Settings.SERVER_TYPE);
                         if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                             Main.getLang().sendMsg(context.getSender(), "coins.change.remove", replacements);
                         }
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     }
                     
                     if (context.getArg(0).equalsIgnoreCase("set")){
@@ -63,24 +63,24 @@ public class CoinsCommand implements ILyCommand {
                         if (!Objects.equals(context.getArg(1), context.getSender().getName())){
                             Main.getLang().sendMsg(context.getSender(), "coins.change.set", replacements);
                         }
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     }
                     
                 } catch (NumberFormatException numex) {
                     Main.getLang().sendErrorMsg(context.getSender(), "player.coins.amount.invalid");
-                    return new CommandResponse();
+                    return CommandResponse.accept();
                 }
-                return new CommandResponse();
+                return CommandResponse.accept();
             } catch (UserNotFoundException ignored) {
                 Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
-                new CommandResponse();
+                CommandResponse.accept();
             }
             
         }
         Utils.sendMessage(context.getSender(), "&8| &eMoney Commands &8|");
         Utils.sendMessage(context.getSender(), " ");
         Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/coins <add|get|remove|set> <jugador> <cantidad>");
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

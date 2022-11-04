@@ -32,13 +32,13 @@ public class TpAccept implements ILyCommand {
                 Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessageRunCommand("&c/tpa <jugador>", Arrays.asList("&7Con este comando ", "&7send a TP request to a friend."), "/tpa "));
                 Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessage("&c/tpacept <id>", Arrays.asList("&7Con este comando ", "&7accept a Tpa request.")));
                 Utils.sendMessage(p, Utils.formatTC("  &8&l▸ "), Utils.hoverOverMessage("&c/tpadeny <id>", Arrays.asList("&7Con este comando ", "&7deny a Tpa request.")));
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
         } else {
             Main.getLang().sendErrorMsg(context.getSender(), "only-players-can-use-this-command");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

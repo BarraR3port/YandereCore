@@ -25,7 +25,7 @@ public class BuildCommand implements ILyCommand {
             } else {
                 context.getSender().sendMessage("§cSolo puedes usar este comando en un jugador.");
             }
-            return new CommandResponse();
+            return CommandResponse.accept();
         } else if (context.getArgLength() == 1){
             if (context.getSender() instanceof Player){
                 Player player = (Player) context.getSender();

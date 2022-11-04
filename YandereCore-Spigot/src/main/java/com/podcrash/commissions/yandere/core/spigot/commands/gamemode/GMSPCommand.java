@@ -17,7 +17,7 @@ public class GMSPCommand implements ILyCommand {
         if (context.getArgs().length < 2){
             return GamemodeManager.setGamemode(context.getSender(), context.getArg(1), GameMode.SPECTATOR, "Espectador", context.getArgLength());
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

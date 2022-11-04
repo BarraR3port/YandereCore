@@ -20,18 +20,18 @@ public class EconomyCommand implements ILyCommand {
         if (context.getArgs().length == 0){
             if (!(context.getSender() instanceof Player)){
                 Main.getLang().sendErrorMsg(context.getSender(), "player.wrong-command", "command", "/money <jugador>");
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             
             Player p = (Player) context.getSender();
             User user = Main.getInstance().getPlayers().getPlayer(p.getUniqueId());
             Main.getLang().sendMsg(p, "coins.amount.own", "amount", String.valueOf(user.getCoins()));
-            
-            return new CommandResponse();
+    
+            return CommandResponse.accept();
         }
         
         if (!context.getSender().hasPermission("yandere.money.others"))
-            return new CommandResponse("yandere.money.others");
+            return CommandResponse.deny("yandere.money.others");
         
         OfflinePlayer target = Bukkit.getOfflinePlayer(context.getArg(0));
         
@@ -45,11 +45,11 @@ public class EconomyCommand implements ILyCommand {
             if (!target.isOnline()){
                 Main.getInstance().getPlayers().unloadPlayer(target.getUniqueId());
             }
-            return new CommandResponse();
+            return CommandResponse.accept();
             
         } catch (UserNotFoundException unknown) {
             Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
     }
     

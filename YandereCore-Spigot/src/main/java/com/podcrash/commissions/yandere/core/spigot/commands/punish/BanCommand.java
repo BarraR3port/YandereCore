@@ -28,7 +28,7 @@ public class BanCommand implements ILyCommand {
                     User lpTarget = Main.getInstance().getPlayers().getCachedPlayer(context.getArg(0));
                     if (lpTarget == null){
                         Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
-                        return new CommandResponse();
+                        return CommandResponse.accept();
                     }
                     new BanMenu(LyApi.getPlayerMenuUtility(p), lpTarget).open();
                 } else {
@@ -67,8 +67,8 @@ public class BanCommand implements ILyCommand {
                 }
             }
         }
-        
-        return new CommandResponse();
+    
+        return CommandResponse.accept();
     }
     
     private Boolean isNormal(String s){

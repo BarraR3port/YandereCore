@@ -20,7 +20,7 @@ public final class ReportCommand implements ILyCommand {
             final Player player = (Player) context.getSender();
             if (context.getArgs().length == 0){
                 new LobbyMenu(LyApi.getPlayerMenuUtility(player)).open();
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
             if (context.getArgs().length == 1){
                 final String userName = context.getArg(0);
@@ -31,12 +31,12 @@ public final class ReportCommand implements ILyCommand {
                     Main.getLang().sendErrorMsg(player, "player.not-found", "player", userName);
                 }
             } else {
-                return new CommandResponse("yandere.menu.other");
+                return CommandResponse.deny("yandere.menu.other");
             }
         }
-        
-        
-        return new CommandResponse();
+    
+    
+        return CommandResponse.accept();
     }
     
     @Tab

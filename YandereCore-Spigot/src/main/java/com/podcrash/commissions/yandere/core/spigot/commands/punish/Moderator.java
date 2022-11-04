@@ -17,13 +17,13 @@ public class Moderator implements ILyCommand {
     public CommandResponse command(CommandContext context){
         if (!(context.getSender() instanceof Player)){
             Bukkit.getConsoleSender().sendMessage(" §cNo puedes ejecutar comandos desde la consola");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         Player p = (Player) context.getSender();
         
         if (context.getArgs().length == 0){
             p.sendMessage(" §cUso correcto: /mod (jugador)");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         Player target = Bukkit.getPlayer(context.getArg(0));
         if (target != null && target.getType().equals(EntityType.PLAYER)){
@@ -31,7 +31,7 @@ public class Moderator implements ILyCommand {
         } else {
             Main.getLang().sendErrorMsg(context.getSender(), "player.not-found", "player", context.getArg(0));
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab()

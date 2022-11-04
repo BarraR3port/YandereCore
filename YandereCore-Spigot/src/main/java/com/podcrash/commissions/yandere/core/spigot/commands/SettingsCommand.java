@@ -14,7 +14,7 @@ public class SettingsCommand implements ILyCommand {
         if (context.getSender() instanceof Player){
             new PlayerSettingsMainMenu(LyApi.getPlayerMenuUtility((Player) context.getSender())).open();
         }
-        return new CommandResponse();
+        return CommandResponse.accept();
     }
     
     @Tab

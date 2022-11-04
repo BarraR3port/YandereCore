@@ -15,18 +15,18 @@ public class BackCommand implements ILyCommand {
     public CommandResponse command(CommandContext context){
         if (!(context.getSender() instanceof Player)){
             Main.getLang().sendErrorMsg(context.getSender(), "only-players-can-use-this-command");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         SpigotUser user = (SpigotUser) Main.getInstance().getPlayers().getPlayer(((Player) context.getSender()).getUniqueId());
         
         Location loc = user.getBukkitLocation();
         if (loc == null){
             Main.getLang().sendErrorMsg(context.getSender(), "player.no-previous-location-found");
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         ((Player) context.getSender()).teleport(loc);
-        
-        return new CommandResponse();
+    
+        return CommandResponse.accept();
     }
     
     @Tab

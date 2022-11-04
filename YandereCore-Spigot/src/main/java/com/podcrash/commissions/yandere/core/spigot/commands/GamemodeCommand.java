@@ -16,7 +16,7 @@ public class GamemodeCommand implements ILyCommand {
     public CommandResponse command(CommandContext context){
         if (context.getArgs().length == 0){
             GamemodeManager.sendWrongSyntax(context.getSender());
-            return new CommandResponse();
+            return CommandResponse.accept();
         }
         switch(context.getArg(0).toLowerCase()){
             case "0":
@@ -46,7 +46,7 @@ public class GamemodeCommand implements ILyCommand {
             }
             default:{
                 GamemodeManager.sendWrongSyntax(context.getSender());
-                return new CommandResponse();
+                return CommandResponse.accept();
             }
         }
     }
