@@ -419,7 +419,7 @@
         <dependency>
             <groupId>net.lymarket.lyapi</groupId>
             <artifactId>lyapi-spigot</artifactId>
-            <version>1.2.12</version>
+            <version>1.2.14</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
@@ -526,7 +526,7 @@
             <artifactId>PodBedWars</artifactId>
             <version>1.0-BETA</version>
             <scope>system</scope>
-            <systemPath>/home/barra/Desktop/apis/bedwars-plugin-1.0-BETA.jar</systemPath>
+            <systemPath>C:\Users\barra\IdeaProjects\YandereCore\libs\bedwars-plugin-1.0-BETA.jar</systemPath>
             <exclusions>
                 <exclusion>
                     <groupId>*</groupId>
@@ -540,7 +540,7 @@
             <artifactId>PodBedWarsProxyPlugin</artifactId>
             <version>1.0-BETA</version>
             <scope>system</scope>
-            <systemPath>/home/barra/Desktop/apis/BedWarsProxy-Plugin-1.2.7.jar</systemPath>
+            <systemPath>C:\Users\barra\IdeaProjects\YandereCore\libs\BedWarsProxy-Plugin-1.2.7.jar</systemPath>
             <exclusions>
                 <exclusion>
                     <groupId>*</groupId>
@@ -574,7 +574,7 @@
             <artifactId>StrikePractice</artifactId>
             <version>3.5.2</version>
             <scope>system</scope>
-            <systemPath>/home/barra/Desktop/apis/strikepractice-3.5.2.jar</systemPath>
+            <systemPath>C:\Users\barra\IdeaProjects\YandereCore\libs\strikepractice-3.5.2.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -588,7 +588,7 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
-            <systemPath>/home/barra/Desktop/apis/UltraCosmetics-3.0-DEV-b0.jar</systemPath>
+            <systemPath>C:\Users\barra\IdeaProjects\YandereCore\libs\UltraCosmetics-3.0-DEV-b0.jar</systemPath>
 
         </dependency>
 
